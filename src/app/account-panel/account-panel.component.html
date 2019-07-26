@@ -1,0 +1,27 @@
+<div *ngIf="!showDetails && visible" class="panel modifier-class account-panel">
+    <h4 class="trailer-half">{{title}}</h4>
+    <div class="trailer-0">
+        <div class="overflow-auto">
+            <table class="table table-striped modifier-class " id="assessmentsTable">
+                <thead>
+                    <tr>
+                        <th *ngFor="let header of headers">{{header}}</th>
+                    </tr>
+                </thead>
+                <tbody id="assessmentsTableBody" class="panel-table-body account-table-body">
+                    <tr *ngFor="let feature of features" (click)="featureSelected(feature)">
+                        <td *ngFor="let field of fields">
+                            <span *ngIf="field.type != 'date' && !field.domain">{{feature.attributes[field.name]}}</span>
+                            <span *ngIf="field.type === 'date'">{{feature.attributes[field.name] | date}}</span>
+                            <span *ngIf="field.domain">{{getCodedValue(feature.attributes[field.name], field)}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source">Create</button>
+    </div>
+</div> 
+<app-detail-panel *ngIf="showDetails" (relatedFeatureReturned)="relatedFeatureReturned($event)"
+(formSubmitted)="formSubmittedEvent()"  
+[title]="detailsTitle" [feature]="selectedFeature" [update]="update" [formgroups]="formgroups" [detailButtons]="!layer.isTable"></app-detail-panel>

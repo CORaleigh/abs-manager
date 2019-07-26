@@ -1,0 +1,30 @@
+<div class="panel modifier-class" id="detailsPanel">
+  <h4 class="trailer-half" id="detailsTitle">{{title}}</h4>
+  <button class="btn  btn-green modifier-class account-details-button" *ngIf="update && detailButtons" id="billsButton"
+    (click)="getRelatedFeatures($event)">Bills</button>
+  <button class="btn  btn-green modifier-class account-details-button" *ngIf="update && detailButtons" id="commButton"
+    (click)="getRelatedFeatures($event)">Communication</button>
+  <button class="btn  btn-green modifier-class account-details-button" *ngIf="update && detailButtons"
+    id="paymentButton" (click)="getRelatedFeatures($event)">Payments</button>
+  <br />
+  <div class="modifier-class trailer-2 js-tab-group" id="detailsTabs" *ngIf="update">
+    <nav class="tab-nav">
+      <a class="tab-title is-active js-tab link-green">Information</a>
+      <a class="tab-title js-tab link-green">Update</a>
+    </nav>
+    <section class="tab-contents">
+      <article class="tab-section js-tab-section is-active">
+        <div #featureDiv></div>
+      </article>
+      <article class="tab-section js-tab-section">
+        <div class="trailer-0">
+          <app-form [feature]="feature" [formgroups]="formgroups" (formSubmitted)="submitted($event)"></app-form>
+        </div>
+      </article>
+    </section>
+  </div>
+  <div id="createDiv" *ngIf="!update">
+    <app-form [feature]="feature" [formgroups]="formgroups" [update]="update" (formSubmitted)="submitted($event)">
+    </app-form>
+  </div>
+</div>
