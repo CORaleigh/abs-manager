@@ -214,12 +214,12 @@ export class AppComponent implements OnInit {
                   this.billingLayer.popupTemplate = this.billingLayer.defaultPopupTemplate;
                   this.paymentsLayer.load().then(() => {
                   //@ts-ignore
-                  this.paymentsLayer.popupTemplate = this.billingLayer.defaultPopupTemplate;    
+                  this.paymentsLayer.popupTemplate = this.paymentsLayer.defaultPopupTemplate;    
                   //@ts-ignore
                   this.paymentsLayer.defaultPopupTemplateEnabled = false;                
                     this.communicationLayer.load().then(() => {
                                         //@ts-ignore
-                  this.communicationLayer.popupTemplate = this.billingLayer.defaultPopupTemplate; 
+                  this.communicationLayer.popupTemplate = this.communicationLayer.defaultPopupTemplate; 
                     
                       this.layers = layers;
                       this.configureAccountPanels();

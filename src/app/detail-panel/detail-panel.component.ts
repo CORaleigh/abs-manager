@@ -49,6 +49,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
+    debugger
     if (this.update) {
       if (!this.featureWidget) {
         this.initializeFeature().then((featureWidget: esri.Feature) => {
@@ -80,12 +81,14 @@ export class DetailPanelComponent implements OnInit, OnChanges {
       return match;
     });
     if (relationships.length) {
+      debugger
       (this.feature.layer as esri.FeatureLayer).queryRelatedFeatures({
         relationshipId: relationships[0].id,
         objectIds: [this.feature.attributes.OBJECTID],
         outFields: ['*'],
         returnGeometry: false
       }).then((result: any) => {
+        debugger
         if (result[this.feature.attributes.OBJECTID]) {
           this.relatedFeatureReturned.emit({ tableId: relationships[0].relatedTableId, features: result[this.feature.attributes.OBJECTID].features });
         } else {

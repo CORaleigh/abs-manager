@@ -46,9 +46,9 @@ export class SearchComponent implements OnInit, OnChanges {
       returnGeometry: true
     }).then(results => {
       this.selectionMade.emit(results.features[0]);
-      if (!this.view) {
-        this.createMap(results.features[0]);
-      }
+      // if (!this.view) {
+      //   this.createMap(results.features[0]);
+      // }
       let searchResults = results.features.map(feature => {
         let searchResult = {
           extent: feature.geometry.extent,
@@ -209,6 +209,7 @@ export class SearchComponent implements OnInit, OnChanges {
         this.view.popup.open({
           features: [feature]
         });
+        
         const fullscreen = new Fullscreen({ view: this.view });
         this.view.ui.add(fullscreen, 'top-left');
         if (feature.geometry) {
