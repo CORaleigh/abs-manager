@@ -63,17 +63,17 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     const relationships: esri.Relationship[] = (this.feature.layer as esri.FeatureLayer).relationships.filter((relationship: esri.Relationship) => {
       let match: esri.Relationship = null;
       if (event.currentTarget.innerText === 'Bills') {
-        if (relationship.name === 'BILLING_DATA') {
+        if (relationship.name.includes('BILLING_DATA')) {
           match = relationship;
         }
       }
       if (event.currentTarget.innerText === 'Communication') {
-        if (relationship.name === 'COMMUNICATIONS') {
+        if (relationship.name.includes('COMMUNICATIONS')) {
           match = relationship;
         }
       }
       if (event.currentTarget.innerText === 'Payments') {
-        if (relationship.name === 'PAYMENTS') {
+        if (relationship.name.includes('PAYMENTS')) {
           match = relationship;
         }
       }

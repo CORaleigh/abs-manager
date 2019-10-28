@@ -48,11 +48,11 @@
         [detailsTitle]="panel.detailsTitle"></app-account-panel>
     </div>
   </div>
-  <app-payment-button [enabled]="paymentEnabled" [layers]="accountLayers" [features]="paymentFeatures" (clicked)="paymentClicked($event)" (getPayments)="getPayments($event)"></app-payment-button>
+  <app-payment-button [enabled]="paymentEnabled" [layers]="accountLayers" [features]="paymentFeatures" (clicked)="paymentClicked()" (getPayments)="getPayments($event)"></app-payment-button>
 
 </div>
 <footer class="footer leader-3 fade-in" *ngIf="loaded">
-  <img src="../assets/logo-footer.svg" alt>
+  <img src="assets/logo-footer.svg" alt>
 </footer>
 <div class="loader padding-leader-3 padding-trailer-3" [ngClass]="{'is-active': !loaded}">
   <div class="loader-bars"></div>

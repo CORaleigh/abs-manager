@@ -167,7 +167,7 @@ export class AppComponent implements OnInit {
       //PROPERTY LAYER//
       Layer.fromPortalItem({
         //@ts-ignore
-        portalItem: { id: 'aaa229cbcb6145e696bb5483243ab60a' }
+        portalItem: { id: 'e5cd98a8d7b741d4bb70ae6694486355' }
       }).then((propertyLayer: esri.FeatureLayer) => {
         propertyLayer.popupTemplate = {
           title: '{SITE_ADDRESS}',
@@ -220,7 +220,7 @@ export class AppComponent implements OnInit {
                     this.communicationLayer.load().then(() => {
                                         //@ts-ignore
                   this.communicationLayer.popupTemplate = this.billingLayer.defaultPopupTemplate; 
-                  debugger  
+                    
                       this.layers = layers;
                       this.configureAccountPanels();
                       this.configureDetailPanels();

@@ -28,7 +28,9 @@ export class PaymentButtonComponent implements OnInit, OnChanges {
   getRelatedFeatures(features: esri.Graphic[]) {
     let oids: number[] = this.getObjectedIds(features);
     (features[0].layer as esri.FeatureLayer).queryRelatedFeatures({
-      objectIds: oids, relationshipId: 0, outFields: ['*'], returnGeometry: false
+      objectIds: oids, relationshipId: (features[0].layer as esri.FeatureLayer).relationships.filter(relationship => {
+        return relationship.name.includes('PAYMENTS');
+      })[0].id, outFields: ['*'], returnGeometry: false
     }).then((result: any) => {
       oids.forEach((oid: number) => {
         if (result[oid]) {
