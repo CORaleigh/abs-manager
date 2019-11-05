@@ -7,6 +7,8 @@ import { AccountPanelComponent } from './account-panel/account-panel.component';
 import { DetailPanelComponent } from './detail-panel/detail-panel.component';
 import { FormComponent } from './form/form.component';
 import { PaymentButtonComponent } from './payment-button/payment-button.component';
+import { FormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,7 +20,8 @@ import { PaymentButtonComponent } from './payment-button/payment-button.componen
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

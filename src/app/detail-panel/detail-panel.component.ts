@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, Output, EventEmitter, AfterContentInit } from '@angular/core';
+
 import { loadModules } from 'esri-loader';
 import esri = __esri;
 import * as calcite from 'calcite-web';
@@ -22,6 +23,14 @@ export class DetailPanelComponent implements OnInit, OnChanges {
       calcite.init();
     });
   }
+  payoffDate:string = new Date().toISOString().slice(0,10);
+  principalDue: number = 0;
+  interestDue: number = 0;
+  fromDate: Date = null;
+  fromDateLabel: string = "";
+  totalDue: number = 0;
+
+
   featureWidget: esri.Feature;
   async initializeFeature() {
     try {
@@ -49,31 +58,51 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
-    debugger
+    
     if (this.update) {
       if (!this.featureWidget) {
         this.initializeFeature().then((featureWidget: esri.Feature) => {
           this.featureWidget.graphic = changes.feature.currentValue;
+          if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
+            this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
+            this.fromDateLabel = "Interest Paid Thru Date: ";
+          } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
+            this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
+            this.fromDateLabel = "Confirming Resolution Date: ";
+          } else if (this.featureWidget.graphic.attributes['ContractDate']) {
+            this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
+            this.fromDateLabel = "Contract Date: ";
+          }  
         });
       } else {
         this.featureWidget.graphic = changes.feature.currentValue;
+        if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
+          this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
+          this.fromDateLabel = "Interest Paid Thru Date: ";
+        } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
+          this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
+          this.fromDateLabel = "Confirming Resolution Date: ";
+        } else if (this.featureWidget.graphic.attributes['ContractDate']) {
+          this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
+          this.fromDateLabel = "Contract Date: ";
+        }  
       }
     }
   }
-  getRelatedFeatures(event) {
+  getRelatedFeatures(label:string) {
     const relationships: esri.Relationship[] = (this.feature.layer as esri.FeatureLayer).relationships.filter((relationship: esri.Relationship) => {
       let match: esri.Relationship = null;
-      if (event.currentTarget.innerText === 'Bills') {
+      if (label === 'Bills') {
         if (relationship.name.includes('BILLING_DATA')) {
           match = relationship;
         }
       }
-      if (event.currentTarget.innerText === 'Communication') {
+      if (label === 'Communication') {
         if (relationship.name.includes('COMMUNICATIONS')) {
           match = relationship;
         }
       }
-      if (event.currentTarget.innerText === 'Payments') {
+      if (label === 'Payments') {
         if (relationship.name.includes('PAYMENTS')) {
           match = relationship;
         }
@@ -81,14 +110,13 @@ export class DetailPanelComponent implements OnInit, OnChanges {
       return match;
     });
     if (relationships.length) {
-      debugger
       (this.feature.layer as esri.FeatureLayer).queryRelatedFeatures({
         relationshipId: relationships[0].id,
         objectIds: [this.feature.attributes.OBJECTID],
         outFields: ['*'],
         returnGeometry: false
       }).then((result: any) => {
-        debugger
+        
         if (result[this.feature.attributes.OBJECTID]) {
           this.relatedFeatureReturned.emit({ tableId: relationships[0].relatedTableId, features: result[this.feature.attributes.OBJECTID].features });
         } else {
@@ -96,5 +124,20 @@ export class DetailPanelComponent implements OnInit, OnChanges {
         }
       });
     }
+  }
+
+  calculatePayoff() {
+    let days = 0;
+    if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {      
+      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']).toDateString()).getTime())/(1000*60*60*24));
+    } else if (this.featureWidget.graphic.attributes['ConfResDate']){
+      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.featureWidget.graphic.attributes['ConfResDate']).toDateString()).getTime())/(1000*60*60*24));
+    } else if (this.featureWidget.graphic.attributes['ContractDate']){
+      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.featureWidget.graphic.attributes['ContractDate']).toDateString()).getTime())/(1000*60*60*24));
+
+    }
+    this.principalDue = this.featureWidget.graphic.attributes['PrincipalBalance'];
+    this.interestDue = ((this.featureWidget.graphic.attributes['InterestRate']/100)/365 * days) * this.featureWidget.graphic.attributes['PrincipalBalance'];
+    this.totalDue = this.principalDue + this.interestDue;
   }
 }

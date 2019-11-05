@@ -280,25 +280,25 @@ export class AppComponent implements OnInit {
   configureAccountPanels() {
     this.accountPanels = [
       new Panel('Assessments', 'Assessment Details', this.assessmentsLayer, [], null,
-        this.getLayerFields(this.assessmentsLayer, ['AccountID', 'AccountDate', 'RollNum', 'RollLotNum', 'StatusCode']),
-        ['ACCOUNT ID', 'ACCOUNT DATE', 'ROLL NUMBER', 'LOT NUMBER', 'STATUS'],
-        'AccountDate',
+        this.getLayerFields(this.assessmentsLayer, ['AccountID', 'CategoryTypeCode', 'ConfResDate', 'RollNum', 'PrincipalBalance', 'StatusCode']),
+        ['ACCOUNT ID', 'CATEGORY TYPE', 'CONFIRMING RESOLUTION DATE', 'ROLL NUMBER', 'PRINCIPAL BALANCE', 'STATUS'],
+        'AccountID',
         [this.formGroupService.assessmentFormGroup, this.formGroupService.billingFormGroup, this.formGroupService.altBillingFormGroup],
         false,
         true
       ),
       new Panel('Abatements', 'Abatement Details', this.abatementsLayer, [], null,
-        this.getLayerFields(this.abatementsLayer, ['AccountID', 'AccountDate', 'ABHousingLetter1', 'ABHousingLetter2', 'StatusCode']),
-        ['ACCOUNT ID', 'ACCOUNT DATE', 'FIRST HOUSING LETTER SENT', 'LOT NUMBER', 'STATUS'],
-        'AccountDate',
+        this.getLayerFields(this.abatementsLayer, ['AccountID', 'CategoryTypeCode', 'ConfResDate', 'ABHousingLetter1', 'PrincipalBalance', 'StatusCode']),
+        ['ACCOUNT ID', 'CATEGORY TYPE', 'CONFIRMING RESOLUTION DATE', 'FIRST HOUSING LETTER SENT', 'PRINCIPAL BALANCE', 'STATUS'],
+        'AccountID',
         [this.formGroupService.abatementFormGroup, this.formGroupService.billingFormGroup, this.formGroupService.altBillingFormGroup],
         false,
         true
       ),
       new Panel('Tap Fees', 'Tap Fee Details', this.tapfeesLayer, [], null,
-        this.getLayerFields(this.tapfeesLayer, ['AccountID', 'AccountDate', 'ContractNum', 'ContractDate', 'StatusCode']),
-        ['ACCOUNT ID', 'ACCOUNT DATE', 'CONTRACT NUMBER', 'CONTRACT DATE', 'STATUS'],
-        'AccountDate',
+        this.getLayerFields(this.tapfeesLayer, ['AccountID', 'CategoryTypeCode', 'ContractDate', 'ContractNumber', 'PrincipalBalance', 'StatusCode']),
+        ['ACCOUNT ID', 'CATEGORY TYPE', 'CONTRACT DATE', 'CONTRACT NUMBER', 'PRINCIPAL BALANCE', 'STATUS'],
+        'AccountID',
         [this.formGroupService.tapFeeFormGroup, this.formGroupService.billingFormGroup, this.formGroupService.altBillingFormGroup],
         false,
         true
@@ -441,17 +441,21 @@ export class AppComponent implements OnInit {
     this.selectedAccount = feature;
   }
   selectionMade(feature: esri.Graphic) {
-    this.selectedAccount = null;
-    this.selectedProperty = feature;
-    this.paymentEnabled = true;
-    this.accountLayers.forEach(layer => {
-      let panel = this.accountPanels.filter((panel: Panel) => {
-        return panel.layer === layer;
-      })[0];
-      layer.queryFeatures({ where: "REID = '" + feature.attributes.REID + "'", outFields: ['*'], orderByFields: [panel.orderBy + ' desc'] }).then((featureSet: esri.FeatureSet) => {
-        panel.features = featureSet.features;
+    debugger
+    if (feature) {
+      this.selectedAccount = null;
+      this.selectedProperty = feature;
+      this.paymentEnabled = true;
+      this.accountLayers.forEach(layer => {
+        let panel = this.accountPanels.filter((panel: Panel) => {
+          return panel.layer === layer;
+        })[0];
+        layer.queryFeatures({ where: "REID = '" + feature.attributes.REID + "'", outFields: ['*'], orderByFields: [panel.orderBy + ' desc'] }).then((featureSet: esri.FeatureSet) => {
+          panel.features = featureSet.features;
+        });
       });
-    });
+    }
+
   }
   formSubmitted() {
     this.accountPanels.forEach((panel: Panel) => {
