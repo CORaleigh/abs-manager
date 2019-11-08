@@ -58,7 +58,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
-    
+    console.log(changes.feature.currentValue)
     if (this.update) {
       if (!this.featureWidget) {
         this.initializeFeature().then((featureWidget: esri.Feature) => {
@@ -90,19 +90,20 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     }
   }
   getRelatedFeatures(label:string) {
+    debugger
     const relationships: esri.Relationship[] = (this.feature.layer as esri.FeatureLayer).relationships.filter((relationship: esri.Relationship) => {
       let match: esri.Relationship = null;
-      if (label === 'Bills') {
+      if (label === 'BILLS') {
         if (relationship.name.includes('BILLING_DATA')) {
           match = relationship;
         }
       }
-      if (label === 'Communication') {
+      if (label === 'COMMUNICATION') {
         if (relationship.name.includes('COMMUNICATIONS')) {
           match = relationship;
         }
       }
-      if (label === 'Payments') {
+      if (label === 'PAYMENTS') {
         if (relationship.name.includes('PAYMENTS')) {
           match = relationship;
         }
@@ -116,7 +117,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
         outFields: ['*'],
         returnGeometry: false
       }).then((result: any) => {
-        
+        debugger
         if (result[this.feature.attributes.OBJECTID]) {
           this.relatedFeatureReturned.emit({ tableId: relationships[0].relatedTableId, features: result[this.feature.attributes.OBJECTID].features });
         } else {
@@ -140,4 +141,10 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.interestDue = ((this.featureWidget.graphic.attributes['InterestRate']/100)/365 * days) * this.featureWidget.graphic.attributes['PrincipalBalance'];
     this.totalDue = this.principalDue + this.interestDue;
   }
+
+  isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || (year % 100 === 0 && year % 400 === 0);
+  }
+
+
 }

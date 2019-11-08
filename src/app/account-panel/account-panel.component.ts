@@ -30,6 +30,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
   featureSelected(feature: esri.Graphic) {
+
     this.update = true;
     this.selectedFeature = feature;
     feature.layer = this.layer;
@@ -67,6 +68,13 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     })
   }
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.features) {
+      if (changes.features.currentValue) {
+        if (changes.features.currentValue.length === 1) {        
+          this.featureSelected(changes.features.currentValue[0]);
+        }
+      }
+    }
     if (changes.visible) {
     }
   }

@@ -20,7 +20,12 @@
                 </tbody>
             </table>
         </div>
+        <div *ngIf="!features.length" class="alert alert-full modifier-class is-active">
+                No records found
+
+              </div>   
         <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source">Create</button>
+     
     </div>
 </div> 
 <app-detail-panel *ngIf="showDetails" (relatedFeatureReturned)="relatedFeatureReturned($event)"

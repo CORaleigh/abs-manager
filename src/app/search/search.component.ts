@@ -24,7 +24,7 @@ export class SearchComponent implements OnInit, OnChanges {
       num: 6,
       outFields: [field],
       outSpatialReference: {wkid: 102100},
-      returnDistinctValues: false,
+      returnDistinctValues: true,
       returnGeometry: false,
       orderByFields: [field]
     }).then((results) => {
@@ -45,7 +45,7 @@ export class SearchComponent implements OnInit, OnChanges {
       outSpatialReference: {wkid: 102100},
       returnGeometry: true
     }).then(results => {
-      this.selectionMade.emit(results.features[0]);
+     //this.selectionMade.emit(results.features[0]);
       // if (!this.view) {
       //   this.createMap(results.features[0]);
       // }
@@ -60,6 +60,45 @@ export class SearchComponent implements OnInit, OnChanges {
       return searchResults;
     });
   }
+
+  getAccountSuggestions(params, field, layer) {
+    return layer.queryFeatures({
+      where: field+" like '" + params.suggestTerm.toUpperCase() + "%'",
+      num: 6,
+      outFields: [field, 'REID'],
+      returnDistinctValues: true,
+      returnGeometry: false,
+      orderByFields: [field]
+    }).then((results) => {
+      return results.features.map(feature => {
+        return {
+          key: field,
+          text: feature.attributes[field].toString(),
+          sourceIndex: params.sourceIndex
+        }
+      })
+    });
+  }
+  getAccountResults(params, field, layer) {
+    return layer.queryFeatures({
+      where: field + " = '"+params.suggestResult.text.toUpperCase() + "'",
+      outFields: ['*'],
+      returnGeometry: false
+    }).then(results => {
+      //this.selectionMade.emit(results.features[0]);
+      // if (!this.view) {
+      //   this.createMap(results.features[0]);
+      // }
+      let searchResults = results.features.map(feature => {
+        let searchResult = {
+          feature: feature,
+          name: feature.attributes[field].toString()
+        }
+        return searchResult;
+      });
+      return searchResults;
+    });
+  }  
 
   async initialize() {
     try {
@@ -111,70 +150,73 @@ export class SearchComponent implements OnInit, OnChanges {
         },
         minSuggestCharacters: 4,
         name: 'Owner'
-      });              
-      // const reidSource: esri.LayerSearchSource = new LayerSearchSource({
-      //   displayField: 'REID',
-      //   layer: this.propertyLayer,
-      //   maxResults: 10,
-      //   maxSuggestions: 10,
-      //   minSuggestCharacters: 3,
-      //   name: "REID",
-      //   outFields: ["REID", "PIN_NUM", "OWNER", "ADDR1", "ADDR2", "ADDR3", "SITE_ADDRESS"],
-      //   placeholder: "Search By REID",
-      //   popupEnabled: true,
-      //   searchFields: ["REID"]
-      // });
-      // const pinSource: esri.LayerSearchSource = new LayerSearchSource({
-      //   displayField: 'PIN_NUM',
-      //   layer: this.propertyLayer,
-      //   maxResults: 10,
-      //   maxSuggestions: 10,
-      //   minSuggestCharacters: 3,
-      //   name: "PIN",
-      //   outFields: ["REID", "PIN_NUM", "OWNER", "ADDR1", "ADDR2", "ADDR3", "SITE_ADDRESS"],
-      //   placeholder: "Search By PIN",
-      //   popupEnabled: true,
-      //   searchFields: ["PIN_NUM"]
-      // });
-      // const addrSource: esri.LayerSearchSource = new LayerSearchSource({
-      //   displayField: 'SITE_ADDRESS',
-      //   layer: this.propertyLayer,
-      //   maxResults: 10,
-      //   maxSuggestions: 10,
-      //   minSuggestCharacters: 3,
-      //   name: "SITE_ADDRESS",
-      //   outFields: ["REID", "PIN_NUM", "OWNER", "ADDR1", "ADDR2", "ADDR3", "SITE_ADDRESS"],
-      //   placeholder: "Search By Site Address",
-      //   popupEnabled: true,
-      //   searchFields: ["SITE_ADDRESS"]
-      // });
-      // const acctAssessSource: esri.LayerSearchSource = new LayerSearchSource({
-      //   displayField: 'AccountID',
-      //   layer: this.layers[0],
-      //   maxResults: 10,
-      //   maxSuggestions: 10,
-      //   minSuggestCharacters: 3,
-      //   name: "AccountID",
-      //   outFields: ["AccountID", "REID"],
-      //   placeholder: "Search By Assessment AccountID",
-      //   popupEnabled: false,
-      //   searchFields: ["AccountID"]
-      // });
+      });         
+      
+      const assessAccountSource: esri.SearchSource = new SearchSource({
+        placeholder: "Assessment ID",
+        minSuggestCharacters: 3,
+        name: 'Assessment ID',     
+        getSuggestions: (params) => {
+          return this.getAccountSuggestions(params, 'AccountID', this.layers[0]);
+        },
+        getResults: (params) => {
+          return this.getAccountResults(params, 'AccountID', this.layers[0]);
+        }
+      });
+      const abatementAccountSource: esri.SearchSource = new SearchSource({
+        placeholder: "Abatement ID",
+        minSuggestCharacters: 3,
+        name: 'Abatement ID',           
+        getSuggestions: (params) => {
+          return this.getAccountSuggestions(params, 'AccountID', this.layers[1]);
+        },
+        getResults: (params) => {
+          return this.getAccountResults(params, 'AccountID', this.layers[1]);
+
+        }
+      });
+      const tapFeeAccountSource: esri.SearchSource = new SearchSource({
+        placeholder: "Tap Fee ID",
+        minSuggestCharacters: 3,
+        name: 'Tap Fee ID',             
+        getSuggestions: (params) => {
+          return this.getAccountSuggestions(params, 'AccountID', this.layers[2]);
+        },
+        getResults: (params) => {
+          return this.getAccountResults(params, 'AccountID', this.layers[2]);
+
+        }
+      });            
       const search: esri.widgetsSearch = new Search({
         container: this.searchDiv.nativeElement,
-        sources: [reidSource, pinSource, addrSource,ownerSource],
+        sources: [reidSource, pinSource, addrSource,ownerSource, assessAccountSource, abatementAccountSource, tapFeeAccountSource],
         includeDefaultSources: false
       });
       search.on('select-result', event => {
         
-        this.selectionMade.emit(event.result.feature);
-        if (!this.view) {
-          this.createMap(event.result.feature);
-        } else {
-          if (event.result.feature.geometry) {
-            this.addPropertyGraphic(event.result.feature);
+        if (event.result.feature.geometry) {
+          this.selectionMade.emit(event.result.feature);
+          if (!this.view) {
+            this.createMap(event.result.feature);
+          } else {
+            if (event.result.feature.geometry) {
+              this.addPropertyGraphic(event.result.feature);
+            }
           }
+        } else {
+          this.propertyLayer.queryFeatures({where: "REID = '" + event.result.feature.attributes['REID'] + "'", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
+            this.selectionMade.emit(featureSet.features[0]);
+
+            if (!this.view) {
+              this.createMap(featureSet.features[0]);
+            } else {
+              if (featureSet.features[0].geometry) {
+                this.addPropertyGraphic(featureSet.features[0]);
+              }
+            }
+          });
         }
+
       });
     } catch (error) {
       console.log('EsriLoader: ', error);

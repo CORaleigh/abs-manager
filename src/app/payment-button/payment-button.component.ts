@@ -15,6 +15,7 @@ export class PaymentButtonComponent implements OnInit, OnChanges {
   payments: esri.Graphic[] = [];
   buttonClick() {
     this.clicked.emit(true);
+    
   }
   ngOnInit() {
   }

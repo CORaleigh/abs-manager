@@ -412,21 +412,27 @@ export class AppComponent implements OnInit {
     //  this.toggleAccountCrumbs(panel);
     }
   }
+
+
+
   togglePanels(feature: esri.Graphic, layer: esri.FeatureLayer, showDetails: boolean, update: boolean) {
+    
     [this.accountPanels, this.detailPanels].forEach((panelGroup: Panel[]) => {
       panelGroup.forEach((panel: Panel) => {
         panel.visible = panel.layer === layer;
         if (panel.layer === layer) {
-          if (showDetails) {
-            panel.update = update;
-            panel.selectedFeature = feature;
-            panel.showDetails = true;
-          } else {
-            panel.selectedFeature = null;
-            panel.showDetails = false;
-          }
           setTimeout(() => {
-            this.toggleCrumbs(panel, showDetails);
+            if (showDetails) {
+              panel.update = update;
+              panel.selectedFeature = feature;
+              panel.showDetails = true;
+            } else {
+              panel.selectedFeature = null;
+              panel.showDetails = false;
+            }
+            setTimeout(() => {
+              this.toggleCrumbs(panel, showDetails);
+            })
           })
         }
       });
@@ -441,19 +447,44 @@ export class AppComponent implements OnInit {
     this.selectedAccount = feature;
   }
   selectionMade(feature: esri.Graphic) {
-    debugger
+    let count = 0;
     if (feature) {
-      this.selectedAccount = null;
-      this.selectedProperty = feature;
-      this.paymentEnabled = true;
-      this.accountLayers.forEach(layer => {
-        let panel = this.accountPanels.filter((panel: Panel) => {
-          return panel.layer === layer;
-        })[0];
-        layer.queryFeatures({ where: "REID = '" + feature.attributes.REID + "'", outFields: ['*'], orderByFields: [panel.orderBy + ' desc'] }).then((featureSet: esri.FeatureSet) => {
-          panel.features = featureSet.features;
+      if (feature.geometry) {
+        this.selectedAccount = null;
+        this.selectedProperty = feature;
+        this.paymentEnabled = true;
+        this.accountLayers.forEach(layer => {
+          let panel = this.accountPanels.filter((panel: Panel) => {
+            return panel.layer === layer;
+          })[0];
+          layer.queryFeatures({ where: "REID = '" + feature.attributes.REID + "'", outFields: ['*'], orderByFields: [panel.orderBy + ' desc'] }).then((featureSet: esri.FeatureSet) => {
+            panel.features = featureSet.features;
+            count += featureSet.features.length;
+            console.log(count);
+            if (count > 1) {
+              this.accountPanels.forEach(p => {
+                p.showDetails = false;
+                p.visible = true;
+              });
+            }
+          });
         });
-      });
+
+      } else {
+        this.paymentEnabled = true;
+
+        this.selectedAccount = null;
+        //this.accountLayers.forEach(layer => {
+          let panel = this.accountPanels.filter((panel: Panel) => {
+            return panel.layer === feature.layer;
+          })[0];
+          
+          panel.features = [feature];
+
+          this.togglePanels(feature, (feature.layer as esri.FeatureLayer), true, true);
+
+       // });       
+      }
     }
 
   }
@@ -568,14 +599,18 @@ export class AppComponent implements OnInit {
       this.crumbs[6].visible = true;
       this.crumbs[6].active = true;
       this.crumbs[0].active = false;
+    } else {
+      alert('No payments made for this property.')
     }
   }
   paymentClicked() {
+    
     let features: any[] = [];
     this.accountPanels.forEach((panel: Panel) => {
       features.push(panel.features);
     });
     this.paymentFeatures = features;
+
   }
   ngOnInit() {
     this.authorize();

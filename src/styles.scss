@@ -56,3 +56,25 @@ h4 {
     height: $loader-height+$loader-zoom;
   }
 }
+
+.btn-green {
+  background-color: #4C8C2B;
+    border: 1px solid #4C8C2B;
+    color: #fff;
+    font-size: 0.83333rem;
+    font-family: "Typold W05", sans-serif;
+    font-weight: 500;
+    letter-spacing: .1em;
+    line-height: 1rem;
+    padding: 0.5rem 0.66667rem;
+    text-transform: uppercase;
+}
+
+.alert {
+  margin-bottom: 1em !important;
+  background: #E0EFF4 !important;
+    border-color: #E0EFF4 !important;
+    color: #01426A
+     !important;
+    text-align: center;
+}
