@@ -27,7 +27,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   @Output() createFeatureClicked = new EventEmitter<any>();
   @Input('source') source: esri.Graphic;
 
-  currencyFields:string[] = ['PaymentAmount'];
+  currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance'];
   ngOnInit() {
   }
   featureSelected(feature: esri.Graphic) {
