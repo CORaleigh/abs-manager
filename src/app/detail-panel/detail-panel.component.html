@@ -4,9 +4,9 @@
     (click)="getRelatedFeatures($event.currentTarget.innerText)">Bills</button>
   <button class="btn  btn-green modifier-class account-details-button" *ngIf="update && detailButtons" id="commButton"
     (click)="getRelatedFeatures($event.currentTarget.innerText)">Communication</button>
-  <button class="btn  btn-green modifier-class account-details-button" *ngIf="!update && detailButtons"
+  <button class="btn  btn-green modifier-class account-details-button" *ngIf="update && detailButtons"
     id="paymentButton" (click)="getRelatedFeatures($event.currentTarget.innerText)">Payments</button>
-    <a class="btn  btn-green js-modal-toggle" title="Payment Calculator" href="#" data-modal="foo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" class="svg-icon"><path d="M1 0v12h29.8V0H1zm27 9H4V3h24v6zM1 14v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4zm5-6v18h8V14h-8zm6 16h-4V16h4v14zM1 24v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4z"/></svg></a>
+    <a *ngIf="update && detailButtons" class="btn  btn-green js-modal-toggle" title="Payment Calculator" href="#" data-modal="foo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" class="svg-icon"><path d="M1 0v12h29.8V0H1zm27 9H4V3h24v6zM1 14v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4zm5-6v18h8V14h-8zm6 16h-4V16h4v14zM1 24v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4z"/></svg></a>
 
     
   <br />

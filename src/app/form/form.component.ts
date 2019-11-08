@@ -13,6 +13,8 @@ export class FormComponent implements OnChanges {
   @Input('update') update: boolean = true;
   @Input('formgroups') formgroups: esri.FieldGroupConfig[] = [];
   @Output() formSubmitted = new EventEmitter<esri.FeatureLayer>();
+  @Output() formCanceled = new EventEmitter<null>();
+
   form: esri.FeatureForm = null;
   async initializeForm() {
     try {
@@ -28,6 +30,9 @@ export class FormComponent implements OnChanges {
     } catch (error) {
       console.log('EsriLoader: ', error);
     }
+  }
+  cancel() {
+    this.formSubmitted.emit(this.form.layer);
   }
   submit() {
     loadModules(['esri/Graphic']).then(([Graphic]) => {

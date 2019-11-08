@@ -33,7 +33,7 @@
     </div>
     <div *ngFor="let panel of accountPanels">
       <app-account-panel [title]="panel.title" [visible]="panel.visible" (accountSelected)="accountSelected($event)"
-        (createFeatureClicked)="createFeatureClicked($event)" (formSubmitted)="formSubmitted()" [update]="panel.update"
+        (createFeatureClicked)="createFeatureClicked($event)" (formSubmitted)="formSubmitted()" (formCanceled)="formSubmitted()"  [update]="panel.update"
         [source]="selectedProperty" [layer]="panel.layer" [features]="panel.features" [fields]="panel.fields"
         [layers]="layers" [selectedFeature]="panel.feature" [headers]="panel.headers" [formgroups]="panel.formgroups"
         [showDetails]="panel.showDetails" (showRelatedTable)="showRelatedTable($event)"

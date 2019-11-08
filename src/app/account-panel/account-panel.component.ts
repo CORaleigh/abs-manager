@@ -20,6 +20,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   @Input('visible') visible: boolean;
   @Input('update') update: boolean;
   @Input('selectedFeature') selectedFeature: esri.Graphic;
+  @Input('totalFeatures') totalFeatures:number = 0;
   @Output() showRelatedTable = new EventEmitter<any>();
   @Output() formSubmitted = new EventEmitter<any>();
   @Output() accountSelected = new EventEmitter<esri.Graphic>();
@@ -68,10 +69,10 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     })
   }
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.features) {
-      if (changes.features.currentValue) {
-        if (changes.features.currentValue.length === 1) {        
-          this.featureSelected(changes.features.currentValue[0]);
+    if (changes.totalFeatures) {
+      if (changes.totalFeatures.currentValue) {
+        if (changes.totalFeatures.currentValue.length === 1) {        
+          this.featureSelected(this.features[0]);
         }
       }
     }

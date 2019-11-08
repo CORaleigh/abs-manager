@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
   basemap: string = 'gray-vector';
   paymentFeatures: esri.Graphic[] = []; 
   paymentEnabled: boolean = false;
+  totalFeatures: number = 0;
   async authorize() {
     try {
       const [OAuthInfo, esriId] = await loadModules([
@@ -488,6 +489,7 @@ export class AppComponent implements OnInit {
     }
 
   }
+  
   formSubmitted() {
     this.accountPanels.forEach((panel: Panel) => {
       panel.showDetails = false;
@@ -610,7 +612,7 @@ export class AppComponent implements OnInit {
       features.push(panel.features);
     });
     this.paymentFeatures = features;
-
+    this.totalFeatures = features.length;
   }
   ngOnInit() {
     this.authorize();
