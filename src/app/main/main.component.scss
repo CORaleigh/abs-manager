@@ -1,0 +1,46 @@
+.c-header__logo {
+    float: left;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 0;
+    width: 6.44444rem;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+  }
+  .toggle-switch {
+    margin-top: 1em;
+  }
+  
+  .top-nav:before {
+  
+      content: "";
+      background-color: #72A300;
+      height: 2px;
+      left: 0;
+      top: 0;
+      position: absolute;
+      width: 100%;
+  
+  }
+  
+  .footer {
+    background-color: #4C8C2B;
+    padding-bottom: 3.33333rem;
+      padding-top: 3.33333rem;
+  }
+  @media (min-width: 87.5em) {
+  .footer {
+      padding-left: 6.66667rem;
+      padding-right: 6.66667rem;
+  }
+  }
+  
+  @media (min-width: 48em){
+  .o-layout-h-inset--asym {
+      padding-left: 5.33333rem;
+      padding-right: 2.66667rem;
+  }}

@@ -1,4 +1,5 @@
 <div *ngIf="!showDetails && visible" class="panel modifier-class account-panel">
+   <span *ngIf="accountSelected">{{accountSelected.attributes|json}}</span> 
     <h4 class="trailer-half">{{title}}</h4>
     <div class="trailer-0">
         <div class="overflow-auto">
@@ -28,6 +29,6 @@
      
     </div>
 </div> 
-<app-detail-panel *ngIf="showDetails" (relatedFeatureReturned)="relatedFeatureReturned($event)"
+<app-detail-panel *ngIf="showDetails && visible" (relatedFeatureReturned)="relatedFeatureReturned($event)"
 (formSubmitted)="formSubmittedEvent()"  
-[title]="detailsTitle" [feature]="selectedFeature" [update]="update" [formgroups]="formgroups" [detailButtons]="!layer.isTable"></app-detail-panel>
+[title]="detailsTitle" [feature]="selectedFeature"  [update]="update" [formgroups]="formgroups" [detailButtons]="!layer.isTable"></app-detail-panel>

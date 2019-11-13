@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, Output, EventEmitter, AfterContentInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, Output, EventEmitter, AfterContentInit, OnDestroy } from '@angular/core';
 
 import { loadModules } from 'esri-loader';
 import esri = __esri;
@@ -23,15 +23,10 @@ export class DetailPanelComponent implements OnInit, OnChanges {
       calcite.init();
     });
   }
-  payoffDate:string = new Date().toISOString().slice(0,10);
-  principalDue: number = 0;
-  interestDue: number = 0;
-  fromDate: Date = null;
-  fromDateLabel: string = "";
-  totalDue: number = 0;
 
 
-  featureWidget: esri.Feature;
+
+  featureWidget: esri.Feature = null;
   async initializeFeature() {
     try {
       const [Feature] = await loadModules([
@@ -58,39 +53,46 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes.feature.currentValue)
     if (this.update) {
       if (!this.featureWidget) {
         this.initializeFeature().then((featureWidget: esri.Feature) => {
+                    //@ts-ignore
+
+                    changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
+
+          //@ts-ignore
+          changes.feature.currentValue.sourceLayer = changes.feature.currentValue.layer;
+          console.log(changes.feature.currentValue);
+
           this.featureWidget.graphic = changes.feature.currentValue;
-          if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
-            this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
-            this.fromDateLabel = "Interest Paid Thru Date: ";
-          } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
-            this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
-            this.fromDateLabel = "Confirming Resolution Date: ";
-          } else if (this.featureWidget.graphic.attributes['ContractDate']) {
-            this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
-            this.fromDateLabel = "Contract Date: ";
-          }  
+
+          // if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
+          //   this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
+          //   this.fromDateLabel = "Interest Paid Thru Date: ";
+          // } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
+          //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
+          //   this.fromDateLabel = "Confirming Resolution Date: ";
+          // } else if (this.featureWidget.graphic.attributes['ContractDate']) {
+          //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
+          //   this.fromDateLabel = "Contract Date: ";
+          // }  
         });
       } else {
         this.featureWidget.graphic = changes.feature.currentValue;
-        if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
-          this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
-          this.fromDateLabel = "Interest Paid Thru Date: ";
-        } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
-          this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
-          this.fromDateLabel = "Confirming Resolution Date: ";
-        } else if (this.featureWidget.graphic.attributes['ContractDate']) {
-          this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
-          this.fromDateLabel = "Contract Date: ";
-        }  
+        // if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
+        //   this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
+        //   this.fromDateLabel = "Interest Paid Thru Date: ";
+        // } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
+        //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
+        //   this.fromDateLabel = "Confirming Resolution Date: ";
+        // } else if (this.featureWidget.graphic.attributes['ContractDate']) {
+        //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
+        //   this.fromDateLabel = "Contract Date: ";
+        // }  
       }
     }
   }
   getRelatedFeatures(label:string) {
-    debugger
     const relationships: esri.Relationship[] = (this.feature.layer as esri.FeatureLayer).relationships.filter((relationship: esri.Relationship) => {
       let match: esri.Relationship = null;
       if (label === 'BILLS') {
@@ -108,6 +110,11 @@ export class DetailPanelComponent implements OnInit, OnChanges {
           match = relationship;
         }
       }
+      if (label === 'COMMENTS') {
+        if (relationship.name.includes('COMMENTS')) {
+          match = relationship;
+        }
+      }      
       return match;
     });
     if (relationships.length) {
@@ -117,7 +124,6 @@ export class DetailPanelComponent implements OnInit, OnChanges {
         outFields: ['*'],
         returnGeometry: false
       }).then((result: any) => {
-        debugger
         if (result[this.feature.attributes.OBJECTID]) {
           this.relatedFeatureReturned.emit({ tableId: relationships[0].relatedTableId, features: result[this.feature.attributes.OBJECTID].features });
         } else {
@@ -127,24 +133,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     }
   }
 
-  calculatePayoff() {
-    let days = 0;
-    if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {      
-      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']).toDateString()).getTime())/(1000*60*60*24));
-    } else if (this.featureWidget.graphic.attributes['ConfResDate']){
-      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.featureWidget.graphic.attributes['ConfResDate']).toDateString()).getTime())/(1000*60*60*24));
-    } else if (this.featureWidget.graphic.attributes['ContractDate']){
-      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.featureWidget.graphic.attributes['ContractDate']).toDateString()).getTime())/(1000*60*60*24));
-
-    }
-    this.principalDue = this.featureWidget.graphic.attributes['PrincipalBalance'];
-    this.interestDue = ((this.featureWidget.graphic.attributes['InterestRate']/100)/365 * days) * this.featureWidget.graphic.attributes['PrincipalBalance'];
-    this.totalDue = this.principalDue + this.interestDue;
-  }
-
-  isLeapYear(year) {
-    return (year % 4 === 0 && year % 100 !== 0) || (year % 100 === 0 && year % 400 === 0);
-  }
+  
 
 
 }

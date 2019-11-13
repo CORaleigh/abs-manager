@@ -1,13 +1,18 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { loadModules } from 'esri-loader';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import esri = __esri;
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit, OnChanges {
-  constructor() { }
+  constructor(private route: ActivatedRoute, private router: Router) { 
+    
+  }
   @ViewChild('searchDiv', null) private searchDiv: ElementRef;
   @ViewChild('viewDiv', null) private viewDiv: ElementRef;
   @Input('layers') layers: esri.FeatureLayer[] = null;
@@ -15,6 +20,7 @@ export class SearchComponent implements OnInit, OnChanges {
   @Output() selectionMade = new EventEmitter<esri.Graphic>();
   propertyLayer: esri.FeatureLayer = null;
   view: esri.MapView = null;
+  sub:Subscription = null;
   ngOnInit() {
   }
 
@@ -192,6 +198,17 @@ export class SearchComponent implements OnInit, OnChanges {
         sources: [reidSource, pinSource, addrSource,ownerSource, assessAccountSource, abatementAccountSource, tapFeeAccountSource],
         includeDefaultSources: false
       });
+      if (this.route.routeConfig) {
+        if (this.route.routeConfig.path === 'reid/:id') {
+          this.sub = this.route.params.subscribe(params => {
+            if (params.id) {
+              search.search(params.id);
+            }
+          });
+          this.sub.unsubscribe();
+
+        }  
+      }
       search.on('select-result', event => {
         
         if (event.result.feature.geometry) {

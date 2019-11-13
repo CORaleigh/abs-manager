@@ -1,13 +1,14 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import esri = __esri;
+import { SharedService } from '../shared.service';
 @Component({
   selector: 'app-account-panel',
   templateUrl: './account-panel.component.html',
   styleUrls: ['./account-panel.component.scss']
 })
 export class AccountPanelComponent implements OnInit, OnChanges {
-  constructor() { }
+  constructor(public shared:SharedService) { }
   @Input('title') title: string = '';
   @Input('detailsTitle') detailsTitle: string = '';
   @Input('headers') headers: string[] = [];
@@ -26,8 +27,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   @Output() accountSelected = new EventEmitter<esri.Graphic>();
   @Output() createFeatureClicked = new EventEmitter<any>();
   @Input('source') source: esri.Graphic;
-
-  currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance'];
+  currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance', 'PrincipalBal', 'TotalDue'];
   ngOnInit() {
   }
   featureSelected(feature: esri.Graphic) {
@@ -35,6 +35,9 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     this.update = true;
     this.selectedFeature = feature;
     feature.layer = this.layer;
+    if (this.layer.layerId < 4) {
+      this.shared.account.next(feature);
+    }
     this.accountSelected.emit(feature);
   }
   getCodedValue(code: string, field: esri.Field) {
@@ -69,6 +72,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     })
   }
   ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
     if (changes.totalFeatures) {
       if (changes.totalFeatures.currentValue) {
         if (changes.totalFeatures.currentValue.length === 1) {        

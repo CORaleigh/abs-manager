@@ -15,6 +15,8 @@ export class FormgroupsService {
   communicationFormGroup: esri.FieldGroupConfig;
   commSentToFormGroup: esri.FieldGroupConfig;
   paymentFormGroup: esri.FieldGroupConfig;
+  commentsFormGroup: esri.FieldGroupConfig;
+
   altBillingFormGroup: esri.FieldGroupConfig;
   constructor() {
     loadModules(['esri/widgets/FeatureForm/FieldGroupConfig', 'esri/layers/support/CodedValueDomain']).then(
@@ -1168,6 +1170,32 @@ export class FormgroupsService {
             }
           ]
         });
+        this.commentsFormGroup = new FieldGroupConfig({
+        label: "Comments",
+        description: 'Comment information',
+        fieldConfig: [
+          {
+            name: "AccountID",
+            label: "Billing Account ID",
+            editable: false
+          },
+          {
+            name: "Comment Code",
+            label: "CommentCode",
+            editable: true
+          },          
+          {
+            name: "Comment Date",
+            label: "CommentDate",
+            editable: true
+          },
+          {
+            name: "Comment",
+            label: "Comment",
+            editable: true
+          }
+        ]
+      });        
         this.altBillingFormGroup = new FieldGroupConfig({
           label: "Alternate Billing",
           description: "Alternate Billing information",

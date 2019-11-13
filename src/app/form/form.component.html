@@ -1,4 +1,6 @@
 <button class="btn  btn-green modifier-class" (click)="submit()">Submit</button>
 <button class="btn  btn-green modifier-class" (click)="cancel()">Cancel</button>
 
+<app-payoff-calculator *ngIf="account" [feature]="account" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
+
 <div #formDiv></div>

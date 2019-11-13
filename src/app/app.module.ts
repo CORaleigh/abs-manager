@@ -8,6 +8,8 @@ import { DetailPanelComponent } from './detail-panel/detail-panel.component';
 import { FormComponent } from './form/form.component';
 import { PaymentButtonComponent } from './payment-button/payment-button.component';
 import { FormsModule } from '@angular/forms';
+import { MainComponent } from './main/main.component';
+import { PayoffCalculatorComponent } from './payoff-calculator/payoff-calculator.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { FormsModule } from '@angular/forms';
     AccountPanelComponent,
     DetailPanelComponent,
     FormComponent,
-    PaymentButtonComponent
+    PaymentButtonComponent,
+    MainComponent,
+    PayoffCalculatorComponent
   ],
   imports: [
     BrowserModule,
