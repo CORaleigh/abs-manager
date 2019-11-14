@@ -1180,13 +1180,13 @@ export class FormgroupsService {
             editable: false
           },
           {
-            name: "Comment Code",
-            label: "CommentCode",
+            name: "CommentCode",
+            label: "Comment Code",
             editable: true
           },          
           {
-            name: "Comment Date",
-            label: "CommentDate",
+            name: "CommentDate",
+            label: "Comment Date",
             editable: true
           },
           {
