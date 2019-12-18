@@ -3,13 +3,14 @@ import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChang
 import { loadModules } from 'esri-loader';
 import esri = __esri;
 import * as calcite from 'calcite-web';
+import { SharedService } from '../shared.service';
 @Component({
   selector: 'app-detail-panel',
   templateUrl: './detail-panel.component.html',
   styleUrls: ['./detail-panel.component.scss']
 })
 export class DetailPanelComponent implements OnInit, OnChanges {
-  constructor() { }
+  constructor(public shared:SharedService) { }
   @ViewChild('featureDiv', null) private featureDiv: ElementRef;
   @Input('title') title: string = "Details";
   @Input('feature') feature: esri.Graphic = null;

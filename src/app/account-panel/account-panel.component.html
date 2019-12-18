@@ -24,7 +24,8 @@
                 No records found
 
               </div>   
-        <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source" *ngIf="source">Create</button>
+
+        <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source" *ngIf="source && (shared.role === 'admin' || (shared.role === 'cashier' && title === 'Payments'))">Create</button>
      
     </div>
 </div> 

@@ -5,6 +5,7 @@ import { FormgroupsService } from '../formgroups.service';
 import { Crumb } from '../crumb';
 import { Panel } from '../panel';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SharedService } from '../shared.service';
 
 @Component({
   selector: 'app-main',
@@ -12,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  constructor(private formGroupService: FormgroupsService, private route: ActivatedRoute, private router:Router) {
+  constructor(private formGroupService: FormgroupsService, private route: ActivatedRoute, private router:Router, public shared:SharedService) {
   }
   layers: esri.FeatureLayer[] = [];
   accountLayers: esri.FeatureLayer[] = [];
@@ -35,9 +36,10 @@ export class MainComponent implements OnInit {
   totalFeatures: number = 0;
   async authorize() {
     try {
-      const [OAuthInfo, esriId] = await loadModules([
+      const [OAuthInfo, esriId, Portal] = await loadModules([
         "esri/identity/OAuthInfo",
         "esri/identity/IdentityManager",
+        "esri/portal/Portal"
       ], {
         css: true,
         // insert the stylesheet link above the first <style> tag on the page
@@ -49,8 +51,23 @@ export class MainComponent implements OnInit {
         popup: false
       });
       esriId.registerOAuthInfos([info]);
-      esriId.checkSignInStatus(info.portalUrl + '/sharing').then(event => {
-        this.initialize();
+      esriId.checkSignInStatus(info.portalUrl + '/sharing').then((credential:esri.Credential) => {
+        const portal:esri.Portal = new Portal(info.portalUrl);
+        portal.load().then(() => {
+          this.shared.user = portal.user;
+          if (this.shared.user.roleId === "o8P1VswLYBUnsLsQ") {
+            this.shared.role = 'cashier';
+          }
+          if (this.shared.user.roleId === 'PT9XAlXMaIiCdBej') {
+            this.shared.role = 'admin';
+          }
+          if (this.shared.user.role === 'org_admin') {
+            this.shared.role = 'admin';
+          }
+          debugger
+          this.initialize();
+        });
+
       }).catch(() => {
         esriId.getCredential(info.portalUrl + '/sharing');
       });;

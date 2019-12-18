@@ -106,6 +106,35 @@ export class SearchComponent implements OnInit, OnChanges {
     });
   }  
 
+  getResolutionSuggestions(params, dateField, numField, layer) {
+    let year = null;
+    let num = null;
+    if (params.suggestTerm.indexOf('-') > -1) {
+      let array = params.suggestTerm.split('-');
+      year = array[0];
+      num = array[1];
+    }
+    
+    return layer.queryFeatures({
+      where: "EXTRACT(YEAR from ConfResDate) = " + year + " AND ConfResNum like '" + num + "%'",
+      num: 6,
+      outFields: [dateField, numField],
+      returnDistinctValues: true,
+      returnGeometry: false,
+      orderByFields: [numField]
+    }).then((results) => {
+      return results.features.map(feature => {
+        let text = new Date(feature.attributes[dateField]).getFullYear().toString();
+        text += '-' + feature.attributes[numField];
+        return {
+          key: 'resolution',
+          text: text,
+          sourceIndex: params.sourceIndex
+        }
+      })
+    });
+  }
+
   async initialize() {
     try {
       const [Search, LayerSearchSource, SearchSource] = await loadModules([
@@ -190,12 +219,23 @@ export class SearchComponent implements OnInit, OnChanges {
         },
         getResults: (params) => {
           return this.getAccountResults(params, 'AccountID', this.layers[2]);
-
         }
-      });            
+      });     
+      
+      const confirmResSource: esri.SearchSource = new SearchSource({
+        placeholder: "example: 2019-244",
+        minSuggestCharacters: 5,
+        name: 'Confirming Resolution',             
+        getSuggestions: (params) => {
+          return this.getResolutionSuggestions(params, 'ConfResDate', 'ConfResNum', this.layers[0]);
+        },
+        getResults: (params) => {
+          return this.getAccountResults(params, 'AccountID', this.layers[0]);
+        }
+      });       
       const search: esri.widgetsSearch = new Search({
         container: this.searchDiv.nativeElement,
-        sources: [reidSource, pinSource, addrSource,ownerSource, assessAccountSource, abatementAccountSource, tapFeeAccountSource],
+        sources: [reidSource, pinSource, addrSource,ownerSource, assessAccountSource, abatementAccountSource, tapFeeAccountSource, confirmResSource],
         includeDefaultSources: false
       });
       if (this.route.routeConfig) {

@@ -8,4 +8,6 @@ export class SharedService {
 
   constructor() { }
   account:BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  user:any = null;
+  role:string = '';
 }
