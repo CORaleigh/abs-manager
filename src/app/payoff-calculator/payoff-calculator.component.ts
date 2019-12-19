@@ -23,7 +23,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   }
   calculatePayoff() {
     let days = 0;
-    debugger
+    
     if (this.feature.attributes['InterestPaidThruDate']) {      
       days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.feature.attributes['InterestPaidThruDate']).toDateString()).getTime())/(1000*60*60*24));
     } else if (this.feature.attributes['ConfResDate']){

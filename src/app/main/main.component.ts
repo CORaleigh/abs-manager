@@ -6,6 +6,7 @@ import { Crumb } from '../crumb';
 import { Panel } from '../panel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../shared.service';
+import * as calcite from 'calcite-web';
 
 @Component({
   selector: 'app-main',
@@ -34,6 +35,12 @@ export class MainComponent implements OnInit {
   paymentFeatures: esri.Graphic[] = []; 
   paymentEnabled: boolean = false;
   totalFeatures: number = 0;
+  identity:esri.IdentityManager = null;
+  dark:boolean = false;
+  signOut() {
+    this.identity.destroyCredentials();
+    window.location.reload();
+  }
   async authorize() {
     try {
       const [OAuthInfo, esriId, Portal] = await loadModules([
@@ -50,6 +57,7 @@ export class MainComponent implements OnInit {
         portalUrl: 'https://mapstest.raleighnc.gov/portal',
         popup: false
       });
+      this.identity = esriId;
       esriId.registerOAuthInfos([info]);
       esriId.checkSignInStatus(info.portalUrl + '/sharing').then((credential:esri.Credential) => {
         const portal:esri.Portal = new Portal(info.portalUrl);
@@ -61,10 +69,13 @@ export class MainComponent implements OnInit {
           if (this.shared.user.roleId === 'PT9XAlXMaIiCdBej') {
             this.shared.role = 'admin';
           }
+          if (this.shared.user.roleId === 'rpT7LgMQ92eHhOef') {
+            this.shared.role = 'viewer';
+          }          
           if (this.shared.user.role === 'org_admin') {
             this.shared.role = 'admin';
           }
-          debugger
+          
           this.initialize();
         });
 
@@ -98,6 +109,7 @@ export class MainComponent implements OnInit {
     if (layer.layerId === 6) {
       this.commentsLayer = layer;
     }       
+               
     layers.push(layer);
   }
   async initialize() {
@@ -121,10 +133,11 @@ export class MainComponent implements OnInit {
         webmap.when(() => {
           //@ts-ignore
           webmap.layers.items.forEach((layer:esri.FeatureLayer) => {
+
             this.storeLayer(layer, layers);
           });
           webmap.tables.forEach((table:esri.FeatureLayer) => {
-            let layer:esri.FeatureLayer = new FeatureLayer({url: (table as esri.FeatureLayer).url});
+            let layer:esri.FeatureLayer = new FeatureLayer({url: (table as esri.FeatureLayer).url, title: table.title});
             this.storeLayer(layer, layers);     
           });
         });
@@ -304,16 +317,23 @@ changeTheme(checked: boolean, light: string, dark: string, url: string) {
   }
 }
 darkModeToggle(event) {
+  calcite.stopPropagation(event)
+
   if (event.target.checked) {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web-dark.min.css');
     this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.13/esri/themes/dark/main.css');
     this.basemap = 'dark-gray-vector';
+    window.localStorage.setItem('dark', 'true');
   } else {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css');
     this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.13/esri/themes/css/main.css');
     this.basemap = 'gray-vector';
+    window.localStorage.setItem('dark', 'false');
   }
+
 }
+
+
 getLayerFields(layer: esri.FeatureLayer, names: string[]) {
   let fields: esri.Field[] = [];
   let matches: esri.Field[] = layer.fields.filter((field: esri.Field) => {
@@ -345,7 +365,7 @@ configureAccountPanels() {
     true
     ),
     new Panel('Tap Fees', 'Tap Fee Details', this.tapfeesLayer, [], null,
-    this.getLayerFields(this.tapfeesLayer, ['AccountID', 'CategoryTypeCode', 'ContractDate', 'ContractNumber', 'PrincipalBalance', 'StatusCode']),
+    this.getLayerFields(this.tapfeesLayer, ['AccountID', 'CategoryTypeCode', 'ContractDate', 'ContractNum', 'PrincipalBalance', 'StatusCode']),
     ['ACCOUNT ID', 'CATEGORY TYPE', 'CONTRACT DATE', 'CONTRACT NUMBER', 'PRINCIPAL BALANCE', 'STATUS'],
     'AccountID',
     [this.formGroupService.tapFeeFormGroup, this.formGroupService.billingFormGroup, this.formGroupService.altBillingFormGroup],
@@ -517,6 +537,24 @@ configureDetailPanels() {
         createFeatureClicked(feature: esri.Graphic) {
           this.togglePanels(feature, (feature.layer as esri.FeatureLayer), true, false);
           this.selectedAccount = feature;
+        }
+        selectionMadeMultiple(features: esri.Graphic[]) {
+          console.log(features);
+          let ids = [];
+          features.forEach(feature => {
+            ids.push(feature.attributes['AccountID']);
+          })
+          this.accountLayers.forEach(layer => {
+            let panel = this.accountPanels.filter((panel: Panel) => {
+              return panel.layer === layer;
+            })[0];
+            layer.queryFeatures({where: "AccountID in (" + ids.toString().replace('[','').replace(']', '') + ")" ,outFields:['*']}).then(featureSet => {
+              panel.features = featureSet.features;
+            })
+
+          })
+
+
         }
         selectionMade(feature: esri.Graphic) {
           let count = 0;
@@ -692,5 +730,6 @@ configureDetailPanels() {
         ngOnInit() {
           this.authorize();
         }
+
       }
       

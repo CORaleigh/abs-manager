@@ -1,6 +1,5 @@
-@import "node_modules/calcite-web/dist/sass/calcite-web";
-@import "node_modules/calcite-web/dist/sass/calcite-web";
-
+// @import "node_modules/calcite-web/dist/sass/calcite-web";
+@import url("https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css");
 @import url('https://js.arcgis.com/4.12/esri/css/main.css');
 .panel {
   margin-bottom: 1em;
@@ -42,20 +41,20 @@ h4 {
 }
 
 
-@keyframes load {
-  0%,
-  80%,
-  100% {
-    opacity: .75;
-    box-shadow: 0 0 #4C8C2B;
-    height: $loader-height;
-  }
-  40% {
-    opacity: 1;
-    box-shadow: 0 -1*$loader-zoom #4C8C2B;
-    height: $loader-height+$loader-zoom;
-  }
-}
+// @keyframes load {
+//   0%,
+//   80%,
+//   100% {
+//     opacity: .75;
+//     box-shadow: 0 0 #4C8C2B;
+//     height: $loader-height;
+//   }
+//   40% {
+//     opacity: 1;
+//     box-shadow: 0 -1*$loader-zoom #4C8C2B;
+//     height: $loader-height+$loader-zoom;
+//   }
+// }
 
 .btn-green {
   background-color: #4C8C2B;

@@ -49,7 +49,7 @@ export class FormComponent implements OnChanges, OnInit {
     this.formSubmitted.emit(this.form.layer);
   }
   submit() {
-    loadModules(['esri/Graphic']).then(([Graphic]) => {
+    loadModules(['esri/Graphic', 'esri/layers/FeatureLayer']).then(([Graphic, FeatureLayer]) => {
       let addFeatures: esri.Graphic[] = [];
       let updateFeatures: esri.Graphic[] = [];
       if (this.update) {
@@ -57,9 +57,17 @@ export class FormComponent implements OnChanges, OnInit {
       } else {
         addFeatures = [new Graphic({ attributes: this.form.getValues(), geometry: this.form.feature.geometry })];
       }
-      this.form.layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
-        this.formSubmitted.emit(this.form.layer);
-      });
+      if (this.shared.role === 'viewer') {
+        const layer = new FeatureLayer({url:'https://mapstest.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
+        layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
+          this.formSubmitted.emit(this.form.layer);
+        });
+      } else {
+        this.form.layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
+          this.formSubmitted.emit(this.form.layer);
+        });
+      }
+
     })
   }
   ngOnChanges(changes: SimpleChanges) {

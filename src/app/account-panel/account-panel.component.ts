@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import esri = __esri;
+import * as calcite from 'calcite-web';
 import { SharedService } from '../shared.service';
 @Component({
   selector: 'app-account-panel',
@@ -29,6 +30,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   @Input('source') source: esri.Graphic;
   currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance', 'PrincipalBal', 'TotalDue'];
   ngOnInit() {
+    setTimeout(()=>{calcite.init()})
   }
   featureSelected(feature: esri.Graphic) {
 
