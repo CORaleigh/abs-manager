@@ -23,7 +23,10 @@ export class SearchComponent implements OnInit, OnChanges {
   propertyLayer: esri.FeatureLayer = null;
   view: esri.MapView = null;
   sub:Subscription = null;
+  highlight:any = null;
   ngOnInit() {
+    // this.initialize();
+    // this.createMap();
   }
 
   getLayerByTitle(title:string) {
@@ -127,7 +130,7 @@ export class SearchComponent implements OnInit, OnChanges {
       let searchResults = results.features.map(feature => {
         let searchResult = {
           feature: feature,
-          name: feature.attributes[numField] + "-" + new Date(feature.attributes[dateField]).getFullYear() 
+          name: new Date(feature.attributes[dateField]).getFullYear().toString()  + "-" + feature.attributes[numField]
         }
         return searchResult;
       });
@@ -141,8 +144,8 @@ export class SearchComponent implements OnInit, OnChanges {
     
     if (params.suggestTerm.indexOf('-') > -1) {
       let array = params.suggestTerm.split('-');
-      year = array[1];
-      num = array[0];
+      year = array[0];
+      num = array[1];
     
       return layer.queryFeatures({
         where: "EXTRACT(YEAR from "+dateField+") = " + year + " AND "+numField+" like '" + num + "%'",
@@ -153,8 +156,8 @@ export class SearchComponent implements OnInit, OnChanges {
         orderByFields: [numField]
       }).then((results) => {
         return results.features.map(feature => {
-          let text = feature.attributes[numField];
-          text += '-' + new Date(feature.attributes[dateField]).getFullYear().toString();
+          let text = new Date(feature.attributes[dateField]).getFullYear().toString();
+          text += '-' + feature.attributes[numField];
           return {
             key: 'resolution',
             text: text,
@@ -225,10 +228,10 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Assessment ID',     
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'AccountID', this.layers[0]);
+          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Assessment'));
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'AccountID', this.layers[0]);
+          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Assessment'));
         }
       });
 
@@ -237,10 +240,10 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Abatement ID',           
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'AccountID', this.layers[1]);
+          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Abatements'));
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'AccountID', this.layers[1]);
+          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Abatements'));
 
         }
       });
@@ -249,10 +252,10 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Tap Fee ID',             
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'AccountID', this.layers[2]);
+          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Tap Fees'));
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'AccountID', this.layers[2]);
+          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Tap Fees'));
         }
       });     
       const rollNumSource: esri.SearchSource = new SearchSource({
@@ -263,7 +266,7 @@ export class SearchComponent implements OnInit, OnChanges {
           return this.getAccountSuggestions(params, 'RollNum', this.getLayerByTitle('Rolls'));
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'RollNum', this.layers[0]);
+          return this.getAccountResults(params, 'RollNum', this.getLayerByTitle('Assessment'));
         }
       });
       const contractSource: esri.SearchSource = new SearchSource({
@@ -295,11 +298,11 @@ export class SearchComponent implements OnInit, OnChanges {
           
           if (params.suggestResult.text.indexOf('-') > -1) {
             let array = params.suggestResult.text.split('-');
-            year = array[1];
-            num = array[0];
+            year = array[0];
+            num = array[1];
           }
                     
-          return this.getResolutionResults("EXTRACT(YEAR from ConfResDate) = " + year + " AND ConfResNum = '" + num + "'", 'ConfResDate', 'ConfResNum', this.layers[11]);
+          return this.getResolutionResults("EXTRACT(YEAR from ConfResDate) = " + year + " AND ConfResNum = '" + num + "'", 'ConfResDate', 'ConfResNum', this.getLayerByTitle('Confirming Resolutions'));
         }
       });    
       const dirResSource: esri.SearchSource = new SearchSource({
@@ -320,11 +323,11 @@ export class SearchComponent implements OnInit, OnChanges {
           
           if (params.suggestResult.text.indexOf('-') > -1) {
             let array = params.suggestResult.text.split('-');
-            year = array[1];
-            num = array[0];
+            year = array[0];
+            num = array[1];
           }
                     
-          return this.getResolutionResults("EXTRACT(YEAR from DirResDate) = " + year + " AND DirResNum = '" + num + "'", 'DirResDate', 'DirResNum', this.layers[8]);
+          return this.getResolutionResults("EXTRACT(YEAR from DirResDate) = " + year + " AND DirResNum = '" + num + "'", 'DirResDate', 'DirResNum', this.getLayerByTitle('Directing Resolutions'));
         }
       });     
       const corrResSource: esri.SearchSource = new SearchSource({
@@ -346,11 +349,11 @@ export class SearchComponent implements OnInit, OnChanges {
           
           if (params.suggestResult.text.indexOf('-') > -1) {
             let array = params.suggestResult.text.split('-');
-            year = array[1];
-            num = array[0];
+            year = array[0];
+            num = array[1];
           }
                     
-          return this.getResolutionResults("EXTRACT(YEAR from CorrResDate) = " + year + " AND CorrResNum = '" + num + "'", 'CorrResDate', 'CorrResNum', this.layers[9]);
+          return this.getResolutionResults("EXTRACT(YEAR from CorrResDate) = " + year + " AND CorrResNum = '" + num + "'", 'CorrResDate', 'CorrResNum', this.getLayerByTitle('Correcting Resolutions'));
         }
       });                 
       const search: esri.widgetsSearch = new Search({
@@ -374,30 +377,44 @@ export class SearchComponent implements OnInit, OnChanges {
         if (event.result.feature.geometry) {
           this.selectionMade.emit(event.result.feature);
           if (!this.view) {
-            this.createMap(event.result.feature);
+            this.createMap();
           } else {
             if (event.result.feature.geometry) {
-              this.addPropertyGraphic(event.result.feature);
+              this.addPropertyGraphic([event.result.feature]);
             }
           }
         } else {
           if (event.source.name.includes('Resolution')) {
             let features = [];
+            let reids = [];
             let dateField = 'ConfResDate';
             let numField = 'ConfResNum';
             if (event.source.name.includes('Directing')){
               dateField = 'DirResDate';
               numField = 'DirResNum';
             }
-      
-            this.layers[0].queryFeatures({outFields: ['AccountID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
+            this.getLayerByTitle('Assessment').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
             + "' and "+numField+" = " + event.result.feature.attributes[numField]}).then(featureSet => {
               features = features.concat(featureSet.features);
-              this.layers[1].queryFeatures({outFields: ['AccountID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
+              this.getLayerByTitle('Abatements').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
               + "' and "+numField+" = " + event.result.feature.attributes[numField]}).then(featureSet => {
                 features = features.concat(featureSet.features);
                 this.selectionMadeMultiple.emit(features);
+                features.forEach(feature => {
+                  reids.push(feature.attributes['REID']);
+                });
+                this.propertyLayer.queryFeatures({where: "REID in ('" + reids.toString().replace(/,/g, "','").replace('[', '').replace(']', '') + "')", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
+                  if (!this.view) {
+                    this.createMap();
+                  } else {
+                    //if (featureSet.features[0].geometry) {
 
+                    //featureSet.features.forEach(feature => {
+                      this.addPropertyGraphic(featureSet.features);
+                   // })
+                    //}
+                  }                
+                });
               });
             });
           } else {
@@ -405,11 +422,12 @@ export class SearchComponent implements OnInit, OnChanges {
               this.selectionMade.emit(featureSet.features[0]);
   
               if (!this.view) {
-                this.createMap(featureSet.features[0]);
+                this.createMap();
               } else {
-                if (featureSet.features[0].geometry) {
-                  this.addPropertyGraphic(featureSet.features[0]);
-                }
+                //if (featureSet.features[0].geometry) {
+                  //featureSet.features.forEach(feature => {
+                    this.addPropertyGraphic(featureSet.features);
+                  //})                }
               }
             });
           }
@@ -420,7 +438,7 @@ export class SearchComponent implements OnInit, OnChanges {
       console.log('EsriLoader: ', error);
     }
   }
-  createMap(feature: esri.Graphic) {
+  createMap() {
     loadModules(['esri/views/MapView', 'esri/Map', 'esri/widgets/Fullscreen']).then(([MapView, Map, Fullscreen]) => {
       const map: esri.Map = new Map({
         basemap: this.basemap
@@ -443,39 +461,66 @@ export class SearchComponent implements OnInit, OnChanges {
         position: 'top-right',
         buttonEnabled: false
       };
-      this.view.popup.actions.removeAll();
+      this.view.map.add(this.getLayerByTitle('Property'));
+      //this.view.popup.actions.removeAll();
       this.view.when(() => {
         this.view.popup.defaultPopupTemplateEnabled = true;
-        this.view.popup.open({
-          features: [feature]
-        });
+        // this.view.popup.open({
+        //   features: features
+        // });
+        // this.view.popup.watch('selectedFeature', (feature:esri.Graphic) => {
+        //   this.view.goTo(feature);
+        // });
+        //@ts-ignore
+        this.propertyLayer = this.view.map.layers.items.filter((layer:esri.Layer) => {
+          return layer.title.includes('Property');
+        })[0];
         
         const fullscreen = new Fullscreen({ view: this.view });
         this.view.ui.add(fullscreen, 'top-left');
-        if (feature.geometry) {
-          this.addPropertyGraphic(feature);
-        }
+        // features.forEach(feature => {
+        //   if (feature.geometry) {
+        //     this.addPropertyGraphic([feature]);
+        //   }
+        // });
+        this.initialize();
+
       });
     });
   }
-  addPropertyGraphic(feature: esri.Graphic) {
+  addPropertyGraphic(features: esri.Graphic[]) {
     loadModules(['esri/Color']).then(([Color]) => {
       this.view.popup.defaultPopupTemplateEnabled = true;
       this.view.popup.open({
-        features: [feature]
+        features: features
       });
-      this.view.goTo(feature);
-      feature.symbol = {
-        type: "simple-fill",
-        color: new Color([76, 140, 43, 0.25]),
+        this.view.popup.watch('selectedFeature', (feature:esri.Graphic) => {
+          this.view.goTo(feature);
         //@ts-ignore
-        outline: {
-          color: new Color([76, 140, 43, 1]),
-          width: 4
-        }
-      };
+        const layerView:esri.FeatureLayerView = (this.view.layerViews.items.filter((layerView:esri.LayerView) =>  {
+          return layerView.layer.title.includes('Property');
+        })[0] as esri.FeatureLayerView)
+          if (this.highlight) {
+            this.highlight.remove();
+          }
+          this.highlight = layerView.highlight(feature);          
+        });      
+
+      this.view.goTo(features);
       this.view.graphics.removeAll();
-      this.view.graphics.add(feature);
+      features.forEach((feature:esri.Graphic) => {
+        feature.symbol = {
+          type: "simple-fill",
+          color: new Color([76, 140, 43, 0.1]),
+          //@ts-ignore
+          outline: {
+            color: new Color([76, 140, 43, 1]),
+            width: 3
+          }
+        };
+        this.view.graphics.add(feature);
+      })
+
     });
   }
   ngOnChanges(changes: SimpleChanges) {
@@ -487,7 +532,7 @@ export class SearchComponent implements OnInit, OnChanges {
             this.propertyLayer = layer;
           }
         });
-        this.initialize();
+        this.createMap();
       }
     }
     if (changes.basemap) {

@@ -88,25 +88,26 @@ export class MainComponent implements OnInit {
   }
   
   storeLayer(layer: esri.FeatureLayer, layers: esri.FeatureLayer[]) {
-    if (layer.layerId === 0) {
+
+    if (layer.title.includes("Tap Fees")) {
       this.tapfeesLayer = layer;
     }
-    if (layer.layerId === 1) {
+    if (layer.title.includes('Abatements')) {
       this.abatementsLayer = layer;            
     }
-    if (layer.layerId === 2) {
+    if (layer.title.includes('Assessment')) {
       this.assessmentsLayer = layer;            
     }  
-    if (layer.layerId === 3) {
+    if (layer.title.includes('Billing Data')) {
       this.billingLayer = layer;
     }
-    if (layer.layerId === 4) {
+    if (layer.title.includes('Payments')) {
       this.paymentsLayer = layer;
     }
-    if (layer.layerId === 5) {
+    if (layer.title.includes('Communications')) {
       this.communicationLayer = layer;
     }      
-    if (layer.layerId === 6) {
+    if (layer.title.includes('Comments')) {
       this.commentsLayer = layer;
     }       
                
@@ -541,6 +542,7 @@ configureDetailPanels() {
         selectionMadeMultiple(features: esri.Graphic[]) {
           console.log(features);
           let ids = [];
+          let reids = [];
           features.forEach(feature => {
             ids.push(feature.attributes['AccountID']);
           })
@@ -550,7 +552,11 @@ configureDetailPanels() {
             })[0];
             layer.queryFeatures({where: "AccountID in (" + ids.toString().replace('[','').replace(']', '') + ")" ,outFields:['*']}).then(featureSet => {
               panel.features = featureSet.features;
-            })
+              panel.features.forEach(feature => {
+                reids.push(feature.attributes['REID']);
+              });
+            });
+  
 
           })
 

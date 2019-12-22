@@ -16,7 +16,11 @@ export class FormgroupsService {
   commSentToFormGroup: esri.FieldGroupConfig;
   paymentFormGroup: esri.FieldGroupConfig;
   commentsFormGroup: esri.FieldGroupConfig;
-
+  contractFormGroup: esri.FieldGroupConfig;
+  rollFormGroup: esri.FieldGroupConfig;
+  confResFormGroup: esri.FieldGroupConfig;
+  dirResFormGroup: esri.FieldGroupConfig;
+  corrResFormGroup: esri.FieldGroupConfig;
   altBillingFormGroup: esri.FieldGroupConfig;
   constructor() {
     loadModules(['esri/widgets/FeatureForm/FieldGroupConfig', 'esri/layers/support/CodedValueDomain']).then(
@@ -103,7 +107,7 @@ export class FormgroupsService {
               })
             },
             {
-              editable: true,
+              editable: false,
               label: 'Roll #',
               name: "RollNum",
               required: true               
@@ -132,22 +136,22 @@ export class FormgroupsService {
                 ]})
             },
             {
-              editable: true,
+              editable: false,
               label: 'Directing Resolution Number',
               name: "DirResNum",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Directing Resolution Date',
               name: "DirResDate",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Confirming Resolution Date',
               name: "ConfResDate",
             },
@@ -244,12 +248,12 @@ export class FormgroupsService {
               name: "ABCouncilDate",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Confirming Resolution Date',
               name: "ConfResDate",
             },
@@ -348,7 +352,7 @@ export class FormgroupsService {
               })
             },
             {
-              editable: true,
+              editable: false,
               label: 'Contract #',
               name: "ContractNum",
             },
@@ -1195,7 +1199,148 @@ export class FormgroupsService {
             editable: true
           }
         ]
-      });        
+      });  
+      this.contractFormGroup = new FieldGroupConfig({
+        label: "Contracts",
+        description: '',
+        fieldConfig: [
+          {
+            name: "ContractNum",
+            label: "Contract Number",
+            editable: true
+          },
+          {
+            name: "ContractDate",
+            label: "Contract Date",
+            editable: true
+          },     
+          {
+            name: "ContractDescription",
+            label: "Contract Description",
+            editable: true
+          },     
+          {
+            name: "ContractDeedBook",
+            label: "Deed Book",
+            editable: true
+          },     
+          {
+            name: "ContractDeedPage",
+            label: "Deed Pages",
+            editable: true
+          }    
+        ]
+      });      
+      this.rollFormGroup = new FieldGroupConfig({
+        label: "Contracts",
+        description: '',
+        fieldConfig: [
+          {
+            name: "RollNum",
+            label: "Roll Number",
+            editable: true
+          },
+          {
+            name: "RollNumInOut",
+            label: "Roll Number In/Out",
+            editable: true
+          },     
+          {
+            name: "ConfResNum",
+            label: "Confirming Resolution Number",
+            editable: true
+          },     
+          {
+            name: "ConfResNum",
+            label: "Confirming Resolution Date",
+            editable: true
+          },     
+          {
+            name: "DirResNum",
+            label: "Directing Resolution Number",
+            editable: true
+          },     
+          {
+            name: "DirResNum",
+            label: "Directing Resolution Date",
+            editable: true
+          },     
+        ]
+      });                    
+      this.confResFormGroup = new FieldGroupConfig({
+        label: "Confirming Resolution",
+        description: '',
+        fieldConfig: [
+          {
+            name: "ConfResNum",
+            label: "Resolution Number",
+            editable: true
+          },
+          {
+            name: "ConfResDate",
+            label: "Resolution Date",
+            editable: true
+          },     
+          {
+            name: "ConfResDesc",
+            label: "Resolution Description",
+            editable: true
+          }
+        ]
+      });    
+      
+      this.dirResFormGroup = new FieldGroupConfig({
+        label: "Directing Resolution",
+        description: '',
+        fieldConfig: [
+          {
+            name: "DirResNum",
+            label: "Resolution Number",
+            editable: true
+          },
+          {
+            name: "DirResDate",
+            label: "Resolution Date",
+            editable: true
+          },     
+          {
+            name: "ConditionCode",
+            label: "Condition Code",
+            editable: true
+          }
+        ]
+      });  
+      this.corrResFormGroup = new FieldGroupConfig({
+        label: "Correcting Resolution",
+        description: '',
+        fieldConfig: [
+          {
+            name: "CorrResNum",
+            label: "Resolution Number",
+            editable: true
+          },
+          {
+            name: "CorrResDate",
+            label: "Resolution Date",
+            editable: true
+          },     
+          {
+            name: "CorrResDesc",
+            label: "Description",
+            editable: true
+          },
+          {
+            name: "ConfResNum",
+            label: "Confirming Resolution Number",
+            editable: true
+          },
+          {
+            name: "ConfResDate",
+            label: "Confirming Resolution Date",
+            editable: true
+          },           
+        ]
+      });             
         this.altBillingFormGroup = new FieldGroupConfig({
           label: "Alternate Billing",
           description: "Alternate Billing information",

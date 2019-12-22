@@ -14,6 +14,8 @@ export class DetailPanelComponent implements OnInit, OnChanges {
   @ViewChild('featureDiv', null) private featureDiv: ElementRef;
   @Input('title') title: string = "Details";
   @Input('feature') feature: esri.Graphic = null;
+  @Input('layers') layers: esri.FeatureLayer[] = [];
+
   @Input('detailButtons') detailButtons: boolean = true;
   @Input('formgroups') formgroups: esri.FieldGroupConfig[] = [];
   @Input('update') update: boolean = true;

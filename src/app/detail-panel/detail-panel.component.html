@@ -31,7 +31,7 @@
     </section>
   </div>
   <div id="createDiv" *ngIf="!update">
-    <app-form [feature]="feature"   [formgroups]="formgroups" [update]="update" (formSubmitted)="submitted($event)">
+    <app-form [feature]="feature" [layers]="layers"   [formgroups]="formgroups" [update]="update" (formSubmitted)="submitted($event)">
     </app-form>
   </div>
 </div>

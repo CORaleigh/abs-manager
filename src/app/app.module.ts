@@ -10,6 +10,7 @@ import { PaymentButtonComponent } from './payment-button/payment-button.componen
 import { FormsModule } from '@angular/forms';
 import { MainComponent } from './main/main.component';
 import { PayoffCalculatorComponent } from './payoff-calculator/payoff-calculator.component';
+import { AttributeLookupComponent } from './attribute-lookup/attribute-lookup.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { PayoffCalculatorComponent } from './payoff-calculator/payoff-calculator
     FormComponent,
     PaymentButtonComponent,
     MainComponent,
-    PayoffCalculatorComponent
+    PayoffCalculatorComponent,
+    AttributeLookupComponent
   ],
   imports: [
     BrowserModule,

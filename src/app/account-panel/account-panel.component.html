@@ -31,4 +31,4 @@
 </div> 
 <app-detail-panel *ngIf="showDetails && visible" (relatedFeatureReturned)="relatedFeatureReturned($event)"
 (formSubmitted)="formSubmittedEvent()"  
-[title]="detailsTitle" [feature]="selectedFeature"  [update]="update" [formgroups]="formgroups" [detailButtons]="!layer.isTable"></app-detail-panel>
+[title]="detailsTitle" [feature]="selectedFeature" [layers]="layers"  [update]="update" [formgroups]="formgroups" [detailButtons]="!layer.isTable"></app-detail-panel>

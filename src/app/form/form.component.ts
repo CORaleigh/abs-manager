@@ -2,6 +2,8 @@ import { Component, OnInit, Input, OnChanges, ElementRef, ViewChild, SimpleChang
 import { loadModules } from 'esri-loader';
 import esri = __esri;
 import { SharedService } from '../shared.service';
+import { FormgroupsService } from '../formgroups.service';
+
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
@@ -11,6 +13,8 @@ export class FormComponent implements OnChanges, OnInit {
   @ViewChild('formDiv', null) private formDiv: ElementRef;
   constructor(public shared:SharedService) { }
   @Input('feature') feature: esri.Graphic = null;
+  @Input('layers') layers: esri.FeatureLayer[] = [];
+
   account: esri.Graphic = null;
 
   @Input('update') update: boolean = true;
@@ -73,6 +77,7 @@ export class FormComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.feature.currentValue) {
       this.feature = changes.feature.currentValue;
+      console.log(this.feature)
       if (!this.form) {
         this.initializeForm().then((form: esri.FeatureForm) => {
           this.form.feature = changes.feature.currentValue;
@@ -94,5 +99,11 @@ export class FormComponent implements OnChanges, OnInit {
         this.form.fieldConfig = this.formgroups;
       }
     }
+  }
+  refreshForm(form:esri.FeatureForm) {
+    debugger
+    this.feature.attributes = form.feature.attributes;
+    this.form.feature = this.feature;
+    this.form.renderNow();
   }
 }

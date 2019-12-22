@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {} from 'jasmine';
+
+
 
 import { DetailPanelComponent } from './detail-panel.component';
 
