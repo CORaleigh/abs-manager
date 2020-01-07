@@ -300,9 +300,10 @@ export class SearchComponent implements OnInit, OnChanges {
             let array = params.suggestResult.text.split('-');
             year = array[0];
             num = array[1];
+            return this.getResolutionResults("EXTRACT(YEAR from ConfResDate) = " + year + " AND ConfResNum = '" + num + "'", 'ConfResDate', 'ConfResNum', this.getLayerByTitle('Confirming Resolutions'));
+
           }
                     
-          return this.getResolutionResults("EXTRACT(YEAR from ConfResDate) = " + year + " AND ConfResNum = '" + num + "'", 'ConfResDate', 'ConfResNum', this.getLayerByTitle('Confirming Resolutions'));
         }
       });    
       const dirResSource: esri.SearchSource = new SearchSource({
@@ -325,9 +326,10 @@ export class SearchComponent implements OnInit, OnChanges {
             let array = params.suggestResult.text.split('-');
             year = array[0];
             num = array[1];
+            return this.getResolutionResults("EXTRACT(YEAR from DirResDate) = " + year + " AND DirResNum = '" + num + "'", 'DirResDate', 'DirResNum', this.getLayerByTitle('Directing Resolutions'));
+
           }
                     
-          return this.getResolutionResults("EXTRACT(YEAR from DirResDate) = " + year + " AND DirResNum = '" + num + "'", 'DirResDate', 'DirResNum', this.getLayerByTitle('Directing Resolutions'));
         }
       });     
       const corrResSource: esri.SearchSource = new SearchSource({
@@ -351,9 +353,10 @@ export class SearchComponent implements OnInit, OnChanges {
             let array = params.suggestResult.text.split('-');
             year = array[0];
             num = array[1];
+            return this.getResolutionResults("EXTRACT(YEAR from CorrResDate) = " + year + " AND CorrResNum = '" + num + "'", 'CorrResDate', 'CorrResNum', this.getLayerByTitle('Correcting Resolutions'));
+
           }
                     
-          return this.getResolutionResults("EXTRACT(YEAR from CorrResDate) = " + year + " AND CorrResNum = '" + num + "'", 'CorrResDate', 'CorrResNum', this.getLayerByTitle('Correcting Resolutions'));
         }
       });                 
       const search: esri.widgetsSearch = new Search({
@@ -403,6 +406,7 @@ export class SearchComponent implements OnInit, OnChanges {
                 features.forEach(feature => {
                   reids.push(feature.attributes['REID']);
                 });
+                
                 this.propertyLayer.queryFeatures({where: "REID in ('" + reids.toString().replace(/,/g, "','").replace('[', '').replace(']', '') + "')", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
                   if (!this.view) {
                     this.createMap();
@@ -418,6 +422,7 @@ export class SearchComponent implements OnInit, OnChanges {
               });
             });
           } else {
+
             this.propertyLayer.queryFeatures({where: "REID = '" + event.result.feature.attributes['REID'] + "'", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
               this.selectionMade.emit(featureSet.features[0]);
   
@@ -463,7 +468,7 @@ export class SearchComponent implements OnInit, OnChanges {
       };
       this.view.map.add(this.getLayerByTitle('Property'));
       //this.view.popup.actions.removeAll();
-      this.view.when(() => {
+      this.view.whenLayerView(this.getLayerByTitle('Property')).then((layerView:esri.LayerView) => {
         this.view.popup.defaultPopupTemplateEnabled = true;
         // this.view.popup.open({
         //   features: features
@@ -472,9 +477,9 @@ export class SearchComponent implements OnInit, OnChanges {
         //   this.view.goTo(feature);
         // });
         //@ts-ignore
-        this.propertyLayer = this.view.map.layers.items.filter((layer:esri.Layer) => {
-          return layer.title.includes('Property');
-        })[0];
+        this.propertyLayer = layerView.layer;//this.view.map.layers.items.filter((layer:esri.Layer) => {
+        //  return layer.title.includes('Property');
+        //})[0];
         
         const fullscreen = new Fullscreen({ view: this.view });
         this.view.ui.add(fullscreen, 'top-left');
@@ -500,6 +505,8 @@ export class SearchComponent implements OnInit, OnChanges {
         const layerView:esri.FeatureLayerView = (this.view.layerViews.items.filter((layerView:esri.LayerView) =>  {
           return layerView.layer.title.includes('Property');
         })[0] as esri.FeatureLayerView)
+        
+
           if (this.highlight) {
             this.highlight.remove();
           }
@@ -526,10 +533,10 @@ export class SearchComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.layers) {
       if (changes.layers.currentValue.length) {
-        
         changes.layers.currentValue.forEach((layer: esri.FeatureLayer) => {
           if (layer.url.indexOf('Property') > -1) {
-            this.propertyLayer = layer;
+              this.propertyLayer = layer;
+
           }
         });
         this.createMap();

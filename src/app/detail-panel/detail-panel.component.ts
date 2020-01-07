@@ -109,7 +109,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
         }
       }
       if (label === 'PAYMENTS') {
-        if (relationship.name.includes('PAYMENTS')) {
+        if (relationship.name.toLowerCase().includes('payments')) {
           match = relationship;
         }
       }

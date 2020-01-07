@@ -288,7 +288,7 @@ export class MainComponent implements OnInit {
                       this.configureCrumbs();
                       this.loaded = !this.loaded;
                       loadCss('https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css')
-                      loadCss('https://js.arcgis.com/4.13/esri/css/main.css')
+                      loadCss('https://js.arcgis.com/4.14/esri/css/main.css')
                     });
                     
                   });
@@ -322,12 +322,12 @@ darkModeToggle(event) {
 
   if (event.target.checked) {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web-dark.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.13/esri/themes/dark/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.14/esri/themes/dark/main.css');
     this.basemap = 'dark-gray-vector';
     window.localStorage.setItem('dark', 'true');
   } else {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.13/esri/themes/css/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.14/esri/themes/css/main.css');
     this.basemap = 'gray-vector';
     window.localStorage.setItem('dark', 'false');
   }
@@ -569,7 +569,9 @@ configureDetailPanels() {
               this.selectedAccount = null;
               this.selectedProperty = feature;
               this.paymentEnabled = true;
-              this.router.navigate(['/reid/' + feature.attributes.REID]);
+              //this.router.navigate(['/reid/' + feature.attributes.REID]);
+
+              window.history.pushState({id:'reid'}, '', window.location.origin + '/reid/' + feature.attributes.REID)
               this.accountLayers.forEach(layer => {
                 let panel = this.accountPanels.filter((panel: Panel) => {
                   return panel.layer === layer;
