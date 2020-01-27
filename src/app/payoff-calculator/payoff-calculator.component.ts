@@ -17,7 +17,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   fromDate: Date = null;
   fromDateLabel: string = "";
   totalDue: number = 0;
-  @Output() payoffCalculated = new EventEmitter<number>();
+  @Output() payoffCalculated = new EventEmitter<any>();
 
   ngOnInit() {
   }
@@ -35,7 +35,8 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
     this.principalDue = this.feature.attributes['PrincipalBalance'];
     this.interestDue = ((this.feature.attributes['InterestRate']/100)/365 * days) * this.feature.attributes['PrincipalBalance'];
     this.totalDue = this.principalDue + this.interestDue;
-    this.payoffCalculated.emit(this.totalDue);
+
+    this.payoffCalculated.emit({total: this.totalDue, principal: this.principalDue, interest: this.interestDue});
   }
 
   isLeapYear(year) {

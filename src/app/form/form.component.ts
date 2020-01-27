@@ -29,8 +29,10 @@ export class FormComponent implements OnChanges, OnInit {
     });
   }
 
-  payoffCalculated(total:number) {
-    this.feature.attributes['PaymentAmount'] = parseFloat(total.toFixed(2));
+  payoffCalculated(values:any) {
+    this.feature.attributes['PaymentAmount'] = parseFloat(values.total.toFixed(2));
+    this.feature.attributes['PrincipalAmount'] = parseFloat(values.principal.toFixed(2));
+    this.feature.attributes['InterestAmount'] = parseFloat(values.interest.toFixed(2));
     this.form.feature = this.feature;
     this.form.renderNow();
   }
