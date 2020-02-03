@@ -963,6 +963,16 @@ export class FormgroupsService {
               editable: true
             },
             {
+              name: "PrincipalAmount",
+              label: "Principal Amount",
+              editable: false
+            },
+            {
+              name: "InterestAmount",
+              label: "Interest Amount",
+              editable: false
+            },                        
+            {
               name: "PaymentReceiptNumber",
               label: "Payment Receipt Number",
               editable: true
