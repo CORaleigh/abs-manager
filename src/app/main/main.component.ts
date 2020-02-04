@@ -580,7 +580,7 @@ configureDetailPanels() {
                   panel.features = featureSet.features;
                   count += featureSet.features.length;
                   console.log(count);
-                  if (count > 1) {
+                  if (count > 0) {
                     this.accountPanels.forEach(p => {
                       p.showDetails = false;
                       p.visible = true;
@@ -588,7 +588,7 @@ configureDetailPanels() {
                   }
                 });
               });
-              
+
             } else {
               this.paymentEnabled = true;
               

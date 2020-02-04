@@ -57,12 +57,16 @@ export class AccountPanelComponent implements OnInit, OnChanges {
       this.update = false;
       let feature = new Graphic({ attributes: {} });
       feature.layer = this.layer;
-      this.layer.fields.forEach(field => {
-        feature.attributes[field.name] = null;
-      });
-      if (!this.layer.isTable) {
+      if (this.layer.isTable) {
+        this.source = this.shared.account.getValue();
+
+        if(this.layer.getField('PaymentDate')) {
+          this.source.attributes['PaymentDate'] = new Date();
+        }
+      }
       let cloned: esri.Graphic = this.source.clone();
       feature.geometry = cloned.geometry;
+      console.log(feature);
       this.layer.fields.forEach((field: esri.Field) => {
         feature.attributes[field.name] = null;
         if (cloned.attributes[field.name]) {
@@ -70,13 +74,14 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         }
       });
     
+      console.log(feature);
       if (!this.layer.isTable) {
         feature.attributes.NCPIN = cloned.attributes.PIN_NUM;
         feature.attributes.AccountID = 0;
       }
-    }
+    
       this.selectedFeature = feature;
-      console.log(feature)
+
       this.createFeatureClicked.emit(feature);
     })
   }
