@@ -9,7 +9,7 @@
           <h3 class='trailer-half'>Payoff Quote</h3>
           <form><label>
             Payoff Date
-            <input type="date" class="form-control" id="payoffDate" name="payoffDate"
+            <input type="date" class="form-control" name="payoffDate"
             [ngModel]="payoffDate | date:'yyyy-MM-dd'" (ngModelChange)="payoffDate = $event"
             [value]="payoffDate | date:'yyyy-MM-dd'" #BirthDate="ngModel" required>    </label></form>
             <div>Principal Due: {{principalDue | currency}}</div>

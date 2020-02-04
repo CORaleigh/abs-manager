@@ -569,10 +569,9 @@ configureDetailPanels() {
               this.selectedAccount = null;
               this.selectedProperty = feature;
               this.paymentEnabled = true;
-              //this.router.navigate(['/reid/' + feature.attributes.REID]);
 
-              window.history.pushState({id:'reid'}, '', window.location.origin + '/reid/' + feature.attributes.REID)
               this.accountLayers.forEach(layer => {
+                debugger
                 let panel = this.accountPanels.filter((panel: Panel) => {
                   return panel.layer === layer;
                 })[0];
@@ -580,12 +579,20 @@ configureDetailPanels() {
                   panel.features = featureSet.features;
                   count += featureSet.features.length;
                   console.log(count);
-                  if (count > 0) {
+                 // if (count > 0) {
                     this.accountPanels.forEach(p => {
                       p.showDetails = false;
                       p.visible = true;
+                      this.crumbs.forEach((crumb: Crumb, i: number) => {
+                        crumb.visible = i === 0;
+                        crumb.active = i === 0;
+                      });
                     });
-                  }
+                    this.detailPanels.forEach(p => {
+                      p.showDetails = false;
+                      p.visible = false;
+                    });
+                 // }
                 });
               });
 

@@ -364,16 +364,26 @@ export class SearchComponent implements OnInit, OnChanges {
         sources: [reidSource, pinSource, addrSource,ownerSource, assessAccountSource, abatementAccountSource, tapFeeAccountSource, confirmResSource, dirResSource, corrResSource, rollNumSource, contractSource],
         includeDefaultSources: false
       });
+      
       if (this.route.routeConfig) {
-        if (this.route.routeConfig.path === 'reid/:id') {
-          this.sub = this.route.params.subscribe(params => {
-            if (params.id) {
-              search.search(params.id);
-            }
-          });
-          this.sub.unsubscribe();
+        if(this.route.snapshot.children.length) {
+          if (this.route.snapshot.children[0].params.id) {
+            search.search(this.route.snapshot.children[0].params.id);
 
-        }  
+          }
+
+        }
+
+
+        // if (this.route.routeConfig.path === 'reid/:id') {
+        //   this.sub = this.route.params.subscribe(params => {
+        //     if (params.id) {
+        //       search.search(params.id);
+        //     }
+        //   });
+        //   this.sub.unsubscribe();
+
+        // }  
       }
       search.on('select-result', event => {
         

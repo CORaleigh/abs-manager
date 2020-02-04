@@ -5,10 +5,12 @@ import { MainComponent } from './main/main.component';
 
 
 const routes: Routes = [
-  {path: '', component: MainComponent},
-  {path:'oauth-callback.html', component:MainComponent},
-  {path: 'reid/:id', component: MainComponent},
-  {path: 'account/:id', component: MainComponent}
+  {path: '', component: MainComponent, children:[
+    {path: 'reid/:id', component: MainComponent},
+    {path: 'account/:id', component: MainComponent}
+  ]},
+  {path:'oauth-callback.html', component:MainComponent}
+
 ];
 
 @NgModule({
