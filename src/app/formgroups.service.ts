@@ -965,12 +965,12 @@ export class FormgroupsService {
             {
               name: "PrincipalAmount",
               label: "Principal Amount",
-              editable: false
+              editable: true
             },
             {
               name: "InterestAmount",
               label: "Interest Amount",
-              editable: false
+              editable: true
             },                        
             {
               name: "PaymentReceiptNumber",
