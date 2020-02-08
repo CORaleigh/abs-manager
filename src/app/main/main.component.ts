@@ -570,29 +570,33 @@ configureDetailPanels() {
               this.selectedProperty = feature;
               this.paymentEnabled = true;
 
+              this.router.navigate(['reid',  feature.attributes.REID]);
               this.accountLayers.forEach(layer => {
-                debugger
                 let panel = this.accountPanels.filter((panel: Panel) => {
                   return panel.layer === layer;
                 })[0];
                 layer.queryFeatures({ where: "REID = '" + feature.attributes.REID + "'", outFields: ['*'], orderByFields: [panel.orderBy + ' desc'] }).then((featureSet: esri.FeatureSet) => {
                   panel.features = featureSet.features;
                   count += featureSet.features.length;
-                  console.log(count);
-                 // if (count > 0) {
-                    this.accountPanels.forEach(p => {
-                      p.showDetails = false;
-                      p.visible = true;
-                      this.crumbs.forEach((crumb: Crumb, i: number) => {
-                        crumb.visible = i === 0;
-                        crumb.active = i === 0;
-                      });
+                  // console.log(count);
+                  // if (count > 0) {
+                  //   this.accountPanels.forEach(p => {
+                  //     p.showDetails = false;
+                  //     p.visible = true;
+                  //   });
+                  // }
+                  this.accountPanels.forEach(p => {
+                    p.showDetails = false;
+                    p.visible = true;
+                    this.crumbs.forEach((crumb: Crumb, i: number) => {
+                      crumb.visible = i === 0;
+                      crumb.active = i === 0;
                     });
-                    this.detailPanels.forEach(p => {
-                      p.showDetails = false;
-                      p.visible = false;
-                    });
-                 // }
+                  });
+                  this.detailPanels.forEach(p => {
+                    p.showDetails = false;
+                    p.visible = false;
+                  });                  
                 });
               });
 

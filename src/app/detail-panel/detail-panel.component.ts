@@ -99,12 +99,12 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     const relationships: esri.Relationship[] = (this.feature.layer as esri.FeatureLayer).relationships.filter((relationship: esri.Relationship) => {
       let match: esri.Relationship = null;
       if (label === 'BILLS') {
-        if (relationship.name.includes('BILLING_DATA')) {
+        if (relationship.name.toLowerCase().includes('billing data')) {
           match = relationship;
         }
       }
       if (label === 'COMMUNICATION') {
-        if (relationship.name.includes('COMMUNICATIONS')) {
+        if (relationship.name.toLowerCase().includes('communications')) {
           match = relationship;
         }
       }
@@ -114,7 +114,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
         }
       }
       if (label === 'COMMENTS') {
-        if (relationship.name.includes('COMMENTS')) {
+        if (relationship.name.toLowerCase().includes('comments')) {
           match = relationship;
         }
       }      
