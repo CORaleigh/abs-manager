@@ -126,7 +126,7 @@ export class MainComponent implements OnInit {
       
       const webmap:esri.WebMap = new WebMap({
         portalItem: { // autocasts as new PortalItem()
-          id: "b1675a3d73aa4534a6c34210d0b809da"
+          id: "2a3e30ce4ad54380a1a7232301b1f3dd"
         }
       });
       
