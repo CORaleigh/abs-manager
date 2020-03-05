@@ -98,6 +98,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     }
   }
   relatedFeatureReturned(item: any) {
+    
     this.showRelatedTable.emit(item);
   }
   formSubmittedEvent() {
