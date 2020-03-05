@@ -56,12 +56,13 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
+    
     if (this.update) {
       if (!this.featureWidget) {
         this.initializeFeature().then((featureWidget: esri.Feature) => {
                     //@ts-ignore
 
-                    changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
+              changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
 
           //@ts-ignore
           changes.feature.currentValue.sourceLayer = changes.feature.currentValue.layer;

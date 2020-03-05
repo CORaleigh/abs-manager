@@ -77,6 +77,7 @@ export class FormComponent implements OnChanges, OnInit {
     })
   }
   ngOnChanges(changes: SimpleChanges) {
+    
     if (changes.feature.currentValue) {
       this.feature = changes.feature.currentValue;
       console.log(this.feature)

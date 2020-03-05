@@ -102,6 +102,7 @@ export class AttributeLookupComponent implements OnInit {
     section.text += 'found';  
   }
  sections:any[] = [];
+
   ngOnInit() {
     this.layers.forEach(layer => {
       if (layer.title.includes("Confirming")) {
