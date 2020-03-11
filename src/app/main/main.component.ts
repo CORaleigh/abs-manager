@@ -235,7 +235,20 @@ export class MainComponent implements OnInit {
             {
               fieldName: "ADDR3",
               label: "Mailing Address 3"
-            }
+            },
+            {
+              fieldName: "DEED_BOOK",
+              label: "DeedBook"
+            },
+            {
+              fieldName: "DEED_PAGE",
+              label: "Deed Page"
+            }   
+            ,
+            {
+              fieldName: "DEED_DATE",
+              label: "Deed Date"
+            }           
           ]
         }]
       }
