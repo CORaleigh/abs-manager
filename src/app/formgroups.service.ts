@@ -100,6 +100,10 @@ export class FormgroupsService {
                     code: "07"
                   },
                   {
+                    name: "Stormwater",
+                    code: "71"
+                  },                  
+                  {
                     name: "Multiple Flagged",
                     code: "99"
                   }
