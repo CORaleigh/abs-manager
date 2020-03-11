@@ -385,6 +385,43 @@ export class FormgroupsService {
               editable: true,
               label: 'Status',
               name: "StatusCode",
+
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Pending",
+                    code: "1"
+                  },
+                  {
+                    name: "Active",
+                    code: "2"
+                  },
+                  {
+                    name: "Paid",
+                    code: "3"
+                  },
+                  {
+                    name: "Delinquent",
+                    code: "4"
+                  },
+                  {
+                    name: "Waived",
+                    code: "5"
+                  },
+                  {
+                    name: "Inactive",
+                    code: "6"
+                  },
+                  {
+                    name: "Write Off",
+                    code: "7"
+                  },
+                  {
+                    name: "Flagged",
+                    code: "8"
+                  }
+                ]
+              }),              
             },
             {
               editable: true,

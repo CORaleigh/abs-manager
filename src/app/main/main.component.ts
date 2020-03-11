@@ -581,6 +581,7 @@ configureDetailPanels() {
             if (feature.geometry) {
               this.selectedAccount = null;
               this.selectedProperty = feature;
+              this.shared.selectedProperty = feature;
               this.paymentEnabled = true;
 
               this.router.navigate(['reid',  feature.attributes.REID]);

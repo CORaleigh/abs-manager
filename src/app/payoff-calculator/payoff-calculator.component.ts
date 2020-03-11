@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import esri = __esri;
+import { SharedService } from '../shared.service';
 
 @Component({
   selector: 'app-payoff-calculator',
@@ -8,7 +9,7 @@ import esri = __esri;
 })
 export class PayoffCalculatorComponent implements OnInit, OnChanges {
 
-  constructor() { }
+  constructor(private shared:SharedService) { }
   @Input('feature') feature: esri.Graphic = null;
   @ViewChild('payoffInfo', null) private payoffDiv: ElementRef;
 
@@ -23,18 +24,19 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
   calculatePayoff() {
+    debugger
     let days = 0;
     
-    if (this.feature.attributes['InterestPaidThruDate']) {      
-      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.feature.attributes['InterestPaidThruDate']).toDateString()).getTime())/(1000*60*60*24));
-    } else if (this.feature.attributes['ConfResDate']){
-      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.feature.attributes['ConfResDate']).toDateString()).getTime())/(1000*60*60*24));
-    } else if (this.feature.attributes['ContractDate']){
-      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.feature.attributes['ContractDate']).toDateString()).getTime())/(1000*60*60*24));
+    if (this.shared.account.getValue().attributes['InterestPaidThruDate']) {      
+      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.shared.account.getValue().attributes['InterestPaidThruDate']).toDateString()).getTime())/(1000*60*60*24));
+    } else if (this.shared.account.getValue().attributes['ConfResDate']){
+      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.shared.account.getValue().attributes['ConfResDate']).toDateString()).getTime())/(1000*60*60*24));
+    } else if (this.shared.account.getValue().attributes['ContractDate']){
+      days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.shared.account.getValue().attributes['ContractDate']).toDateString()).getTime())/(1000*60*60*24));
 
     }
-    this.principalDue = this.feature.attributes['PrincipalBalance'];
-    this.interestDue = ((this.feature.attributes['InterestRate']/100)/365 * days) * this.feature.attributes['PrincipalBalance'];
+    this.principalDue = this.shared.account.getValue().attributes['PrincipalBalance'];
+    this.interestDue = ((this.shared.account.getValue().attributes['InterestRate']/100)/365 * days) * this.shared.account.getValue().attributes['PrincipalBalance'];
     this.totalDue = this.principalDue + this.interestDue;
 
     this.payoffCalculated.emit({total: this.totalDue, principal: this.principalDue, interest: this.interestDue});
@@ -47,12 +49,39 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   exportPayoff() {
     const printWindow = window.open();
     printWindow.document.open('text/html');
+    printWindow.document.writeln('<h3>Account Information</h3>');
+    printWindow.document.writeln('Account #: ' + this.feature.attributes.AccountID);
+    printWindow.document.writeln('<br/>');    
+    printWindow.document.writeln('Site Address: ' + this.shared.selectedProperty.attributes.SITE_ADDRESS);
+    printWindow.document.writeln('<br/>');    
+    printWindow.document.writeln('<h3>Customer Mailing Address</h3>');
+    printWindow.document.writeln(this.shared.selectedProperty.attributes.OWNER);
+    printWindow.document.writeln('<br/>');        
+    printWindow.document.writeln(this.shared.selectedProperty.attributes.ADDR1);
+    printWindow.document.writeln('<br/>');        
+    printWindow.document.writeln(this.shared.selectedProperty.attributes.ADDR2);
+    printWindow.document.writeln('<br/>');  
+    if (this.shared.selectedProperty.attributes.ADDR3) {
+      printWindow.document.writeln(this.shared.selectedProperty.attributes.ADDR3);
+    }
+    printWindow.document.writeln('<br/>');    
+    printWindow.document.writeln('<h3>Mail In</h3>');
+    printWindow.document.writeln('City of Raleigh<br/>');
+    printWindow.document.writeln('Revenue Svcs-25<br/>');
+    printWindow.document.writeln('PO Box 590<br/>');
+    printWindow.document.writeln('Raleigh NC 27602<br/>')
+    printWindow.document.writeln('<br/>');    
+    printWindow.document.writeln('<h3>Overnight</h3>');
+    printWindow.document.writeln('City of Raleigh<br/>');
+    printWindow.document.writeln('Revenue Svcs-25<br/>');
+    printWindow.document.writeln('222 W Hargett St<br/>');
+    printWindow.document.writeln('Raleigh NC 27601<br/>'); 
+    printWindow.document.writeln('<br/>');    
+    printWindow.document.writeln('<h3>Payoff Information</h3>');    
     printWindow.document.writeln(this.payoffDiv.nativeElement.outerHTML);
-    //printWindow.document.write('Principal Due: $'+this.totalDue.toString()+'\n'+'Interest Due: $'+this.interestDue.toString()+'\n'+'Total Due: $'+this.totalDue.toString());
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();
-    //printWindow.close();
   }
 
   ngOnChanges(changes:SimpleChanges) {
