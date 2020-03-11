@@ -11,6 +11,7 @@ import { FormgroupsService } from '../formgroups.service';
 })
 export class FormComponent implements OnChanges, OnInit {
   @ViewChild('formDiv', null) private formDiv: ElementRef;
+  
   constructor(public shared:SharedService) { }
   @Input('feature') feature: esri.Graphic = null;
   @Input('layers') layers: esri.FeatureLayer[] = [];

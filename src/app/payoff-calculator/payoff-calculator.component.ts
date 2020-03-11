@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import esri = __esri;
 
 @Component({
@@ -10,7 +10,8 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
 
   constructor() { }
   @Input('feature') feature: esri.Graphic = null;
-    
+  @ViewChild('payoffInfo', null) private payoffDiv: ElementRef;
+
   payoffDate:string = new Date().toISOString().slice(0,10);
   principalDue: number = 0;
   interestDue: number = 0;
@@ -41,6 +42,17 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
 
   isLeapYear(year) {
     return (year % 4 === 0 && year % 100 !== 0) || (year % 100 === 0 && year % 400 === 0);
+  }
+
+  exportPayoff() {
+    const printWindow = window.open();
+    printWindow.document.open('text/html');
+    printWindow.document.writeln(this.payoffDiv.nativeElement.outerHTML);
+    //printWindow.document.write('Principal Due: $'+this.totalDue.toString()+'\n'+'Interest Due: $'+this.interestDue.toString()+'\n'+'Total Due: $'+this.totalDue.toString());
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    //printWindow.close();
   }
 
   ngOnChanges(changes:SimpleChanges) {
