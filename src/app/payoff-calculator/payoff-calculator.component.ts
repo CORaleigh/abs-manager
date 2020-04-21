@@ -19,6 +19,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   fromDate: Date = null;
   fromDateLabel: string = "";
   totalDue: number = 0;
+  dailyRate:number = 0;
   @Output() payoffCalculated = new EventEmitter<any>();
 
   ngOnInit() {
@@ -35,8 +36,15 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
       days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.shared.account.getValue().attributes['ContractDate']).toDateString()).getTime())/(1000*60*60*24));
 
     }
+    debugger
     this.principalDue = this.shared.account.getValue().attributes['PrincipalBalance'];
     this.interestDue = ((this.shared.account.getValue().attributes['InterestRate']/100)/365 * days) * this.shared.account.getValue().attributes['PrincipalBalance'];
+    this.dailyRate = this.interestDue/days;
+    if (this.shared.account.getValue().attributes['BillingTypeCode'] != 'TF' && ((new Date(this.payoffDate).getTime() - this.shared.account.getValue().attributes['AdvertiseDate']) / 86400000) <= 30) {
+      this.interestDue = 0;
+      this.dailyRate = 0;
+
+    }
     this.totalDue = this.principalDue + this.interestDue;
 
     this.payoffCalculated.emit({total: this.totalDue, principal: this.principalDue, interest: this.interestDue});
@@ -78,6 +86,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
     printWindow.document.writeln('Raleigh NC 27601<br/>'); 
     printWindow.document.writeln('<br/>');    
     printWindow.document.writeln('<h3>Payoff Information</h3>');    
+    printWindow.document.writeln('Payoff Thru: ' + this.payoffDate+'<br/>');
     printWindow.document.writeln(this.payoffDiv.nativeElement.outerHTML);
     printWindow.document.close();
     printWindow.focus();
