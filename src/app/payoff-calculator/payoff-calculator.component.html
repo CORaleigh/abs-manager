@@ -14,7 +14,7 @@
             [value]="payoffDate | date:'yyyy-MM-dd'" #BirthDate="ngModel" required>    </label></form>
             <div #payoffInfo>
               <div>Principal Due: {{principalDue | currency}}</div>
-              <div>Daily Interest Rate: {{dailyRate | currency}}</div>
+              <div>Daily Interest: {{dailyRate | currency}}</div>
               <!-- <div *ngIf="fromDate">{{fromDateLabel}}{{fromDate | date: 'MM/dd/yyyy'}}</div> -->
               <div>Interest Due: {{interestDue | currency}}</div>
               <div>Total Due: {{totalDue | currency}}</div>
