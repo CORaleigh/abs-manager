@@ -60,6 +60,8 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
     printWindow.document.writeln('<h3>Account Information</h3>');
     printWindow.document.writeln('Account #: ' + this.feature.attributes.AccountID);
     printWindow.document.writeln('<br/>');    
+    printWindow.document.writeln('Real Estate ID: ' + this.shared.selectedProperty.attributes.REID);
+    printWindow.document.writeln('<br/>');       
     printWindow.document.writeln('Site Address: ' + this.shared.selectedProperty.attributes.SITE_ADDRESS);
     printWindow.document.writeln('<br/>');    
     printWindow.document.writeln('<h3>Customer Mailing Address</h3>');
