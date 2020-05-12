@@ -59,7 +59,7 @@ export class SearchComponent implements OnInit, OnChanges {
           sourceIndex: params.sourceIndex
         }
       })
-    });
+    }).catch(reason => console.log(reason));
   }
 
   getResults(params, field) {
@@ -82,7 +82,7 @@ export class SearchComponent implements OnInit, OnChanges {
         return searchResult;
       });
       return searchResults;
-    });
+    }).catch(reason => console.log(reason));;
   }
 
   getAccountSuggestions(params, field, layer) {
@@ -101,9 +101,10 @@ export class SearchComponent implements OnInit, OnChanges {
           sourceIndex: params.sourceIndex
         }
       })
-    });
+    }).catch(reason => console.log(reason));
   }
-  getAccountResults(params, field, layer) {
+  getAccountResults(params, field, layer:esri.FeatureLayer) {
+    
     return layer.queryFeatures({
       where: field + " = '"+params.suggestResult.text.toUpperCase() + "'",
       outFields: ['*'],
@@ -117,7 +118,7 @@ export class SearchComponent implements OnInit, OnChanges {
         return searchResult;
       });
       return searchResults;
-    });
+    }).catch(reason => console.log(reason));
   }  
   getResolutionResults(where, dateField, numField, layer) {
     
@@ -136,7 +137,7 @@ export class SearchComponent implements OnInit, OnChanges {
       });
       
       return searchResults;
-    });
+    }).catch(reason => console.log(reason));;
   }  
   getResolutionSuggestions(params, dateField, numField, layer) {
     let year = null;
@@ -164,7 +165,7 @@ export class SearchComponent implements OnInit, OnChanges {
             sourceIndex: params.sourceIndex
           }
         })
-      });      
+      }).catch(reason => console.log(reason));;      
     } else {
       return null;
     }
@@ -430,8 +431,8 @@ export class SearchComponent implements OnInit, OnChanges {
                     //}
                   }                
                 });
-              });
-            });
+              }).catch(reason => console.log(reason));
+            }).catch(reason => console.log(reason));
           } else {
 
             this.propertyLayer.queryFeatures({where: "REID = '" + event.result.feature.attributes['REID'] + "'", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
@@ -451,6 +452,7 @@ export class SearchComponent implements OnInit, OnChanges {
 
       });
     } catch (error) {
+      debugger
       console.log('EsriLoader: ', error);
     }
   }
@@ -501,7 +503,7 @@ export class SearchComponent implements OnInit, OnChanges {
         // });
         this.initialize();
 
-      });
+      }).catch(reason => console.log(reason));;
     });
   }
   addPropertyGraphic(features: esri.Graphic[]) {
@@ -515,8 +517,7 @@ export class SearchComponent implements OnInit, OnChanges {
         //@ts-ignore
         const layerView:esri.FeatureLayerView = (this.view.layerViews.items.filter((layerView:esri.LayerView) =>  {
           return layerView.layer.title.includes('Property');
-        })[0] as esri.FeatureLayerView)
-        
+        })[0] as esri.FeatureLayerView);
 
           if (this.highlight) {
             this.highlight.remove();
@@ -537,7 +538,7 @@ export class SearchComponent implements OnInit, OnChanges {
           }
         };
         this.view.graphics.add(feature);
-      })
+      });
 
     });
   }
