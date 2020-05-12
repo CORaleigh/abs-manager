@@ -8,7 +8,7 @@ import { FormgroupsService } from '../formgroups.service';
   styleUrls: ['./attribute-lookup.component.scss']
 })
 export class AttributeLookupComponent implements OnInit {
-  @ViewChild('createForm', null) private formDiv: ElementRef;
+  @ViewChild('createForm') private formDiv: ElementRef;
   form:esri.FeatureForm = null;
   constructor(public formGroups:FormgroupsService) { }
   @Input('accountType') accountType:string = "";

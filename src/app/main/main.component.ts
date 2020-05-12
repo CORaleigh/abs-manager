@@ -301,7 +301,7 @@ export class MainComponent implements OnInit {
                       this.configureCrumbs();
                       this.loaded = !this.loaded;
                       loadCss('https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css')
-                      loadCss('https://js.arcgis.com/4.14/esri/css/main.css')
+                      loadCss('https://js.arcgis.com/4.15/esri/css/main.css')
                     });
                     
                   });
@@ -335,12 +335,12 @@ darkModeToggle(event) {
 
   if (event.target.checked) {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web-dark.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.14/esri/themes/dark/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/dark/main.css');
     this.basemap = 'dark-gray-vector';
     window.localStorage.setItem('dark', 'true');
   } else {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.14/esri/themes/css/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/css/main.css');
     this.basemap = 'gray-vector';
     window.localStorage.setItem('dark', 'false');
   }

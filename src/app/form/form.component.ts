@@ -10,7 +10,7 @@ import { FormgroupsService } from '../formgroups.service';
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnChanges, OnInit {
-  @ViewChild('formDiv', null) private formDiv: ElementRef;
+  @ViewChild('formDiv') private formDiv: ElementRef;
   
   constructor(public shared:SharedService) { }
   @Input('feature') feature: esri.Graphic = null;

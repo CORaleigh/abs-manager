@@ -11,7 +11,7 @@ import { SharedService } from '../shared.service';
 })
 export class DetailPanelComponent implements OnInit, OnChanges {
   constructor(public shared:SharedService) { }
-  @ViewChild('featureDiv', null) private featureDiv: ElementRef;
+  @ViewChild('featureDiv') private featureDiv: ElementRef;
   @Input('title') title: string = "Details";
   @Input('feature') feature: esri.Graphic = null;
   @Input('layers') layers: esri.FeatureLayer[] = [];

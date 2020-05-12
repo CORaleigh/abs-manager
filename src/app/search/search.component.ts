@@ -13,8 +13,8 @@ export class SearchComponent implements OnInit, OnChanges {
   constructor(private route: ActivatedRoute, private router: Router) { 
     
   }
-  @ViewChild('searchDiv', null) private searchDiv: ElementRef;
-  @ViewChild('viewDiv', null) private viewDiv: ElementRef;
+  @ViewChild('searchDiv') private searchDiv: ElementRef;
+  @ViewChild('viewDiv') private viewDiv: ElementRef;
   @Input('layers') layers: esri.FeatureLayer[] = null;
   @Input('basemap') basemap: string = null;
   @Output() selectionMade = new EventEmitter<esri.Graphic>();
@@ -457,7 +457,8 @@ export class SearchComponent implements OnInit, OnChanges {
     }
   }
   createMap() {
-    loadModules(['esri/views/MapView', 'esri/Map', 'esri/widgets/Fullscreen']).then(([MapView, Map, Fullscreen]) => {
+    loadModules(['esri/views/MapView', 'esri/Map', 'esri/widgets/Fullscreen','esri/widgets/BasemapGallery','esri/widgets/Expand']).then(
+      ([MapView, Map, Fullscreen, BasemapGallery,Expand]) => {
       const map: esri.Map = new Map({
         basemap: this.basemap
       });
@@ -474,6 +475,12 @@ export class SearchComponent implements OnInit, OnChanges {
           }
         }
       });
+    this.view.ui.add(new Expand({content: new BasemapGallery({
+      container: document.createElement("div"),
+      view: this.view
+    }
+      
+    )}),'top-left');
       this.view.popup.dockEnabled = true;
       this.view.popup.dockOptions = {
         position: 'top-right',
@@ -513,7 +520,7 @@ export class SearchComponent implements OnInit, OnChanges {
         features: features
       });
         this.view.popup.watch('selectedFeature', (feature:esri.Graphic) => {
-          this.view.goTo(feature);
+          //this.view.goTo(feature);
         //@ts-ignore
         const layerView:esri.FeatureLayerView = (this.view.layerViews.items.filter((layerView:esri.LayerView) =>  {
           return layerView.layer.title.includes('Property');

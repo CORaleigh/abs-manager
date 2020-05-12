@@ -11,7 +11,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
 
   constructor(private shared:SharedService) { }
   @Input('feature') feature: esri.Graphic = null;
-  @ViewChild('payoffInfo', null) private payoffDiv: ElementRef;
+  @ViewChild('payoffInfo') private payoffDiv: ElementRef;
 
   payoffDate:string = new Date().toISOString().slice(0,10);
   principalDue: number = 0;
