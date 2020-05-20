@@ -677,6 +677,7 @@ configureDetailPanels() {
             });
             crumb.active = true;
             if (index === 0) {
+              this.selectionMade(this.selectedProperty);
               this.accountPanels.forEach((panel: Panel) => {
                 panel.visible = true;
                 panel.showDetails = false;

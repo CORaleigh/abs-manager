@@ -86,7 +86,28 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     })
   }
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
+    if (changes.features) {
+      if (this.title === 'Bills') {
+        this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+          return b.attributes.NoticeDate - a.attributes.NoticeDate;
+        })
+      }         
+      if (this.title === 'Payments') {
+        this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+          return b.attributes.PaymentDate - a.attributes.PaymentDate;
+        })
+      }
+      if (this.title === 'Communications') {
+        this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+          return b.attributes.CommDate - a.attributes.CommDate;
+        })
+      }      
+      if (this.title === 'Comments') {
+        this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+          return b.attributes.CommentDate - a.attributes.CommentDate;
+        })
+      }          
+    }
     if (changes.totalFeatures) {
       if (changes.totalFeatures.currentValue) {
         if (changes.totalFeatures.currentValue.length === 1) {        
