@@ -97,7 +97,9 @@ export class FormComponent implements OnChanges, OnInit {
     if (changes.formgroups) {
       if (!this.form) {
         this.initializeForm().then((form: esri.FeatureForm) => {
+          
           this.form.fieldConfig = this.formgroups;
+        
         });
       } else {
         this.form.fieldConfig = this.formgroups;

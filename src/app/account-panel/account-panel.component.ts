@@ -64,13 +64,20 @@ export class AccountPanelComponent implements OnInit, OnChanges {
           this.source.attributes['PaymentDate'] = new Date();
         }
       }
+      
       let cloned: esri.Graphic = this.source.clone();
       feature.geometry = cloned.geometry;
       console.log(feature);
+
       this.layer.fields.forEach((field: esri.Field) => {
         feature.attributes[field.name] = null;
         if (cloned.attributes[field.name]) {
           feature.attributes[field.name] = cloned.attributes[field.name];
+        }
+        if (field.name === 'RollNumInOut') {
+          if (cloned.getAttribute('CITY_DECODE') === 'RALEIGH') {
+            feature.attributes[field.name] = "A";
+          }
         }
       });
     
@@ -116,7 +123,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
       }
     }
     if (changes.visible) {
-      if (!this.layer.isTable) {
+      if (!this.layer.isTable && this.selectedFeature) {
         this.layer.queryFeatures({objectIds:[this.selectedFeature.getAttribute("OBJECTID")],outFields:['*']}).then(result=>{
           this.selectedFeature=result.features[0];
         });

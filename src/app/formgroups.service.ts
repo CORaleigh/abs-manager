@@ -111,7 +111,7 @@ export class FormgroupsService {
               })
             },
             {
-              editable: false,
+              editable: true,
               label: 'Roll #',
               name: "RollNum",
               required: true               
@@ -141,11 +141,13 @@ export class FormgroupsService {
             },
             {
               editable: false,
+              required: true,
               label: 'Directing Resolution Number',
               name: "DirResNum",
             },
             {
               editable: false,
+              required: true,
               label: 'Directing Resolution Date',
               name: "DirResDate",
             },
@@ -197,6 +199,7 @@ export class FormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Billing Type Code',
               name: "BillingTypeCode",
               domain: new CodedValueDomain({
@@ -210,6 +213,7 @@ export class FormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Category Type Code',
               name: "CategoryTypeCode",
               domain: new CodedValueDomain({
@@ -278,6 +282,7 @@ export class FormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Housing Letter 1 Sent On',
               name: "ABHousingLetter1",
             },
@@ -319,6 +324,7 @@ export class FormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Billing Type Code',
               name: "BillingTypeCode",
               domain: new CodedValueDomain({
@@ -362,6 +368,7 @@ export class FormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Contract Date',
               name: "ContractDate",
             }
@@ -375,15 +382,18 @@ export class FormgroupsService {
               editable: true,
               label: 'Number of Years',
               name: "NumYears",
+              required: true
             },
             {
               editable: true,
               label: 'Interest Rate',
               name: "InterestRate",
+              required: true
             },
             {
               editable: true,
               label: 'Status',
+              required: true,
               name: "StatusCode",
 
               domain: new CodedValueDomain({
@@ -432,9 +442,11 @@ export class FormgroupsService {
               editable: true,
               label: 'Total Lien Amount',
               name: "TotalLienAmount",
+              required: true
             },
             {
               editable: true,
+              required: true,
               label: 'Principal Balance',
               name: "PrincipalBalance",
             },
@@ -450,16 +462,19 @@ export class FormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Interest Paid Thru',
               name: "InterestPaidThruDate",
             },
             {
               editable: true,
+              required: true,
               label: 'Interest Start Date',
               name: "InterestStartDate",
             },
             {
               editable: true,
+              required: true,
               label: 'Installment Amount',
               name: "InstallmentAmount",
             },
