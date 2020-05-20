@@ -45,6 +45,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
   }
   submitted(layer: esri.FeatureLayer) {
     if (layer.isTable) {
+      
       layer.queryFeatures({ where: 'AccountID = ' + this.feature.attributes.AccountID, outFields: ['*'], returnGeometry: false }).then((featureSet: esri.FeatureSet) => {
         featureSet.features.forEach((feature: esri.Graphic) => {
           feature.popupTemplate = layer.popupTemplate;
@@ -53,10 +54,21 @@ export class DetailPanelComponent implements OnInit, OnChanges {
         
       });
     }
+
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
-    
+    if (changes.visible){
+
+      if (changes.visible.currentValue === true) {
+        (this.feature.layer as esri.FeatureLayer).queryFeatures({
+          objectIds:[this.feature.getAttribute('OBJECTID')],outFields:['*']
+        }).then(result => {
+          this.feature = result.features[0];
+        })
+      }
+    }
+
     if (this.update) {
       if (!this.featureWidget) {
         this.initializeFeature().then((featureWidget: esri.Feature) => {
@@ -97,7 +109,6 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     }
   }
   getRelatedFeatures(label:string) {
-    debugger
     const relationships: esri.Relationship[] = (this.feature.layer as esri.FeatureLayer).relationships.filter((relationship: esri.Relationship) => {
       let match: esri.Relationship = null;
       if (label === 'BILLS') {

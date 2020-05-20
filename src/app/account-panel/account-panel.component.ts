@@ -95,6 +95,11 @@ export class AccountPanelComponent implements OnInit, OnChanges {
       }
     }
     if (changes.visible) {
+      if (!this.layer.isTable) {
+        this.layer.queryFeatures({objectIds:[this.selectedFeature.getAttribute("OBJECTID")],outFields:['*']}).then(result=>{
+          this.selectedFeature=result.features[0];
+        });
+      }
     }
   }
   relatedFeatureReturned(item: any) {

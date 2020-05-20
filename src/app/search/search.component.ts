@@ -452,7 +452,6 @@ export class SearchComponent implements OnInit, OnChanges {
 
       });
     } catch (error) {
-      debugger
       console.log('EsriLoader: ', error);
     }
   }
