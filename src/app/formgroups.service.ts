@@ -382,13 +382,13 @@ export class FormgroupsService {
               editable: true,
               label: 'Number of Years',
               name: "NumYears",
-              required: true
+              required: false
             },
             {
               editable: true,
               label: 'Interest Rate',
               name: "InterestRate",
-              required: true
+              required: false
             },
             {
               editable: true,
