@@ -1298,7 +1298,7 @@ export class FormgroupsService {
         ]
       });      
       this.rollFormGroup = new FieldGroupConfig({
-        label: "Contracts",
+        label: "Rolls",
         description: '',
         fieldConfig: [
           {
@@ -1317,7 +1317,7 @@ export class FormgroupsService {
             editable: true
           },     
           {
-            name: "ConfResNum",
+            name: "ConfResDate",
             label: "Confirming Resolution Date",
             editable: true
           },     
@@ -1327,7 +1327,7 @@ export class FormgroupsService {
             editable: true
           },     
           {
-            name: "DirResNum",
+            name: "DirResDate",
             label: "Directing Resolution Date",
             editable: true
           },     

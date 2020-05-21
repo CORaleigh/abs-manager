@@ -23,15 +23,23 @@ export class AttributeLookupComponent implements OnInit {
       const [FeatureForm, Graphic] = await loadModules([
         'esri/widgets/FeatureForm', 'esri/Graphic'
       ]);
-      if (!this.form) {
+     // if (!this.form) {
         this.form = new FeatureForm({
           container: this.formDiv.nativeElement
         });
-      }
+     // }
       const graphic:esri.Graphic = new Graphic({ attributes: {} });
       if (section.layer) {
-        graphic.layer = section.layer;
-        this.setForm(section, graphic);
+        //if (!section.layer.loaded) {
+          section.layer.load().then(loaded=> {
+            graphic.layer = section.layer;
+            this.setForm(section, graphic);
+          })
+      //  } else {
+     //     graphic.layer = section.layer;
+     //     this.setForm(section, graphic);          
+     //   }
+        
       }
 
     } catch (error) {
@@ -40,6 +48,7 @@ export class AttributeLookupComponent implements OnInit {
   }
 
   setForm(section, graphic) {
+    debugger
     this.create = true;
     this.form.fieldConfig = [section.fieldConfig];
     this.form.feature = graphic;
