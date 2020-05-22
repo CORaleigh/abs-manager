@@ -10,7 +10,7 @@
           <form><label>
             Payoff Date
             <input type="date" class="form-control" name="payoffDate"
-            [ngModel]="payoffDate | date:'yyyy-MM-dd'" (ngModelChange)="payoffDate = $event"
+            [ngModel]="payoffDate | date:'yyyy-MM-dd'" (ngModelChange)="dateChanged($event)"
             [value]="payoffDate | date:'yyyy-MM-dd'" #BirthDate="ngModel" required>    </label></form>
             <div #payoffInfo>
               <div>Principal Due: {{principalDue | currency}}</div>
@@ -21,7 +21,7 @@
             </div>
       
           <div class="text-right">
-              <button class="btn"  (click)="calculatePayoff()">Calculate</button>
+              <button class="btn"  (click)="save()">Save</button>
       
               <button class="btn js-modal-toggle">Close</button>
               <button class="btn"  (click)="exportPayoff()">Export</button>

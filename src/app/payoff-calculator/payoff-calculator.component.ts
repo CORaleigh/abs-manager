@@ -50,6 +50,9 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
     }
     this.totalDue = this.principalDue + this.interestDue;
 
+  }
+
+  save() {
     this.payoffCalculated.emit({total: this.totalDue, principal: this.principalDue, interest: this.interestDue});
   }
 
@@ -97,7 +100,11 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
     printWindow.focus();
     printWindow.print();
   }
-
+  dateChanged(event) {
+    debugger
+    this.payoffDate = event;
+    this.calculatePayoff();
+  }
   ngOnChanges(changes:SimpleChanges) {
     if (changes.feature) {
       if (changes.feature.currentValue.attributes) {
@@ -111,7 +118,8 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
           } else if (changes.feature.currentValue.attributes['ContractDate']) {
             this.fromDate = new Date(changes.feature.currentValue.attributes['ContractDate']);
             this.fromDateLabel = "Contract Date: ";
-          }         
+          }    
+          this.calculatePayoff();     
       }
     }
   }
