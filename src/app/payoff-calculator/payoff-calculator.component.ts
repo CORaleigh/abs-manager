@@ -101,7 +101,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
     printWindow.print();
   }
   dateChanged(event) {
-    debugger
+    
     this.payoffDate = event;
     this.calculatePayoff();
   }
