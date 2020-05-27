@@ -43,16 +43,20 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
         this.interestDue = 0;
         this.dailyRate = 0;
       }
-      else if ((new Date(this.payoffDate).getTime() - (this.shared.account.getValue().attributes['AdvertiseDate']) / 86400000) <= 30) {
+      else if ((new Date(this.payoffDate).getTime() - this.shared.account.getValue().attributes['AdvertiseDate']) / 86400000 <= 30) {
         this.interestDue = 0;
         this.dailyRate = 0;
       }
     }
+
+    new Date(this.payoffDate).getTime() - new Date(this.shared.account.getValue().attributes['AdvertiseDate']).getTime()
     this.totalDue = this.principalDue + this.interestDue;
 
   }
 
   save() {
+
+    
     this.payoffCalculated.emit({total: this.totalDue, principal: this.principalDue, interest: this.interestDue});
   }
 
