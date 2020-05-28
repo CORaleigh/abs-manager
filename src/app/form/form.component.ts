@@ -41,7 +41,19 @@ export class FormComponent implements OnChanges, OnInit {
 
 
   setFormConfigByStatus(status:string, layer:esri.FeatureLayer) {
-    
+    if (layer.title.includes("Payment")) {
+      this.form.fieldConfig = [this.formGroups.paymentFormGroup];
+    }
+    if (layer.title.includes("Communication")) {
+      this.form.fieldConfig = [this.formGroups.communicationFormGroup, this.formGroups.commSentToFormGroup];
+    }    
+    if (layer.title.includes("Bill")) {
+      this.form.fieldConfig = [this.formGroups.billingDataFormGroup, this.formGroups.billSentToFormGroup, this.formGroups.billSiteAddressFormGroup];
+    }        
+    if (layer.title.includes("Comment")) {
+      this.form.fieldConfig = [this.formGroups.commentsFormGroup];
+    }       
+
     if (status === '2') {
       if (layer.title.includes("Abatement")) {
         this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,

@@ -1240,6 +1240,7 @@ export class FormgroupsService {
             },
             {
               name: "TransactionTypeCode",
+              required: true,
               label: "Transaction Type Codes",
               domain:
                 new CodedValueDomain({
@@ -1291,7 +1292,8 @@ export class FormgroupsService {
             {
               name: "PaymentDate",
               label: "PaymentDate",
-              editable: true
+              editable: true,
+              required: true
             },
             {
               name: "PaymentClassCode",
@@ -1301,32 +1303,38 @@ export class FormgroupsService {
             {
               name: "PaymentAmount",
               label: "Payment Amount",
-              editable: true
+              editable: true,
+              required: true
             },
             {
               name: "PrincipalAmount",
               label: "Principal Amount",
-              editable: true
+              editable: true,
+              required: true
             },
             {
               name: "InterestAmount",
               label: "Interest Amount",
-              editable: true
+              editable: true,
+              required: true
             },                        
             {
               name: "PaymentReceiptNumber",
               label: "Payment Receipt Number",
-              editable: true
+              editable: true,
+              required: true
             },
             {
               name: "PaymentPostingDate",
               label: "Payment Posting Date",
-              editable: true
+              editable: true,
+              required: true
             },
             {
               name: "PaymentInterestPaidThruDate",
               label: "Payment Interest Paid Thru Date",
-              editable: true
+              editable: true,
+              required: true
             },
             {
               name: "PaymentSource",
