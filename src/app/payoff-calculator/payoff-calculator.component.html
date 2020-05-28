@@ -10,6 +10,7 @@
           <form><label>
             Payoff Date
             <input type="date" class="form-control" name="payoffDate"
+            [min]="minDate | date:'yyyy-MM-dd'" 
             [ngModel]="payoffDate | date:'yyyy-MM-dd'" (ngModelChange)="dateChanged($event)"
             [value]="payoffDate | date:'yyyy-MM-dd'" #BirthDate="ngModel" required>    </label></form>
             <div #payoffInfo>

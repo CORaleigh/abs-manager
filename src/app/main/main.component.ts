@@ -366,7 +366,7 @@ configureAccountPanels() {
     this.getLayerFields(this.assessmentsLayer, ['AccountID', 'CategoryTypeCode', 'ConfResDate', 'RollNum', 'PrincipalBalance', 'StatusCode']),
     ['ACCOUNT ID', 'CATEGORY TYPE', 'CONFIRMING RESOLUTION DATE', 'ROLL NUMBER', 'PRINCIPAL BALANCE', 'STATUS'],
     'AccountID',
-    [this.formGroupService.assessmentFormGroup, this.formGroupService.billingFormGroup, this.formGroupService.altBillingFormGroup],
+    [this.formGroupService.assessmentFormGroup, this.formGroupService.assessmentBillingFormGroup, this.formGroupService.altBillingFormGroup],
     false,
     true
     ),
@@ -374,7 +374,7 @@ configureAccountPanels() {
     this.getLayerFields(this.abatementsLayer, ['AccountID', 'CategoryTypeCode', 'ConfResDate', 'ABHousingLetter1', 'PrincipalBalance', 'StatusCode']),
     ['ACCOUNT ID', 'CATEGORY TYPE', 'CONFIRMING RESOLUTION DATE', 'FIRST HOUSING LETTER SENT', 'PRINCIPAL BALANCE', 'STATUS'],
     'AccountID',
-    [this.formGroupService.abatementFormGroup, this.formGroupService.billingFormGroup, this.formGroupService.altBillingFormGroup],
+    [this.formGroupService.abatementFormGroup, this.formGroupService.abatementBillingFormGroup, this.formGroupService.altBillingFormGroup],
     false,
     true
     ),
@@ -382,7 +382,7 @@ configureAccountPanels() {
     this.getLayerFields(this.tapfeesLayer, ['AccountID', 'CategoryTypeCode', 'ContractDate', 'ContractNum', 'PrincipalBalance', 'StatusCode']),
     ['ACCOUNT ID', 'CATEGORY TYPE', 'CONTRACT DATE', 'CONTRACT NUMBER', 'PRINCIPAL BALANCE', 'STATUS'],
     'AccountID',
-    [this.formGroupService.tapFeeFormGroup, this.formGroupService.billingFormGroup, this.formGroupService.altBillingFormGroup],
+    [this.formGroupService.tapFeeFormGroup, this.formGroupService.tapFeeBillingFormGroup, this.formGroupService.altBillingFormGroup],
     false,
     true
     )

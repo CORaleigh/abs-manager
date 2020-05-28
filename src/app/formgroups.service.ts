@@ -8,7 +8,9 @@ export class FormgroupsService {
   assessmentFormGroup: esri.FieldGroupConfig;
   abatementFormGroup: esri.FieldGroupConfig;
   tapFeeFormGroup: esri.FieldGroupConfig;
-  billingFormGroup: esri.FieldGroupConfig;
+  assessmentBillingFormGroup: esri.FieldGroupConfig;
+  abatementBillingFormGroup: esri.FieldGroupConfig;
+  tapFeeBillingFormGroup: esri.FieldGroupConfig;
   billingDataFormGroup: esri.FieldGroupConfig;
   billSentToFormGroup: esri.FieldGroupConfig;
   billSiteAddressFormGroup: esri.FieldGroupConfig;
@@ -114,13 +116,13 @@ export class FormgroupsService {
               editable: true,
               label: 'Roll #',
               name: "RollNum",
-              required: true               
+              required: false               
             },
             {
               editable: true,
               label: 'Roll Lot',
               name: "RollLotNum",
-              required: true               
+              required: false               
             },            
             {
               editable: true,
@@ -140,24 +142,24 @@ export class FormgroupsService {
                 ]})
             },
             {
-              editable: false,
+              editable: true,
               required: true,
               label: 'Directing Resolution Number',
               name: "DirResNum",
             },
             {
-              editable: false,
+              editable: true,
               required: true,
               label: 'Directing Resolution Date',
               name: "DirResDate",
             },
             {
-              editable: false,
+              editable: true,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
             },
             {
-              editable: false,
+              editable: true,
               label: 'Confirming Resolution Date',
               name: "ConfResDate",
             },
@@ -221,27 +223,27 @@ export class FormgroupsService {
                   {
                     name: "Abatement",
                     code: "05"
-                  },
-                  {
-                    name: "Public Nuisance",
-                    code: "51"
-                  },
-                  {
-                    name: "Demolition",
-                    code: "52"
-                  },
-                  {
-                    name: "Asbestos Testing",
-                    code: "53"
-                  },
-                  {
-                    name: "Visual Obstruction",
-                    code: "54"
-                  },
-                  {
-                    name: "Multiple Flagged",
-                    code: "99"
-                  }
+                  }//,
+                  // {
+                  //   name: "Public Nuisance",
+                  //   code: "51"
+                  // },
+                  // {
+                  //   name: "Demolition",
+                  //   code: "52"
+                  // },
+                  // {
+                  //   name: "Asbestos Testing",
+                  //   code: "53"
+                  // },
+                  // {
+                  //   name: "Visual Obstruction",
+                  //   code: "54"
+                  // },
+                  // {
+                  //   name: "Multiple Flagged",
+                  //   code: "99"
+                  // }
                 ]
               })
             },
@@ -374,7 +376,7 @@ export class FormgroupsService {
             }
           ]
         });
-        this.billingFormGroup = new FieldGroupConfig({
+        this.assessmentBillingFormGroup = new FieldGroupConfig({
           label: "Billing",
           description: "Billing information",
           fieldConfig: [
@@ -389,6 +391,288 @@ export class FormgroupsService {
               label: 'Interest Rate',
               name: "InterestRate",
               required: false
+            },
+            {
+              editable: true,
+              label: 'Status',
+              required: true,
+              name: "StatusCode",
+
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Pending",
+                    code: "1"
+                  },
+                  {
+                    name: "Active",
+                    code: "2"
+                  },
+                  {
+                    name: "Paid",
+                    code: "3"
+                  },
+                  {
+                    name: "Delinquent",
+                    code: "4"
+                  },
+                  {
+                    name: "Waived",
+                    code: "5"
+                  },
+                  {
+                    name: "Inactive",
+                    code: "6"
+                  },
+                  {
+                    name: "Write Off",
+                    code: "7"
+                  },
+                  {
+                    name: "Flagged",
+                    code: "8"
+                  }
+                ]
+              }),              
+            },
+            {
+              editable: true,
+              label: 'Action Type',
+              name: "ActionTypeCode",
+            },
+            {
+              editable: true,
+              label: 'Total Lien Amount',
+              name: "TotalLienAmount",
+              required: false
+            },
+            {
+              editable: true,
+              required: false,
+              label: 'Principal Balance',
+              name: "PrincipalBalance",
+            },
+            {
+              editable: true,
+              label: 'Principal Past Due',
+              name: "PrincipalPastDue",
+            },
+            {
+              editable: true,
+              label: 'Principal Pre-paid',
+              name: "PrincipalPrePaid",
+            },
+            {
+              editable: true,
+              required: false,
+              label: 'Interest Paid Thru',
+              name: "InterestPaidThruDate",
+            },
+            {
+              editable: true,
+              required: false,
+              label: 'Interest Start Date',
+              name: "InterestStartDate",
+            },
+            {
+              editable: true,
+              required: false,
+              label: 'Installment Amount',
+              name: "InstallmentAmount",
+            },
+            {
+              editable: true,
+              label: 'Number of Installments Made',
+              name: "NumInstallmentsMade",
+            },
+            {
+              editable: true,
+              label: 'Payment Plan',
+              name: "PaymentPlanFlag",
+            },
+            {
+              editable: true,
+              label: 'Payment Plan Description',
+              name: "PaymentPlanDesc",
+            },
+            {
+              editable: true,
+              label: 'Payment Plan Date',
+              name: "PaymentPlanDate",
+            },
+            {
+              editable: true,
+              label: 'Bankrupt',
+              name: "BankruptFlag",
+            },
+            {
+              editable: true,
+              label: 'Current Installment Due',
+              name: "CurrentInstallmentDue",
+            },
+            {
+              editable: true,
+              label: 'Last Payment Date',
+              name: "LastPaymentDate",
+            }
+          ]
+        });
+        this.abatementBillingFormGroup = new FieldGroupConfig({
+          label: "Billing",
+          description: "Billing information",
+          fieldConfig: [
+            {
+              editable: true,
+              label: 'Number of Years',
+              name: "NumYears",
+              required: false
+            },
+            {
+              editable: true,
+              label: 'Interest Rate',
+              name: "InterestRate",
+              required: false
+            },
+            {
+              editable: true,
+              label: 'Status',
+              required: true,
+              name: "StatusCode",
+
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Pending",
+                    code: "1"
+                  },
+                  {
+                    name: "Active",
+                    code: "2"
+                  },
+                  {
+                    name: "Paid",
+                    code: "3"
+                  },
+                  {
+                    name: "Delinquent",
+                    code: "4"
+                  },
+                  {
+                    name: "Waived",
+                    code: "5"
+                  },
+                  {
+                    name: "Inactive",
+                    code: "6"
+                  },
+                  {
+                    name: "Write Off",
+                    code: "7"
+                  },
+                  {
+                    name: "Flagged",
+                    code: "8"
+                  }
+                ]
+              }),              
+            },
+            {
+              editable: true,
+              label: 'Action Type',
+              name: "ActionTypeCode",
+            },
+            {
+              editable: true,
+              label: 'Total Lien Amount',
+              name: "TotalLienAmount",
+              required: true
+            },
+            {
+              editable: true,
+              required: true,
+              label: 'Principal Balance',
+              name: "PrincipalBalance",
+            },
+            {
+              editable: true,
+              label: 'Principal Past Due',
+              name: "PrincipalPastDue",
+            },
+            {
+              editable: true,
+              label: 'Principal Pre-paid',
+              name: "PrincipalPrePaid",
+            },
+            {
+              editable: true,
+              required: false,
+              label: 'Interest Paid Thru',
+              name: "InterestPaidThruDate",
+            },
+            {
+              editable: true,
+              required: false,
+              label: 'Interest Start Date',
+              name: "InterestStartDate",
+            },
+            {
+              editable: true,
+              required: false,
+              label: 'Installment Amount',
+              name: "InstallmentAmount",
+            },
+            {
+              editable: true,
+              label: 'Number of Installments Made',
+              name: "NumInstallmentsMade",
+            },
+            {
+              editable: true,
+              label: 'Payment Plan',
+              name: "PaymentPlanFlag",
+            },
+            {
+              editable: true,
+              label: 'Payment Plan Description',
+              name: "PaymentPlanDesc",
+            },
+            {
+              editable: true,
+              label: 'Payment Plan Date',
+              name: "PaymentPlanDate",
+            },
+            {
+              editable: true,
+              label: 'Bankrupt',
+              name: "BankruptFlag",
+            },
+            {
+              editable: true,
+              label: 'Current Installment Due',
+              name: "CurrentInstallmentDue",
+            },
+            {
+              editable: true,
+              label: 'Last Payment Date',
+              name: "LastPaymentDate",
+            }
+          ]
+        });
+        this.tapFeeBillingFormGroup = new FieldGroupConfig({
+          label: "Billing",
+          description: "Billing information",
+          fieldConfig: [
+            {
+              editable: true,
+              label: 'Number of Years',
+              name: "NumYears",
+              required: true
+            },
+            {
+              editable: true,
+              label: 'Interest Rate',
+              name: "InterestRate",
+              required: true
             },
             {
               editable: true,
@@ -514,7 +798,7 @@ export class FormgroupsService {
               name: "LastPaymentDate",
             }
           ]
-        });
+        });                
         this.billingDataFormGroup = new FieldGroupConfig({
           label: "Billing Data",
           description: 'Billing information',
@@ -712,6 +996,7 @@ export class FormgroupsService {
             editable: true
           }]
         });
+      
         this.billSentToFormGroup = new FieldGroupConfig({
           label: "Bill Sent To",
           description: 'Billee information',

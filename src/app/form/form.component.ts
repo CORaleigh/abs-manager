@@ -3,7 +3,7 @@ import { loadModules } from 'esri-loader';
 import esri = __esri;
 import { SharedService } from '../shared.service';
 import { FormgroupsService } from '../formgroups.service';
-
+import { ConfirmedFormgroupsService } from '../confirmed-form-groups.service'
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
@@ -12,18 +12,19 @@ import { FormgroupsService } from '../formgroups.service';
 export class FormComponent implements OnChanges, OnInit {
   @ViewChild('formDiv') private formDiv: ElementRef;
   
-  constructor(public shared:SharedService) { }
+  constructor(public shared:SharedService, private formGroups:FormgroupsService, private confirmedFormGroups:ConfirmedFormgroupsService) { }
   @Input('feature') feature: esri.Graphic = null;
   @Input('layers') layers: esri.FeatureLayer[] = [];
 
   account: esri.Graphic = null;
 
   @Input('update') update: boolean = true;
-  @Input('formgroups') formgroups: esri.FieldGroupConfig[] = [];
+
   @Output() formSubmitted = new EventEmitter<esri.FeatureLayer>();
   @Output() formCanceled = new EventEmitter<null>();
 
   form: esri.FeatureForm = null;
+  invalid: string[] = [];
   ngOnInit() {
     this.shared.account.subscribe(account => {
       this.account = account;
@@ -37,6 +38,70 @@ export class FormComponent implements OnChanges, OnInit {
     this.form.feature = this.feature;
     this.form.renderNow();
   }
+
+
+  setFormConfigByStatus(status:string, layer:esri.FeatureLayer) {
+    
+    if (status === '2') {
+      if (layer.title.includes("Abatement")) {
+        this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,
+        this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+      }
+      if (layer.title.includes("Assessment")) {
+        this.form.fieldConfig = [this.confirmedFormGroups.assessmentFormGroup,
+          this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+      }
+      if (layer.title.includes("Tap Fee")) {
+        this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
+          this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
+      }    
+    } else {
+      if (layer.title.includes("Abatement")) {
+        this.form.fieldConfig = [this.formGroups.abatementFormGroup,
+        this.formGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+      }
+      if (layer.title.includes("Assessment")) {
+        this.form.fieldConfig = [this.formGroups.assessmentFormGroup,
+          this.formGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+      }
+      if (layer.title.includes("Tap Fee")) {
+        this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
+          this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
+      }       
+    }
+    this.form.feature.attributes = this.form.getValues();
+    this.refreshFields();
+
+    
+
+  }
+
+  refreshFields() {
+    debugger
+        //@ts-ignore
+        this.form.viewModel.inputFields.forEach(field => {
+          field.inputFields.forEach(f => {
+            if (f.required) {
+              console.log(f.value)
+              console.log(f.label)
+            }
+    
+            if (f.required && !f.value) {
+              f.valid = false;
+            } else if (!f.required) {
+              f.valid = true;
+            }
+    
+            f.initialize();
+            f._validate();
+            
+    
+            
+          });
+          this.form.renderNow();
+
+        });
+  }
   async initializeForm() {
     try {
       // Load the modules for the ArcGIS API for JavaScript
@@ -46,6 +111,15 @@ export class FormComponent implements OnChanges, OnInit {
       this.form = new FeatureForm({
         container: this.formDiv.nativeElement,
         groupDisplay: 'sequential'
+      });
+      this.form.on('value-change', e => {
+        if (e.fieldName === 'StatusCode') {     
+          this.setFormConfigByStatus(e.value, e.layer);
+        }
+      });
+      this.form.viewModel.watch('inputFields',()=> {
+        
+        this.refreshFields();   
       });
       return this.form;
     } catch (error) {
@@ -64,16 +138,31 @@ export class FormComponent implements OnChanges, OnInit {
       } else {
         addFeatures = [new Graphic({ attributes: this.form.getValues(), geometry: this.form.feature.geometry })];
       }
-      if (this.shared.role === 'viewer') {
-        const layer = new FeatureLayer({url:'https://mapstest.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
-        layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
-          this.formSubmitted.emit(this.form.layer);
+      
+      this.form.on('submit', e=> {
+       this.refreshFields();
+       this.invalid=[];
+        e.invalid.forEach(field => {
+          this.invalid.push(this.form.layer.fields.filter((value:esri.Field) => {
+            return value.name === field;
+          })[0].alias);
         });
-      } else {
-        this.form.layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
-          this.formSubmitted.emit(this.form.layer);
-        });
-      }
+        if (e.invalid.length === 0) {          
+          if (this.shared.role === 'viewer') {
+            const layer = new FeatureLayer({url:'https://mapstest.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
+            layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
+              this.formSubmitted.emit(this.form.layer);
+            });
+          } else {
+            this.form.layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
+              this.formSubmitted.emit(this.form.layer);
+            });
+          }
+        }
+      }); 
+      this.form.submit();
+
+
 
     })
   }
@@ -85,30 +174,23 @@ export class FormComponent implements OnChanges, OnInit {
       if (!this.form) {
         this.initializeForm().then((form: esri.FeatureForm) => {
           this.form.feature = changes.feature.currentValue;
-          this.form.renderNow();
+          this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
+  
 
         });
       } else {
         this.form.feature = changes.feature.currentValue;
-        this.form.renderNow();
+        this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
+
+
 
       }
+
     }
-    if (changes.formgroups) {
-      if (!this.form) {
-        this.initializeForm().then((form: esri.FeatureForm) => {
-          
-          this.form.fieldConfig = this.formgroups;
-        
-        });
-      } else {
-        this.form.fieldConfig = this.formgroups;
-      }
-    }
+
   }
   refreshForm(form:esri.FeatureForm) {
     this.feature.attributes = form.feature.attributes;
     this.form.feature = this.feature;
-    this.form.renderNow();
   }
 }

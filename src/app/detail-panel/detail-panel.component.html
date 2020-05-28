@@ -25,13 +25,13 @@
       </article>
       <article class="tab-section js-tab-section">
         <div class="trailer-0">
-          <app-form [feature]="feature" [formgroups]="formgroups" [layers]="layers"  (formSubmitted)="submitted($event)"></app-form>
+          <app-form [feature]="feature" [layers]="layers"  (formSubmitted)="submitted($event)"></app-form>
         </div>
       </article>
     </section>
   </div>
   <div id="createDiv" *ngIf="!update">
-    <app-form [feature]="feature" [layers]="layers"   [formgroups]="formgroups" [update]="update" (formSubmitted)="submitted($event)">
+    <app-form [feature]="feature" [layers]="layers"   [update]="update" (formSubmitted)="submitted($event)">
     </app-form>
   </div>
 </div>

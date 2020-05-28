@@ -1,4 +1,4 @@
-<button class="btn  btn-green modifier-class" (click)="submit()">Submit</button>
+<button  class="btn btn-green modifier-class" (click)="submit()">Submit</button>
 
 <app-attribute-lookup (refreshForm)="refreshForm($event)" [sourceForm]="form" [layers]="layers" [accountType]="feature.layer.title"></app-attribute-lookup>
 
@@ -6,5 +6,7 @@
 <button class="btn  btn-green modifier-class" (click)="cancel()">Cancel</button>
 
 <app-payoff-calculator *ngIf="account" [feature]="feature" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
-
+<div *ngIf="invalid.length" class="invalid">
+    Errors with following fields: {{invalid.toString()}}
+</div>
 <div #formDiv></div>
