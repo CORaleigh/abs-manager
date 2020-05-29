@@ -499,6 +499,18 @@ export class FormgroupsService {
               editable: true,
               label: 'Payment Plan',
               name: "PaymentPlanFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })              
             },
             {
               editable: true,
@@ -514,7 +526,37 @@ export class FormgroupsService {
               editable: true,
               label: 'Bankrupt',
               name: "BankruptFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
+
+            {
+              editable: true,
+              label: 'Estate',
+              name: "EstateFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
+            },              
             {
               editable: true,
               label: 'Current Installment Due',
@@ -640,6 +682,18 @@ export class FormgroupsService {
               editable: true,
               label: 'Payment Plan',
               name: "PaymentPlanFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
             {
               editable: true,
@@ -655,7 +709,37 @@ export class FormgroupsService {
               editable: true,
               label: 'Bankrupt',
               name: "BankruptFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
+
+            {
+              editable: true,
+              label: 'Estate',
+              name: "EstateFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
+            },              
             {
               editable: true,
               label: 'Current Installment Due',
@@ -781,6 +865,18 @@ export class FormgroupsService {
               editable: true,
               label: 'Payment Plan',
               name: "PaymentPlanFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
             {
               editable: true,
@@ -796,7 +892,36 @@ export class FormgroupsService {
               editable: true,
               label: 'Bankrupt',
               name: "BankruptFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
+            {
+              editable: true,
+              label: 'Estate',
+              name: "EstateFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
+            },            
             {
               editable: true,
               label: 'Current Installment Due',

@@ -27,7 +27,9 @@ export class MainComponent implements OnInit {
   paymentsLayer: esri.FeatureLayer;
   communicationLayer: esri.FeatureLayer;
   commentsLayer: esri.FeatureLayer;
-  
+  billingParameters: esri.FeatureLayer;
+
+
   accountPanels: Panel[] = [];
   detailPanels: Panel[] = [];
   loaded: boolean = false;
@@ -110,7 +112,12 @@ export class MainComponent implements OnInit {
     if (layer.title.includes('Comments')) {
       this.commentsLayer = layer;
     }       
-               
+    if (layer.title.includes('Billing Parameters')) {
+      this.billingParameters = layer;
+      this.billingParameters.load().then(()=> {
+        this.shared.billingParameters = this.billingParameters;
+      })
+    }                 
     layers.push(layer);
   }
   async initialize() {
@@ -303,6 +310,7 @@ export class MainComponent implements OnInit {
                       loadCss('https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css')
                       loadCss('https://js.arcgis.com/4.15/esri/css/main.css')
                     });
+                  
                     
                   });
                 });

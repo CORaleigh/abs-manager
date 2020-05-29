@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
@@ -11,4 +12,5 @@ export class SharedService {
   selectedProperty:any = null;
   user:any = null;
   role:string = '';
+  billingParameters:esri.FeatureLayer = null;
 }

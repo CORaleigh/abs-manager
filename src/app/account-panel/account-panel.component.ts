@@ -55,7 +55,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   createFeature() {
     loadModules(['esri/Graphic']).then(([Graphic]) => {
       this.update = false;
-      let feature = new Graphic({ attributes: {} });
+      let feature:esri.Graphic = new Graphic({ attributes: {} });
       feature.layer = this.layer;
       if (this.layer.isTable) {
         this.source = this.shared.account.getValue();
@@ -67,20 +67,26 @@ export class AccountPanelComponent implements OnInit, OnChanges {
       
       let cloned: esri.Graphic = this.source.clone();
       feature.geometry = cloned.geometry;
-      console.log(feature);
 
       this.layer.fields.forEach((field: esri.Field) => {
         feature.attributes[field.name] = null;
         if (cloned.attributes[field.name]) {
           feature.attributes[field.name] = cloned.attributes[field.name];
         }
-        if (field.name === 'RollNumInOut') {
+        if (field.name === 'RollNumInOut' && this.layer.title.includes("Assessments")) {
           if (cloned.getAttribute('CITY_DECODE') === 'RALEIGH') {
             feature.attributes[field.name] = "A";
           }
         }
       });
-    
+      feature.setAttribute("StatusCode",'1');
+      if (this.layer.title.includes("Abatements")) {
+        feature.setAttribute("BillingTypeCode", "AB");
+        feature.setAttribute("CategoryTypeCode", "05");
+      }
+      if (this.layer.title.includes("Tap Fees")) {
+        feature.setAttribute("BillingTypeCode", "TF");
+      }      
       console.log(feature);
       if (!this.layer.isTable) {
         feature.attributes.NCPIN = cloned.attributes.PIN_NUM;

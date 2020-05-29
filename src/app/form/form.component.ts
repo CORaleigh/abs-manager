@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, ElementRef, ViewChild, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { loadModules } from 'esri-loader';
+import { loadModules, setDefaultOptions } from 'esri-loader';
 import esri = __esri;
 import { SharedService } from '../shared.service';
 import { FormgroupsService } from '../formgroups.service';
@@ -107,6 +107,28 @@ export class FormComponent implements OnChanges, OnInit {
           this.form.renderNow();
         });
   }
+  setDefaults(e) {
+    if (e.fieldName === 'BillingTypeCode' || e.fieldName === 'CategoryTypeCode') {
+      const billCode = e.target.getValues()['BillingTypeCode'];
+      const catCode = e.target.getValues()['CategoryTypeCode'];
+      if (billCode && catCode) {
+        this.shared.billingParameters.queryFeatures({
+          where: "BillingTypeCode = '" + billCode + "' and CategoryTypeCode = '"+
+          catCode + "'",
+          outFields:['NumYears','InterestRate']
+        }).then((featureSet:esri.FeatureSet) => {
+            if (featureSet.features.length) {
+              let feature = this.form.feature.clone();
+              feature.attributes = e.target.getValues();
+              feature.setAttribute('NumYears', featureSet.features[0].getAttribute('NumYears'));
+              feature.setAttribute('InterestRate', featureSet.features[0].getAttribute('InterestRate'));
+              this.form.feature = feature;
+            }
+        });
+      }
+
+    }
+  }
   async initializeForm() {
     try {
       // Load the modules for the ArcGIS API for JavaScript
@@ -121,6 +143,7 @@ export class FormComponent implements OnChanges, OnInit {
         if (e.fieldName === 'StatusCode') {     
           this.setFormConfigByStatus(e.value, e.layer);
         }
+        this.setDefaults(e);
       });
 
       this.form.on('submit', e=> {
