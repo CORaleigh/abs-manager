@@ -83,13 +83,9 @@ export class FormComponent implements OnChanges, OnInit {
     }
     this.form.feature.attributes = this.form.getValues();
     this.refreshFields();
-
-    
-
   }
 
   refreshFields() {
-    debugger
         //@ts-ignore
         this.form.viewModel.inputFields.forEach(field => {
           field.inputFields.forEach(f => {
@@ -107,11 +103,8 @@ export class FormComponent implements OnChanges, OnInit {
             f.initialize();
             f._validate();
             
-    
-            
           });
           this.form.renderNow();
-
         });
   }
   async initializeForm() {
@@ -172,34 +165,20 @@ export class FormComponent implements OnChanges, OnInit {
     this.formSubmitted.emit(this.form.layer);
   }
   submit() {
-    loadModules(['esri/Graphic', 'esri/layers/FeatureLayer']).then(([Graphic, FeatureLayer]) => {
-
-      
-      
-      this.form.submit();
-
-
-
-    })
+    this.form.submit();
   }
   ngOnChanges(changes: SimpleChanges) {
     
     if (changes.feature.currentValue) {
       this.feature = changes.feature.currentValue;
-      console.log(this.feature)
       if (!this.form) {
         this.initializeForm().then((form: esri.FeatureForm) => {
           this.form.feature = changes.feature.currentValue;
           this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
-  
-
         });
       } else {
         this.form.feature = changes.feature.currentValue;
         this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
-
-
-
       }
 
     }
