@@ -8,7 +8,7 @@
     (click)="getRelatedFeatures($event.currentTarget.innerText)">Comments</button>    
   <button class="btn  btn-green modifier-class account-details-button" *ngIf="update && detailButtons"
     id="paymentButton" (click)="getRelatedFeatures($event.currentTarget.innerText)">Payments</button>
-  <app-payoff-calculator  *ngIf="update && detailButtons" [feature]="feature"></app-payoff-calculator>
+  <app-payoff-calculator  *ngIf="update && detailButtons" [feature]="feature" [source]="'details-panel'"></app-payoff-calculator>
     
   <br />
 

@@ -11,6 +11,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
 
   constructor(private shared:SharedService) { }
   @Input('feature') feature: esri.Graphic = null;
+  @Input('source') source: string = '';
   @ViewChild('payoffInfo') private payoffDiv: ElementRef;
 
   payoffDate:string = new Date().toISOString().slice(0,10);
@@ -21,6 +22,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   totalDue: number = 0;
   dailyRate:number = 0;
   minDate:Date = null;
+  
   @Output() payoffCalculated = new EventEmitter<any>();
 
   ngOnInit() {

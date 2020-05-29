@@ -20,9 +20,9 @@
               <div>Interest Due: {{interestDue | currency}}</div>
               <div>Total Due: {{totalDue | currency}}</div>
             </div>
-      
+    
           <div class="text-right">
-              <button class="btn js-modal-toggle"  (click)="save()">Save</button>
+              <button class="btn js-modal-toggle"  (click)="save()" *ngIf="source === 'form'">Save</button>
       
               <button class="btn js-modal-toggle">Close</button>
               <button class="btn"  (click)="exportPayoff()">Export</button>

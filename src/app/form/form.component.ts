@@ -30,6 +30,9 @@ export class FormComponent implements OnChanges, OnInit {
       this.account = account;
     });
   }
+  showAttributeLookup() {
+    return !(this.feature.layer as esri.FeatureLayer).isTable;
+  }
 
   payoffCalculated(values:any) {
     this.feature.attributes['PaymentAmount'] = parseFloat(values.total.toFixed(2));
@@ -126,7 +129,6 @@ export class FormComponent implements OnChanges, OnInit {
             }
         });
       }
-
     }
   }
   async initializeForm() {

@@ -228,9 +228,13 @@ export class MainComponent implements OnInit {
               label: "PIN#"
             },
             {
+              fieldName: "CITY_DECODE",
+              label: "City"
+            },              
+            {
               fieldName: "OWNER",
               label: "Owner"
-            },
+            },          
             {
               fieldName: "ADDR1",
               label: "Mailing Address 1"
