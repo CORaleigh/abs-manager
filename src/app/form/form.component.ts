@@ -117,8 +117,8 @@ export class FormComponent implements OnChanges, OnInit {
   async initializeForm() {
     try {
       // Load the modules for the ArcGIS API for JavaScript
-      const [FeatureForm] = await loadModules([
-        'esri/widgets/FeatureForm',
+      const [FeatureForm, FeatureLayer, Graphic] = await loadModules([
+        'esri/widgets/FeatureForm', 'esri/layers/FeatureLayer','esri/Graphic'
       ]);
       this.form = new FeatureForm({
         container: this.formDiv.nativeElement,
@@ -129,6 +129,36 @@ export class FormComponent implements OnChanges, OnInit {
           this.setFormConfigByStatus(e.value, e.layer);
         }
       });
+
+      this.form.on('submit', e=> {
+        this.refreshFields();
+        let addFeatures: esri.Graphic[] = [];
+        let updateFeatures: esri.Graphic[] = [];
+        if (this.update) {
+          updateFeatures = [new Graphic({ attributes: this.form.getValues() })];
+        } else {
+          addFeatures = [new Graphic({ attributes: this.form.getValues(), geometry: this.form.feature.geometry })];
+        }        
+        this.invalid=[];
+         e.invalid.forEach(field => {
+           this.invalid.push(this.form.layer.fields.filter((value:esri.Field) => {
+             return value.name === field;
+           })[0].alias);
+         });
+         if (e.invalid.length === 0) {          
+           if (this.shared.role === 'viewer') {
+             const layer = new FeatureLayer({url:'https://mapstest.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
+             layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
+               this.formSubmitted.emit(this.form.layer);
+             });
+           } else {
+             this.form.layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
+               this.formSubmitted.emit(this.form.layer);
+             });
+           }
+         }
+       });       
+
       this.form.viewModel.watch('inputFields',()=> {
         
         this.refreshFields();   
@@ -143,35 +173,9 @@ export class FormComponent implements OnChanges, OnInit {
   }
   submit() {
     loadModules(['esri/Graphic', 'esri/layers/FeatureLayer']).then(([Graphic, FeatureLayer]) => {
-      let addFeatures: esri.Graphic[] = [];
-      let updateFeatures: esri.Graphic[] = [];
-      if (this.update) {
-        updateFeatures = [new Graphic({ attributes: this.form.getValues() })];
-      } else {
-        addFeatures = [new Graphic({ attributes: this.form.getValues(), geometry: this.form.feature.geometry })];
-      }
+
       
-      this.form.on('submit', e=> {
-       this.refreshFields();
-       this.invalid=[];
-        e.invalid.forEach(field => {
-          this.invalid.push(this.form.layer.fields.filter((value:esri.Field) => {
-            return value.name === field;
-          })[0].alias);
-        });
-        if (e.invalid.length === 0) {          
-          if (this.shared.role === 'viewer') {
-            const layer = new FeatureLayer({url:'https://mapstest.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
-            layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
-              this.formSubmitted.emit(this.form.layer);
-            });
-          } else {
-            this.form.layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
-              this.formSubmitted.emit(this.form.layer);
-            });
-          }
-        }
-      }); 
+      
       this.form.submit();
 
 

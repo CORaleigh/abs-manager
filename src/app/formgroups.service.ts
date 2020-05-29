@@ -1322,19 +1322,19 @@ export class FormgroupsService {
               name: "PaymentReceiptNumber",
               label: "Payment Receipt Number",
               editable: true,
-              required: true
+              required: false
             },
             {
               name: "PaymentPostingDate",
               label: "Payment Posting Date",
               editable: true,
-              required: true
+              required: false
             },
             {
               name: "PaymentInterestPaidThruDate",
               label: "Payment Interest Paid Thru Date",
               editable: true,
-              required: true
+              required: false
             },
             {
               name: "PaymentSource",
