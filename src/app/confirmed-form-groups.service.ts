@@ -153,6 +153,16 @@ export class ConfirmedFormgroupsService {
             },
             {
               editable: true,
+              label: 'Advertise Date',
+              name: "AdvertiseDate",
+            },
+            {
+              editable: true,
+              label: 'Advertise Fee',
+              name: "AdvertiseFee",
+            },            
+            {
+              editable: true,
               label: 'Assessment Fee ID',
               name: "AssmntFeeID",
             }
@@ -242,21 +252,25 @@ export class ConfirmedFormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Council Date',
               name: "ABCouncilDate",
             },
             {
               editable: false,
+              required: true,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
             },
             {
               editable: false,
+              required: true,
               label: 'Confirming Resolution Date',
               name: "ConfResDate",
             },
             {
               editable: true,
+              required: true,
               label: 'Advertise Date',
               name: "AdvertiseDate",
             },

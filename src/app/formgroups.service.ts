@@ -165,6 +165,16 @@ export class FormgroupsService {
             },
             {
               editable: true,
+              label: 'Advertise Date',
+              name: "AdvertiseDate",
+            },
+            {
+              editable: true,
+              label: 'Advertise Fee',
+              name: "AdvertiseFee",
+            },              
+            {
+              editable: true,
               label: 'Assessment Fee ID',
               name: "AssmntFeeID",
             }
