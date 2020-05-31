@@ -370,7 +370,6 @@ export class SearchComponent implements OnInit, OnChanges {
         if(this.route.snapshot.children.length) {
           if (this.route.snapshot.children[0].params.id) {
             search.search(this.route.snapshot.children[0].params.id);
-
           }
 
         }
@@ -418,7 +417,6 @@ export class SearchComponent implements OnInit, OnChanges {
                 features.forEach(feature => {
                   reids.push(feature.attributes['REID']);
                 });
-                
                 this.propertyLayer.queryFeatures({where: "REID in ('" + reids.toString().replace(/,/g, "','").replace('[', '').replace(']', '') + "')", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
                   if (!this.view) {
                     this.createMap();
@@ -434,9 +432,9 @@ export class SearchComponent implements OnInit, OnChanges {
               }).catch(reason => console.log(reason));
             }).catch(reason => console.log(reason));
           } else {
+            this.selectionMade.emit(event.result.feature);
 
             this.propertyLayer.queryFeatures({where: "REID = '" + event.result.feature.attributes['REID'] + "'", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
-              this.selectionMade.emit(featureSet.features[0]);
   
               if (!this.view) {
                 this.createMap();
@@ -455,6 +453,8 @@ export class SearchComponent implements OnInit, OnChanges {
       console.log('EsriLoader: ', error);
     }
   }
+
+ 
   createMap() {
     loadModules(['esri/views/MapView', 'esri/Map', 'esri/widgets/Fullscreen','esri/widgets/BasemapGallery','esri/widgets/Expand']).then(
       ([MapView, Map, Fullscreen, BasemapGallery,Expand]) => {

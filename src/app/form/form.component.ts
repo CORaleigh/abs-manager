@@ -31,7 +31,19 @@ export class FormComponent implements OnChanges, OnInit {
     });
   }
   showAttributeLookup() {
-    return !(this.feature.layer as esri.FeatureLayer).isTable;
+    if (!this.feature) {
+      return false;
+    } else {
+      return !(this.feature.layer as esri.FeatureLayer).isTable;
+    }
+  }
+
+  showPayoffCalculator() {
+      if (!this.account || !this.feature) {
+        return false;
+      } else {
+        return this.account && this.feature.layer.title.includes('Payments')
+      }
   }
 
   payoffCalculated(values:any) {
@@ -92,11 +104,6 @@ export class FormComponent implements OnChanges, OnInit {
         //@ts-ignore
         this.form.viewModel.inputFields.forEach(field => {
           field.inputFields.forEach(f => {
-            if (f.required) {
-              console.log(f.value)
-              console.log(f.label)
-            }
-    
             if (f.required && !f.value) {
               f.valid = false;
             } else if (!f.required) {

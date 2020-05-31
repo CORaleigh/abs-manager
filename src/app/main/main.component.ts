@@ -296,7 +296,7 @@ export class MainComponent implements OnInit {
                     this.communicationLayer.popupTemplate.content = [{
                       type: 'text',
                       //@ts-ignore
-                      text: ""
+                      text: "<div><p><span style='font-weight:bold;'>Communications</span></p><p><span /></p><p><span>Account ID: {AccountID}</span></p><p><span /></p><p><span>Communication Date: {CommDate}</span></p><p><span /></p><p><span>Communication Type: {CommTypeCode}</span></p><p><span /></p><p><span>Communication Completed: {CommCompletedDate}</span></p><p><span /></p><p><span>Return Receipt Received: {CommRtrnRcptRcvdDate}</span></p><p><span>Sent To Name 1: {SentToName1}</span></p><p><span>Sent To Name 2: {SentToName2}</span></p<p><span>Sent To Address 1: {SentToAddr1}</span></p><p><span>Sent To Address 2: {SentToAddr2}</span></p><p><span>Sent To Address 3: {SentToAddr3}</span></p><p><span>Sent To Zip Code: {SentToZipCode}</span></p><p><span>Sent To Zip Plus: {SentToZipPlus}</span></p></div>"
                     }];                    
                     this.commentsLayer.load().then(() => {
                       //@ts-ignore
@@ -542,6 +542,8 @@ configureDetailPanels() {
                 setTimeout(() => {
                   if (showDetails) {
                     panel.update = update;
+
+                    
                     panel.selectedFeature = feature;
                     panel.showDetails = true;
                   } else {
@@ -565,7 +567,6 @@ configureDetailPanels() {
           this.selectedAccount = feature;
         }
         selectionMadeMultiple(features: esri.Graphic[]) {
-          console.log(features);
           let ids = [];
           let reids = [];
           features.forEach(feature => {
@@ -581,10 +582,7 @@ configureDetailPanels() {
                 reids.push(feature.attributes['REID']);
               });
             });
-  
-
           })
-
 
         }
         selectionMade(feature: esri.Graphic) {
@@ -638,8 +636,11 @@ configureDetailPanels() {
               panel.features = [feature];
               
               this.togglePanels(feature, (feature.layer as esri.FeatureLayer), true, true);
-              
+              this.router.navigate(['account',  feature.attributes.AccountID]);
+              //debugger
+              //this.shared.account.next(feature);
               // });       
+              this.accountSelected(feature);
             }
           }
           

@@ -42,14 +42,14 @@
         <app-account-panel [title]="panel.title" [visible]="panel.visible" (accountSelected)="accountSelected($event)"
           (createFeatureClicked)="createFeatureClicked($event)" (formSubmitted)="formSubmitted()" (formCanceled)="formSubmitted()"  [update]="panel.update"
           [source]="selectedProperty" [layer]="panel.layer" [features]="panel.features" [fields]="panel.fields"
-          [layers]="layers" [selectedFeature]="panel.feature" [headers]="panel.headers" [formgroups]="panel.formgroups"
+          [layers]="layers" [selectedFeature]="panel.selectedFeature" [headers]="panel.headers" [formgroups]="panel.formgroups"
           [showDetails]="panel.showDetails" (showRelatedTable)="showRelatedTable($event)"
           [detailsTitle]="panel.detailsTitle"></app-account-panel>
       </div>
       <div *ngFor="let panel of detailPanels">
         <app-account-panel [title]="panel.title" [visible]="panel.visible" (accountSelected)="accountSelected($event)"
           (createFeatureClicked)="createFeatureClicked($event)" [update]="panel.update" [source]="selectedAccount"
-          [layer]="panel.layer" [layers]="layers" [selectedFeature]="panel.feature"
+          [layer]="panel.layer" [layers]="layers" [selectedFeature]="panel.selectedFeature"
           (showRelatedTable)="showRelatedTable($event)" [features]="panel.features" [fields]="panel.fields"
           [headers]="panel.headers" [formgroups]="panel.formgroups" [showDetails]="panel.showDetails"
           [detailsTitle]="panel.detailsTitle"></app-account-panel>

@@ -3,13 +3,14 @@ import { loadModules } from 'esri-loader';
 import esri = __esri;
 import * as calcite from 'calcite-web';
 import { SharedService } from '../shared.service';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-account-panel',
   templateUrl: './account-panel.component.html',
   styleUrls: ['./account-panel.component.scss']
 })
 export class AccountPanelComponent implements OnInit, OnChanges {
-  constructor(public shared:SharedService) { }
+  constructor(public shared:SharedService, private router:Router) { }
   @Input('title') title: string = '';
   @Input('detailsTitle') detailsTitle: string = '';
   @Input('headers') headers: string[] = [];
@@ -31,6 +32,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance', 'PrincipalBal', 'TotalDue'];
   ngOnInit() {
     setTimeout(()=>{calcite.init()})
+
   }
   featureSelected(feature: esri.Graphic) {
 
@@ -39,6 +41,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     feature.layer = this.layer;
     if (this.layer.layerId < 4) {
       this.shared.account.next(feature);
+      this.router.navigate(['account',feature.getAttribute('AccountID')]);
     }
     this.accountSelected.emit(feature);
   }
@@ -87,7 +90,6 @@ export class AccountPanelComponent implements OnInit, OnChanges {
       if (this.layer.title.includes("Tap Fees")) {
         feature.setAttribute("BillingTypeCode", "TF");
       }      
-      console.log(feature);
       if (!this.layer.isTable) {
         feature.attributes.NCPIN = cloned.attributes.PIN_NUM;
         feature.attributes.AccountID = 0;
@@ -99,7 +101,15 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     })
   }
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedFeature) {
+      if (changes.selectedFeature.currentValue) {
+       this.featureSelected(this.selectedFeature);
+
+      }
+    }
     if (changes.features) {
+      
+
       if (this.title === 'Bills') {
         this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
           return b.attributes.NoticeDate - a.attributes.NoticeDate;

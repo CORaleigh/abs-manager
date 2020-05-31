@@ -4,8 +4,8 @@
 
 
 <button  class="btn  btn-green modifier-class" (click)="cancel()">Cancel</button>
+<app-payoff-calculator *ngIf="showPayoffCalculator()" [source]="'form'" [feature]="feature" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
 
-<app-payoff-calculator *ngIf="account && feature.layer.title.includes('Payments')" [source]="'form'" [feature]="feature" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
 <div *ngIf="invalid.length" class="invalid">
     Errors with following fields: {{invalid.toString()}}
 </div>

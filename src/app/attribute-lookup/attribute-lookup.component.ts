@@ -48,7 +48,6 @@ export class AttributeLookupComponent implements OnInit {
   }
 
   setForm(section, graphic) {
-    debugger
     this.create = true;
     this.form.fieldConfig = [section.fieldConfig];
     this.form.feature = graphic;

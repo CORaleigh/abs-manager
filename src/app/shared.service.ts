@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import esri = __esri;
+import { ActivatedRouteSnapshot } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,4 +14,5 @@ export class SharedService {
   user:any = null;
   role:string = '';
   billingParameters:esri.FeatureLayer = null;
+  route:ActivatedRouteSnapshot = null;
 }

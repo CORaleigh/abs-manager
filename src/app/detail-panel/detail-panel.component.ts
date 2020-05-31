@@ -71,28 +71,29 @@ export class DetailPanelComponent implements OnInit, OnChanges {
 
     if (this.update) {
       if (!this.featureWidget) {
-        this.initializeFeature().then((featureWidget: esri.Feature) => {
-                    //@ts-ignore
+        if (changes.feature.currentValue) {
+          this.initializeFeature().then((featureWidget: esri.Feature) => {
+  
+            //@ts-ignore 
+                changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
 
-              changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
+            //@ts-ignore
+            changes.feature.currentValue.sourceLayer = changes.feature.currentValue.layer;
 
-          //@ts-ignore
-          changes.feature.currentValue.sourceLayer = changes.feature.currentValue.layer;
-          console.log(changes.feature.currentValue);
+            this.featureWidget.graphic = changes.feature.currentValue;
 
-          this.featureWidget.graphic = changes.feature.currentValue;
-
-          // if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
-          //   this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
-          //   this.fromDateLabel = "Interest Paid Thru Date: ";
-          // } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
-          //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
-          //   this.fromDateLabel = "Confirming Resolution Date: ";
-          // } else if (this.featureWidget.graphic.attributes['ContractDate']) {
-          //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
-          //   this.fromDateLabel = "Contract Date: ";
-          // }  
-        });
+            // if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
+            //   this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
+            //   this.fromDateLabel = "Interest Paid Thru Date: ";
+            // } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
+            //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
+            //   this.fromDateLabel = "Confirming Resolution Date: ";
+            // } else if (this.featureWidget.graphic.attributes['ContractDate']) {
+            //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
+            //   this.fromDateLabel = "Contract Date: ";
+            // }  
+          });
+        }
       } else {
         this.featureWidget.graphic = changes.feature.currentValue;
         // if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {

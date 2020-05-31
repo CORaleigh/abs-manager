@@ -115,19 +115,21 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   }
   ngOnChanges(changes:SimpleChanges) {
     if (changes.feature) {
-      if (changes.feature.currentValue.attributes) {
-
-           if (changes.feature.currentValue.attributes['InterestPaidThruDate']) {
-            this.fromDate = new Date(changes.feature.currentValue.attributes['InterestPaidThruDate']);
-            this.fromDateLabel = "Interest Paid Thru Date: ";
-          } else if (changes.feature.currentValue.attributes['ConfResDate']) {
-            this.fromDate = new Date(changes.feature.currentValue.attributes['ConfResDate']);
-            this.fromDateLabel = "Confirming Resolution Date: ";
-          } else if (changes.feature.currentValue.attributes['ContractDate']) {
-            this.fromDate = new Date(changes.feature.currentValue.attributes['ContractDate']);
-            this.fromDateLabel = "Contract Date: ";
-          }    
-          this.calculatePayoff();     
+      if (changes.feature.currentValue) {
+        if (changes.feature.currentValue.attributes) {
+  
+             if (changes.feature.currentValue.attributes['InterestPaidThruDate']) {
+              this.fromDate = new Date(changes.feature.currentValue.attributes['InterestPaidThruDate']);
+              this.fromDateLabel = "Interest Paid Thru Date: ";
+            } else if (changes.feature.currentValue.attributes['ConfResDate']) {
+              this.fromDate = new Date(changes.feature.currentValue.attributes['ConfResDate']);
+              this.fromDateLabel = "Confirming Resolution Date: ";
+            } else if (changes.feature.currentValue.attributes['ContractDate']) {
+              this.fromDate = new Date(changes.feature.currentValue.attributes['ContractDate']);
+              this.fromDateLabel = "Contract Date: ";
+            }    
+            this.calculatePayoff();     
+        }
       }
     }
   }
