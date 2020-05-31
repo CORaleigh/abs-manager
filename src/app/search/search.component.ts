@@ -4,13 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import esri = __esri;
 import { Subscription } from 'rxjs';
+import { SharedService } from '../shared.service';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit, OnChanges {
-  constructor(private route: ActivatedRoute, private router: Router) { 
+  constructor(public shared:SharedService, private route: ActivatedRoute, private router: Router) { 
     
   }
   @ViewChild('searchDiv') private searchDiv: ElementRef;
@@ -19,6 +20,7 @@ export class SearchComponent implements OnInit, OnChanges {
   @Input('basemap') basemap: string = null;
   @Output() selectionMade = new EventEmitter<esri.Graphic>();
   @Output() selectionMadeMultiple = new EventEmitter<esri.Graphic[]>();
+  @Output() propertiesSelected = new EventEmitter<esri.Graphic[]>();
 
   propertyLayer: esri.FeatureLayer = null;
   view: esri.MapView = null;
@@ -387,6 +389,7 @@ export class SearchComponent implements OnInit, OnChanges {
       }
       search.on('select-result', event => {
         
+        
         if (event.result.feature.geometry) {
           this.selectionMade.emit(event.result.feature);
           if (!this.view) {
@@ -407,13 +410,14 @@ export class SearchComponent implements OnInit, OnChanges {
               numField = 'DirResNum';
             }
             
-            this.getLayerByTitle('Assessment').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toISOString()
+            this.getLayerByTitle('Assessment').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
             + "' and "+numField+" = '" + event.result.feature.attributes[numField]+"'"}).then(featureSet => {
               features = features.concat(featureSet.features);
-              this.getLayerByTitle('Abatements').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toISOString()
+              this.getLayerByTitle('Abatements').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
               + "' and "+numField+" = '" + event.result.feature.attributes[numField]+"'"}).then(featureSet => {
                 features = features.concat(featureSet.features);
                 this.selectionMadeMultiple.emit(features);
+            
                 features.forEach(feature => {
                   reids.push(feature.attributes['REID']);
                 });
@@ -425,6 +429,9 @@ export class SearchComponent implements OnInit, OnChanges {
 
                     //featureSet.features.forEach(feature => {
                       this.addPropertyGraphic(featureSet.features);
+                      this.propertiesSelected.emit(featureSet.features);
+
+
                    // })
                     //}
                   }                
@@ -435,7 +442,7 @@ export class SearchComponent implements OnInit, OnChanges {
             this.selectionMade.emit(event.result.feature);
 
             this.propertyLayer.queryFeatures({where: "REID = '" + event.result.feature.attributes['REID'] + "'", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
-  
+              this.propertiesSelected.emit(featureSet.features);
               if (!this.view) {
                 this.createMap();
               } else {
@@ -554,7 +561,7 @@ export class SearchComponent implements OnInit, OnChanges {
         changes.layers.currentValue.forEach((layer: esri.FeatureLayer) => {
           if (layer.url.indexOf('Property') > -1) {
               this.propertyLayer = layer;
-
+            
           }
         });
         this.createMap();

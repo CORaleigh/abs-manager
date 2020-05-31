@@ -28,7 +28,7 @@
   </header>
   <div class="grid-container fade-in"  *ngIf="loaded">
     <div class="column-24">
-      <app-search [layers]="layers" (selectionMade)="selectionMade($event)" (selectionMadeMultiple)="selectionMadeMultiple($event)" [basemap]="basemap"></app-search>
+      <app-search [layers]="layers" (selectionMade)="selectionMade($event)" (selectionMadeMultiple)="selectionMadeMultiple($event)" (propertiesSelected)="propertiesSelected($event)" [basemap]="basemap"></app-search>
       <div class="grid-container">
         <div class="column-24">
           <nav class="breadcrumbs modifier-class" id="crumbs">

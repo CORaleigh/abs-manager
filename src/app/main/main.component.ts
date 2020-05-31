@@ -571,18 +571,36 @@ configureDetailPanels() {
           let reids = [];
           features.forEach(feature => {
             ids.push(feature.attributes['AccountID']);
-          })
+          });
           this.accountLayers.forEach(layer => {
             let panel = this.accountPanels.filter((panel: Panel) => {
               return panel.layer === layer;
             })[0];
             layer.queryFeatures({where: "AccountID in (" + ids.toString().replace('[','').replace(']', '') + ")" ,outFields:['*']}).then(featureSet => {
               panel.features = featureSet.features;
+              
               panel.features.forEach(feature => {
                 reids.push(feature.attributes['REID']);
               });
             });
           })
+
+        }
+
+        propertiesSelected(features:esri.Graphic[]) {
+          if (features.length === 1) {
+            this.selectedProperty = features[0];
+          } else if (features.length > 1) {
+            if (this.selectedAccount) {
+              let matches = features.filter(feature=> {
+                return feature.getAttribute("REID") === this.selectedAccount.getAttribute("REID");
+              });
+              if (matches.length){
+                this.selectedProperty = matches[0];
+              }
+            }
+          }
+          this.shared.selectedProperty = this.selectedProperty;
 
         }
         selectionMade(feature: esri.Graphic) {
