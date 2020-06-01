@@ -543,8 +543,10 @@ configureDetailPanels() {
                   if (showDetails) {
                     panel.update = update;
 
-                    
-                    panel.selectedFeature = feature;
+                    if (update) {
+
+                      panel.selectedFeature = feature;
+                    }
                     panel.showDetails = true;
                   } else {
                     panel.selectedFeature = null;

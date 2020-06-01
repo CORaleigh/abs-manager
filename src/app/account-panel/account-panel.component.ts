@@ -35,7 +35,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
 
   }
   featureSelected(feature: esri.Graphic) {
-
+    
     this.update = true;
     this.selectedFeature = feature;
     feature.layer = this.layer;
