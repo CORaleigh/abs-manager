@@ -45,6 +45,7 @@ export class FormgroupsService {
               editable: false,
               label: 'Real Estate ID',
               name: "REID",
+              maxLength: 7
             },
             {
               editable: false,
@@ -55,6 +56,7 @@ export class FormgroupsService {
               editable: false,
               label: 'PIN #',
               name: "NCPIN",
+              maxLength: 10
             },
             {
               editable: true,
@@ -116,19 +118,22 @@ export class FormgroupsService {
               editable: true,
               label: 'Roll #',
               name: "RollNum",
-              required: false               
+              required: false,
+              maxLength: 9             
             },
             {
               editable: true,
               label: 'Roll Lot',
               name: "RollLotNum",
-              required: false               
+              required: false,
+              maxLength: 3              
             },            
             {
               editable: true,
               label: 'Roll # In/Out',
               name: "RollNumInOut",
               required: true,
+              maxLength: 1,
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -157,6 +162,7 @@ export class FormgroupsService {
               editable: true,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
+              maxLength:9
             },
             {
               editable: true,
@@ -198,6 +204,7 @@ export class FormgroupsService {
               editable: false,
               label: 'Real Estate ID',
               name: "REID",
+              maxLength: 7
             },
             {
               editable: false,
@@ -208,6 +215,7 @@ export class FormgroupsService {
               editable: false,
               label: 'PIN #',
               name: "NCPIN",
+              maxLength: 10
             },
             {
               editable: true,
@@ -271,6 +279,7 @@ export class FormgroupsService {
               editable: false,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
+              maxLength:9
             },
             {
               editable: false,
@@ -291,6 +300,7 @@ export class FormgroupsService {
               editable: true,
               label: 'Housing Reference',
               name: "ABHousingRef",
+              maxLength:9
             },
             {
               editable: true,
@@ -323,6 +333,7 @@ export class FormgroupsService {
               editable: false,
               label: 'Real Estate ID',
               name: "REID",
+              maxLength: 7
             },
             {
               editable: false,
@@ -333,6 +344,7 @@ export class FormgroupsService {
               editable: false,
               label: 'PIN #',
               name: "NCPIN",
+              maxLength: 10
             },
             {
               editable: true,
@@ -377,6 +389,7 @@ export class FormgroupsService {
               editable: false,
               label: 'Contract #',
               name: "ContractNum",
+              maxLength:9
             },
             {
               editable: true,
@@ -516,6 +529,7 @@ export class FormgroupsService {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
+              maxLength: 35
             },
             {
               editable: true,
@@ -945,17 +959,20 @@ export class FormgroupsService {
           {
             name: 'REID',
             label: 'Real Estate ID',
-            editable: false
+            editable: false,
+            maxLength: 7
           },
           {
             name: 'NCPIN',
             label: 'NCPIN',
-            editable: false
+            editable: false,
+            maxLength: 10
           },
           {
             name: 'NCPIN_Ext',
             label: 'NCPIN Extension',
-            editable: false
+            editable: false,
+            maxLength: 3
           },
           {
             name: 'BillingTypeCode',
@@ -1053,17 +1070,31 @@ export class FormgroupsService {
           {
             name: 'RollNum',
             label: 'Roll Number',
-            editable: false
+            editable: false,
+            maxLength:9
           },
           {
             name: 'RollNumInOut',
             label: 'Roll Number In Out',
-            editable: false
+            editable: false,
+            maxLength:1,
+            domain: new CodedValueDomain({
+              codedValues: [
+                {
+                  name: "Inside City Limits",
+                  code: "A"
+                },
+                {
+                  name: "Outside City Limits",
+                  code: ""
+                }
+              ]})
           },
           {
             name: 'RollLotNum',
             label: 'Roll Lot Number',
-            editable: false
+            editable: false,
+            maxLength:3
           },
           {
             name: 'NoticeDate',
@@ -1128,7 +1159,8 @@ export class FormgroupsService {
           {
             name: 'NoticeYear',
             label: 'NoticeYear',
-            editable: true
+            editable: true,
+            maxLength: 4
           }]
         });
       
@@ -1330,37 +1362,44 @@ export class FormgroupsService {
             {
               name: 'SentToName1',
               label: 'Sent To Name 1',
-              editable: true
+              editable: true,
+              maxLength: 35
             },
             {
               name: 'SentToName2',
               label: 'Sent To Name 2',
-              editable: true
+              editable: true,
+              maxLength: 35
             },
             {
               name: 'SentToAddr1',
               label: 'Sent To Address 1',
-              editable: true
+              editable: true,
+              maxLength: 35
             },
             {
               name: 'SentToAddr2',
               label: 'Sent To Address 2',
-              editable: true
+              editable: true,
+              maxLength: 35
             },
             {
               name: 'SentToAddr3',
               label: 'Sent To Address 3',
-              editable: true
+              editable: true,
+              maxLength: 35
             },
             {
               name: 'SentToZipCode',
               label: 'Sent To Zip Code',
-              editable: true
+              editable: true,
+              maxLength: 5
             },
             {
               name: 'SentToZipPlus',
               label: 'Sent To Zip Plus',
-              editable: true
+              editable: true,
+              maxLength: 4
             }
           ]
         });
@@ -1457,6 +1496,7 @@ export class FormgroupsService {
               name: "PaymentReceiptNumber",
               label: "Payment Receipt Number",
               editable: true,
+              maxLength: 8,
               required: false
             },
             {
@@ -1474,32 +1514,62 @@ export class FormgroupsService {
             {
               name: "PaymentSource",
               label: "Payment Source",
-              editable: true
+              editable: true,
+              maxLength: 3
             },
             {
               name: "PaymentMethod",
               label: "Payment Method",
-              editable: true
+              editable: true,
+              maxLength: 3
             },
             {
               name: "PaymentJournalVoucherNum",
               label: "Payment Journal Voucher Number",
-              editable: true
+              editable: true,
+              maxLength: 8
             },
             {
               name: "PaymentDescription",
               label: "Payment Description",
-              editable: true
+              editable: true,
+              maxLength: 25
             },
             {
               name: "PaymentReversedFlag",
               label: "Payment Reversed Flag",
-              editable: true
+              editable: true,
+              maxLength: 1,
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })   
             },
             {
               name: "PaymentHoldingFlag",
               label: "Payment Holding Flag",
-              editable: true
+              editable: true,
+              maxLength: 1,
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })   
             },
             {
               name: "PaymentTransactionNum",
@@ -1509,7 +1579,20 @@ export class FormgroupsService {
             {
               name: "PaymentPrepayTransferFlag",
               label: "Payment Prepay Transfer Flag",
-              editable: true
+              editable: true,
+              maxLength: 1,
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })   
             },
             {
               name: "BillingTypeCode",
@@ -1649,22 +1732,26 @@ export class FormgroupsService {
             {
               name: "CashieringTransactionNum",
               label: "Cashiering Transaction Number",
-              editable: true
+              editable: true,
+              maxLength: 6
             },
             {
               name: "CashieringUserID",
               label: "Cashiering User ID",
-              editable: true
+              editable: true,
+              maxLength: 20
             },
             {
               name: "CashieringLocationCode",
               label: "Cashiering Location Code",
-              editable: true
+              editable: true,
+              maxLength: 4
             },
             {
               name: "CashieringWorkstationNum",
               label: "Cashiering Workstation Number",
-              editable: true
+              editable: true,
+              maxLength: 10
             }
           ]
         });
@@ -1701,7 +1788,8 @@ export class FormgroupsService {
           {
             name: "ContractNum",
             label: "Contract Number",
-            editable: true
+            editable: true,
+            maxLength:9
           },
           {
             name: "ContractDate",
@@ -1711,17 +1799,20 @@ export class FormgroupsService {
           {
             name: "ContractDescription",
             label: "Contract Description",
-            editable: true
+            editable: true,
+            maxLength: 100
           },     
           {
             name: "ContractDeedBook",
             label: "Deed Book",
-            editable: true
+            editable: true,
+            maxLength: 4
           },     
           {
             name: "ContractDeedPage",
-            label: "Deed Pages",
-            editable: true
+            label: "Deed Page",
+            editable: true,
+            maxLength: 4
           }    
         ]
       });      
@@ -1732,17 +1823,30 @@ export class FormgroupsService {
           {
             name: "RollNum",
             label: "Roll Number",
-            editable: true
+            editable: true,
+            maxLength: 9
           },
           {
             name: "RollNumInOut",
             label: "Roll Number In/Out",
-            editable: true
+            editable: true,
+            domain: new CodedValueDomain({
+              codedValues: [
+                {
+                  name: "Inside City Limits",
+                  code: "A"
+                },
+                {
+                  name: "Outside City Limits",
+                  code: ""
+                }
+              ]})            
           },     
           {
             name: "ConfResNum",
             label: "Confirming Resolution Number",
-            editable: true
+            editable: true,
+            maxLength:9
           },     
           {
             name: "ConfResDate",
@@ -1752,7 +1856,8 @@ export class FormgroupsService {
           {
             name: "DirResNum",
             label: "Directing Resolution Number",
-            editable: true
+            editable: true,
+            maxLength: 9
           },     
           {
             name: "DirResDate",
@@ -1768,7 +1873,8 @@ export class FormgroupsService {
           {
             name: "ConfResNum",
             label: "Resolution Number",
-            editable: true
+            editable: true,
+            maxLength:9
           },
           {
             name: "ConfResDate",
@@ -1778,7 +1884,8 @@ export class FormgroupsService {
           {
             name: "ConfResDesc",
             label: "Resolution Description",
-            editable: true
+            editable: true,
+            maxLength: 100
           }
         ]
       });    
@@ -1790,7 +1897,8 @@ export class FormgroupsService {
           {
             name: "DirResNum",
             label: "Resolution Number",
-            editable: true
+            editable: true,
+            maxLength: 9
           },
           {
             name: "DirResDate",
@@ -1800,7 +1908,8 @@ export class FormgroupsService {
           {
             name: "ConditionCode",
             label: "Condition Code",
-            editable: true
+            editable: true,
+            maxLength: 2
           }
         ]
       });  
@@ -1811,7 +1920,8 @@ export class FormgroupsService {
           {
             name: "CorrResNum",
             label: "Resolution Number",
-            editable: true
+            editable: true,
+            maxLength: 9
           },
           {
             name: "CorrResDate",
@@ -1821,12 +1931,14 @@ export class FormgroupsService {
           {
             name: "CorrResDesc",
             label: "Description",
-            editable: true
+            editable: true,
+            maxLength: 100
           },
           {
             name: "ConfResNum",
             label: "Confirming Resolution Number",
-            editable: true
+            editable: true,
+            maxLength:9
           },
           {
             name: "ConfResDate",
@@ -1842,37 +1954,44 @@ export class FormgroupsService {
             {
               editable: true,
               label: 'Alternate Bill To Name 1',
-              name: "AltBillToName1"
+              name: "AltBillToName1",
+              maxLength: 35
             },
             {
               editable: true,
               label: 'Alternate Bill To Name 2',
               name: "AltBillToName2",
+              maxLength: 35
             },
             {
               editable: true,
               label: 'Alternate Bill To Address 1',
               name: "AltBillToAddr1",
+              maxLength: 35
             },
             {
               editable: true,
               label: 'Alternate Bill To Address 2',
               name: "AltBillToAddr2",
+              maxLength: 35
             },
             {
               editable: true,
               label: 'Alternate Bill To Address 3',
               name: "AltBillToAddr3",
+              maxLength: 35
             },
             {
               editable: true,
               label: 'Alternate Bill To Zip Code',
               name: "AltBillToZipCode",
+              maxLength: 5
             },
             {
               editable: true,
               label: 'Alternate Bill To Zip Plus',
               name: "AltBillToZipPlus",
+              maxLength: 4
             }
           ]
         });

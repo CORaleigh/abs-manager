@@ -33,6 +33,8 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'Real Estate ID',
               name: "REID",
+              maxLength: 7
+
             },
             {
               editable: false,
@@ -43,6 +45,7 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'PIN #',
               name: "NCPIN",
+              maxLength: 10
             },
             {
               editable: true,
@@ -104,19 +107,22 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Roll #',
               name: "RollNum",
-              required: true               
+              required: true,
+              maxLength:9          
             },
             {
               editable: true,
               label: 'Roll Lot',
               name: "RollLotNum",
-              required: true               
+              required: true,
+              maxLength:3             
             },            
             {
               editable: true,
               label: 'Roll # In/Out',
               name: "RollNumInOut",
               required: true,
+              maxLength:1,
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -145,6 +151,7 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
+              maxLength:9
             },
             {
               editable: false,
@@ -186,6 +193,7 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'Real Estate ID',
               name: "REID",
+              maxLength: 7
             },
             {
               editable: false,
@@ -196,6 +204,7 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'PIN #',
               name: "NCPIN",
+              maxLength: 10
             },
             {
               editable: true,
@@ -261,6 +270,7 @@ export class ConfirmedFormgroupsService {
               required: true,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
+              maxLength:9
             },
             {
               editable: false,
@@ -283,6 +293,7 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Housing Reference',
               name: "ABHousingRef",
+              maxLength:9
             },
             {
               editable: true,
@@ -315,6 +326,7 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'Real Estate ID',
               name: "REID",
+              maxLength: 7
             },
             {
               editable: false,
@@ -325,6 +337,7 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'PIN #',
               name: "NCPIN",
+              maxLength: 10
             },
             {
               editable: true,
@@ -369,6 +382,7 @@ export class ConfirmedFormgroupsService {
               editable: false,
               label: 'Contract #',
               name: "ContractNum",
+              maxLength:9
             },
             {
               editable: true,
@@ -491,11 +505,24 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Payment Plan',
               name: "PaymentPlanFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })              
             },
             {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
+              maxLength: 35
             },
             {
               editable: true,
@@ -506,6 +533,18 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Bankrupt',
               name: "BankruptFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
             {
               editable: true,
@@ -632,6 +671,18 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Payment Plan',
               name: "PaymentPlanFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })              
             },
             {
               editable: true,
@@ -647,6 +698,18 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Bankrupt',
               name: "BankruptFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
             {
               editable: true,
@@ -773,6 +836,18 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Payment Plan',
               name: "PaymentPlanFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })              
             },
             {
               editable: true,
@@ -788,6 +863,18 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Bankrupt',
               name: "BankruptFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              })                 
             },
             {
               editable: true,
