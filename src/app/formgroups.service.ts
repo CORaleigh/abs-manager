@@ -170,7 +170,7 @@ export class FormgroupsService {
               name: "ConfResDate",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Advertise Date',
               name: "AdvertiseDate",
             },
@@ -287,7 +287,7 @@ export class FormgroupsService {
               name: "ConfResDate",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Advertise Date',
               name: "AdvertiseDate",
             },
@@ -464,13 +464,13 @@ export class FormgroupsService {
               name: "ActionTypeCode",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Total Lien Amount',
               name: "TotalLienAmount",
               required: false
             },
             {
-              editable: true,
+              editable: false,
               required: false,
               label: 'Principal Balance',
               name: "PrincipalBalance",
@@ -481,18 +481,18 @@ export class FormgroupsService {
               name: "PrincipalPastDue",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Principal Pre-paid',
               name: "PrincipalPrePaid",
             },
             {
-              editable: true,
+              editable: false,
               required: false,
               label: 'Interest Paid Thru',
               name: "InterestPaidThruDate",
             },
             {
-              editable: true,
+              editable: false,
               required: false,
               label: 'Interest Start Date',
               name: "InterestStartDate",
@@ -577,7 +577,7 @@ export class FormgroupsService {
               name: "CurrentInstallmentDue",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Last Payment Date',
               name: "LastPaymentDate",
             }
@@ -665,18 +665,18 @@ export class FormgroupsService {
               name: "PrincipalPastDue",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Principal Pre-paid',
               name: "PrincipalPrePaid",
             },
             {
-              editable: true,
+              editable: false,
               required: false,
               label: 'Interest Paid Thru',
               name: "InterestPaidThruDate",
             },
             {
-              editable: true,
+              editable: false,
               required: false,
               label: 'Interest Start Date',
               name: "InterestStartDate",
@@ -760,7 +760,7 @@ export class FormgroupsService {
               name: "CurrentInstallmentDue",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Last Payment Date',
               name: "LastPaymentDate",
             }
@@ -853,14 +853,14 @@ export class FormgroupsService {
               name: "PrincipalPrePaid",
             },
             {
-              editable: true,
-              required: true,
+              editable: false,
+              required: false,
               label: 'Interest Paid Thru',
               name: "InterestPaidThruDate",
             },
             {
-              editable: true,
-              required: true,
+              editable: false,
+              required: false,
               label: 'Interest Start Date',
               name: "InterestStartDate",
             },
@@ -942,7 +942,7 @@ export class FormgroupsService {
               name: "CurrentInstallmentDue",
             },
             {
-              editable: true,
+              editable: false,
               label: 'Last Payment Date',
               name: "LastPaymentDate",
             }
@@ -1508,7 +1508,7 @@ export class FormgroupsService {
             {
               name: "PaymentInterestPaidThruDate",
               label: "Payment Interest Paid Thru Date",
-              editable: true,
+              editable: false,
               required: false
             },
             {
