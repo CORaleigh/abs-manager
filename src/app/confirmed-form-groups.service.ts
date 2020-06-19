@@ -380,12 +380,13 @@ export class ConfirmedFormgroupsService {
             },
             {
               editable: false,
+              required: true,
               label: 'Contract #',
               name: "ContractNum",
               maxLength:9
             },
             {
-              editable: true,
+              editable: false,
               required: true,
               label: 'Contract Date',
               name: "ContractDate",
@@ -522,12 +523,15 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
-              maxLength: 35
+              maxLength: 35,
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    
             },
             {
               editable: true,
               label: 'Payment Plan Date',
               name: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    
+
             },
             {
               editable: true,
@@ -688,11 +692,15 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
+              maxLength: 35,
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"              
             },
             {
               editable: true,
               label: 'Payment Plan Date',
               name: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"              
+
             },
             {
               editable: true,
@@ -853,11 +861,14 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
+              maxLength: 35,
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"                  
             },
             {
               editable: true,
               label: 'Payment Plan Date',
               name: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    
             },
             {
               editable: true,

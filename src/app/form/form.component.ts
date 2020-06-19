@@ -151,8 +151,17 @@ export class FormComponent implements OnChanges, OnInit {
       this.form.on('value-change', e => {
         if (e.fieldName === 'StatusCode') {     
           this.setFormConfigByStatus(e.value, e.layer);
+          this.setDefaults(e);
         }
-        this.setDefaults(e);
+        if (e.fieldName === 'TotalLienAmount') {
+          this.form.feature.setAttribute('PrincipalBalance', e.value);
+          this.form.feature.setAttribute('TotalLienAmount', e.value);
+
+          this.feature.attributes = this.form.feature.attributes;
+          this.form.feature = this.feature;
+          this.form.renderNow();
+
+        }
       });
 
       this.form.on('submit', e=> {
@@ -218,6 +227,7 @@ export class FormComponent implements OnChanges, OnInit {
   }
   refreshForm(form:esri.FeatureForm) {
     this.feature.attributes = form.feature.attributes;
+    debugger
     this.form.feature = this.feature;
     this.form.renderNow();
   }

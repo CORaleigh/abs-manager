@@ -387,12 +387,13 @@ export class FormgroupsService {
             },
             {
               editable: false,
+              required: true,
               label: 'Contract #',
               name: "ContractNum",
               maxLength:9
             },
             {
-              editable: true,
+              editable: false,
               required: true,
               label: 'Contract Date',
               name: "ContractDate",
@@ -529,12 +530,14 @@ export class FormgroupsService {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
-              maxLength: 35
+              maxLength: 35,
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
             },
             {
               editable: true,
               label: 'Payment Plan Date',
               name: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
             },
             {
               editable: true,
@@ -654,7 +657,7 @@ export class FormgroupsService {
               required: true
             },
             {
-              editable: true,
+              editable: false,
               required: true,
               label: 'Principal Balance',
               name: "PrincipalBalance",
@@ -713,11 +716,16 @@ export class FormgroupsService {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
+              maxLength: 35,
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
+
             },
             {
               editable: true,
               label: 'Payment Plan Date',
               name: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
+
             },
             {
               editable: true,
@@ -837,7 +845,7 @@ export class FormgroupsService {
               required: true
             },
             {
-              editable: true,
+              editable: false,
               required: true,
               label: 'Principal Balance',
               name: "PrincipalBalance",
@@ -896,11 +904,16 @@ export class FormgroupsService {
               editable: true,
               label: 'Payment Plan Description',
               name: "PaymentPlanDesc",
+              maxLength: 35,
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
+
             },
             {
               editable: true,
               label: 'Payment Plan Date',
               name: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
+
             },
             {
               editable: true,
@@ -1942,17 +1955,20 @@ export class FormgroupsService {
             name: "ContractNum",
             label: "Contract Number",
             editable: true,
+            required: true,
             maxLength:9
           },
           {
             name: "ContractDate",
             label: "Contract Date",
-            editable: true
+            editable: true,
+            required: true,            
           },     
           {
             name: "ContractDescription",
             label: "Contract Description",
             editable: true,
+            required: true,            
             maxLength: 100
           },     
           {

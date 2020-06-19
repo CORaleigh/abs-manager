@@ -126,7 +126,7 @@ export class AttributeLookupComponent implements OnInit {
         this.sections.push({layer: layer, fieldConfig: this.formGroups.rollFormGroup, fields: ['RollNum'], inputs: ['Roll#'], values: [""], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});        
       }  
       if (layer.title.includes("Contract")) {
-        this.sections.push({layer: layer, fieldConfig: this.formGroups.contractFormGroup, fields: ['ContractNum'], inputs: ['Contract#'], values: [""], title: layer.title, text: '', accountTypes: ['Tap Fee'], features:[]});        
+        this.sections.push({layer: layer, fieldConfig: this.formGroups.contractFormGroup, fields: ['ContractNum','ContractDate'], inputs: ['Contract#'], values: [""], title: layer.title, text: '', accountTypes: ['Tap Fee'], features:[]});        
       }             
     })
   }

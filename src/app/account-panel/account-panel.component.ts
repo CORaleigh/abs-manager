@@ -66,8 +66,12 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         if(this.layer.getField('PaymentDate')) {
           this.source.attributes['PaymentDate'] = new Date();
         }
+
       }
-      
+      if (this.layer.getField('PaymentPlanFlag')) {
+        
+        this.source.attributes['PaymentPlanFlag'] = 'N';
+      }
       let cloned: esri.Graphic = this.source.clone();
       feature.geometry = cloned.geometry;
 
