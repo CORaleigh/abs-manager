@@ -29,7 +29,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   @Output() accountSelected = new EventEmitter<esri.Graphic>();
   @Output() createFeatureClicked = new EventEmitter<any>();
   @Input('source') source: esri.Graphic;
-  currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance', 'PrincipalBal', 'TotalDue'];
+  currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance', 'PrincipalBal', 'TotalDue', 'Balance'];
   ngOnInit() {
     setTimeout(()=>{calcite.init()})
 
@@ -107,6 +107,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
 
       }
     }
+
     if (changes.features) {
       
 
@@ -116,9 +117,39 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         })
       }         
       if (this.title === 'Payments') {
-        this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
-          return b.attributes.PaymentDate - a.attributes.PaymentDate;
-        })
+        if (this.shared.account.getValue()) {
+          loadModules(["esri/layers/support/Field"]).then(([Field]) => {
+
+              let balance:number = this.shared.account.getValue().attributes.TotalLienAmount;
+              this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+                return a.attributes.PaymentDate - b.attributes.PaymentDate;
+              });
+              const domain:any = this.fields.filter((field:esri.Field) => {
+                return field.name === 'PaymentClassCode';
+              })[0].domain;
+              this.features.forEach((feature:esri.Graphic) => {
+                const value = domain.codedValues.filter((cv:esri.CodedValueDomainCodedValues)=> {
+                  return cv.code === feature.attributes.PaymentClassCode;
+                })[0];
+                if (value.name.indexOf("P") === 0) {
+                  balance = balance - feature.attributes.PaymentAmount;
+                  feature.attributes.Balance = balance;
+                } else {
+                  feature.attributes.Balance = balance;
+                }
+
+              });
+              // this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+              //   return b.attributes.PaymentDate - a.attributes.PaymentDate;
+              // });
+          });
+        
+
+        }
+
+
+        
+
       }
       if (this.title === 'Communications') {
         this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {

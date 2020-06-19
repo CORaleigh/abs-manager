@@ -110,7 +110,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     }
   }
   getRelatedFeatures(label:string) {
-    debugger
+    
     
     const relationships: esri.Relationship[] = (this.feature.layer as esri.FeatureLayer).relationships.filter((relationship: esri.Relationship) => {
       let match: esri.Relationship = null;

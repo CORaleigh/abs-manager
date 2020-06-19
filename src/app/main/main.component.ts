@@ -366,9 +366,18 @@ getLayerFields(layer: esri.FeatureLayer, names: string[]) {
     return names.indexOf(field.name) > -1;
   });
   names.forEach((name: string) => {
-    fields.push(matches.filter((field: esri.Field) => {
-      return field.name === name;
-    })[0]);
+    if (name === 'Balance') {
+      fields.push({
+        name: "Balance",
+        alias: "Balance",
+        type: "double"
+      } as esri.Field);
+    } else {
+      fields.push(matches.filter((field: esri.Field) => {
+        return field.name === name;
+      })[0]);
+    }
+
   });
   return fields;
 }
@@ -420,8 +429,8 @@ configureDetailPanels() {
         this.paymentsLayer,
         [],
         null,
-        this.getLayerFields(this.paymentsLayer, ['AccountID','PaymentDate', 'TransactionTypeCode', 'PaymentAmount', 'BillingTypeCode']),
-        ['ACCOUNTID','PAYMENT DATE', 'TRANSACTION TYPE', 'PAYMENT AMOUNT', 'BILLING CODE'],
+        this.getLayerFields(this.paymentsLayer, ['AccountID','PaymentDate', 'TransactionTypeCode', 'PaymentAmount','PaymentClassCode','Balance', 'BillingTypeCode']),
+        ['ACCOUNTID','PAYMENT DATE', 'TRANSACTION TYPE', 'PAYMENT AMOUNT', 'PAYMENT CLASS', 'PRINCIPAL BALANCE','BILLING CODE'],
         'PaymentDate',
         [this.formGroupService.paymentFormGroup],
         false,
@@ -791,6 +800,16 @@ configureDetailPanels() {
           this.accountPanels.forEach((panel: Panel) => {
             features.push(panel.features);
           });
+          let panel:Panel = this.detailPanels.filter((panel:Panel) => {
+            return panel.title === 'Payments';
+          })[0];
+          panel.fields = panel.fields.filter((field) => {
+            return field.name != 'Balance';
+          });
+          panel.headers = panel.headers.filter((header) => {
+            return header != 'PRINCIPAL BALANCE';
+          });
+          
           this.paymentFeatures = features;
           this.totalFeatures = features.length;
         }
