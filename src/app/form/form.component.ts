@@ -104,6 +104,7 @@ export class FormComponent implements OnChanges, OnInit {
         //@ts-ignore
         this.form.viewModel.inputFields.forEach(field => {
           field.inputFields.forEach(f => {
+            
             if (f.required && !f.value) {
               f.valid = false;
             } else if (!f.required) {
@@ -112,10 +113,12 @@ export class FormComponent implements OnChanges, OnInit {
     
             f.initialize();
             f._validate();
-            
+            this.form.renderNow();
           });
-          this.form.renderNow();
+          
         });
+
+    
   }
   setDefaults(e) {
     if (e.fieldName === 'BillingTypeCode' || e.fieldName === 'CategoryTypeCode') {

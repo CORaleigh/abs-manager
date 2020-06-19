@@ -147,16 +147,16 @@ export class FormgroupsService {
                 ]})
             },
             {
-              editable: true,
-              required: true,
               label: 'Directing Resolution Number',
               name: "DirResNum",
+              editable: true,
+              required: true           
             },
             {
-              editable: true,
-              required: true,
               label: 'Directing Resolution Date',
               name: "DirResDate",
+              editable: true,
+              required: true,              
             },
             {
               editable: true,

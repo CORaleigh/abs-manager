@@ -68,10 +68,26 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         }
 
       }
+      if (this.layer.getField('DirResNum')) {
+        this.source.attributes['DirResNum'] = null;
+      }      
       if (this.layer.getField('PaymentPlanFlag')) {
-        
         this.source.attributes['PaymentPlanFlag'] = 'N';
       }
+      if (this.layer.getField('EstateFlag')) {
+        this.source.attributes['EstateFlag'] = 'N';
+      }      
+      if (this.layer.getField('BankruptFlag')) {
+        this.source.attributes['BankruptFlag'] = 'N';
+      }            
+      if (this.layer.getField('ActionType')) {
+        this.source.attributes['ActionType'] = 0;
+      }     
+      if (this.layer.getField('BillingTypeCode')) {
+        if (this.layer.title.includes('Assessments')) {
+          this.source.attributes['BillingTypeCode'] = 'AS';
+        }
+      }                
       let cloned: esri.Graphic = this.source.clone();
       feature.geometry = cloned.geometry;
 
