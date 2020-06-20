@@ -7,7 +7,6 @@ import { Panel } from '../panel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../shared.service';
 import * as calcite from 'calcite-web';
-import { createRequireFromPath } from 'module';
 
 @Component({
   selector: 'app-main',
