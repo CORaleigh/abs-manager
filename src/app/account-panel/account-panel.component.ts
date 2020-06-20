@@ -37,6 +37,8 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   featureSelected(feature: esri.Graphic) {
     
     this.update = true;
+    console.log(feature.getAttribute("AccountID"));
+
     this.selectedFeature = feature;
     feature.layer = this.layer;
     if (this.layer.layerId < 4) {
@@ -114,7 +116,8 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         feature.attributes.NCPIN = cloned.attributes.PIN_NUM;
         feature.attributes.AccountID = 0;
       }
-    
+      console.log(feature.getAttribute("AccountID"));
+
       this.selectedFeature = feature;
 
       this.createFeatureClicked.emit(feature);
@@ -189,13 +192,15 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         }
       }
     }
-    if (changes.visible) {
-      if (!this.layer.isTable && this.selectedFeature) {
-        this.layer.queryFeatures({objectIds:[this.selectedFeature.getAttribute("OBJECTID")],outFields:['*']}).then(result=>{
-          this.selectedFeature=result.features[0];
-        });
-      }
-    }
+    // if (changes.visible) {
+    //   if (!this.layer.isTable && this.selectedFeature) {
+    //     this.layer.queryFeatures({objectIds:[this.selectedFeature.getAttribute("OBJECTID")],outFields:['*']}).then(result=>{
+    //       console.log(result.features[0].getAttribute("AccountID"));
+
+    //       this.selectedFeature=result.features[0];
+    //     });
+    //   }
+    // }
   }
   relatedFeatureReturned(item: any) {
     

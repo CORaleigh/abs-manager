@@ -7,6 +7,7 @@ import { Panel } from '../panel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../shared.service';
 import * as calcite from 'calcite-web';
+import { createRequireFromPath } from 'module';
 
 @Component({
   selector: 'app-main',
@@ -483,12 +484,12 @@ configureDetailPanels() {
           }
         }
         toggleCrumbs(panel: Panel, showDetails: boolean) {
+          
           this.crumbs.forEach((crumb: Crumb) => {
             crumb.active = crumb.panels.indexOf(panel) > -1 && panel.showDetails === crumb.showDetails;
           });
           this.crumbs[0].visible = true;
-          if (panel.title === 'Accounts') {
-          }
+
           if (panel.detailsTitle === 'Assessment Details') {
             this.crumbs[1].visible = true;
             this.hideCrumbs([2, 3]);
@@ -504,34 +505,34 @@ configureDetailPanels() {
           if (panel.title === 'Bills' && !panel.showDetails) {
             this.crumbs[4].visible = true;
             this.hideCrumbs([5, 6, 7, 8, 9, 11]);
-            // this.toggleAccountCrumbs(panel);
+            this.toggleAccountCrumbs(panel);
           }
           if (panel.detailsTitle === 'Bill Details' && panel.showDetails) {
             this.crumbs[5].visible = true;
-            // this.toggleAccountCrumbs(panel);
+            this.toggleAccountCrumbs(panel);
           }
           if (panel.title === 'Payments' && !panel.showDetails) {
             this.crumbs[6].visible = true;
             this.hideCrumbs([4, 5, 7]);
-            // this.toggleAccountCrumbs(panel);
+            this.toggleAccountCrumbs(panel);
           }
           if (panel.detailsTitle === 'Payment Details' && panel.showDetails) {
             this.crumbs[7].visible = true;
-            // this.toggleAccountCrumbs(panel);
+            this.toggleAccountCrumbs(panel);
           }
           if (panel.title === 'Communications' && !panel.showDetails) {
             this.crumbs[8].visible = true;
             this.hideCrumbs([4, 5, 6, 7, 9]);
-            //  this.toggleAccountCrumbs(panel);
+            this.toggleAccountCrumbs(panel);
           }
           if (panel.detailsTitle === 'Communication Details' && panel.showDetails) {
             this.crumbs[9].visible = true;
-            //  this.toggleAccountCrumbs(panel);
+            this.toggleAccountCrumbs(panel);
           }
           if (panel.title === 'Comments' && !panel.showDetails) {
             this.crumbs[10].visible = true;
             this.hideCrumbs([4, 5, 6, 7, 9, 11]);
-            //  this.toggleAccountCrumbs(panel);
+            this.toggleAccountCrumbs(panel);
           }
           if (panel.detailsTitle === 'Comment Details' && panel.showDetails) {
             this.crumbs[11].visible = true;
@@ -553,7 +554,7 @@ configureDetailPanels() {
                     panel.update = update;
 
                     if (update) {
-
+                      console.log(feature.getAttribute("AccountID"));
                       panel.selectedFeature = feature;
                     }
                     panel.showDetails = true;
@@ -571,6 +572,8 @@ configureDetailPanels() {
         }
         accountSelected(feature: esri.Graphic) {
           this.selectedAccount = feature;
+          console.log(feature.getAttribute("AccountID"));
+
           this.togglePanels(feature, (feature.layer as esri.FeatureLayer), true, true);
         }
         createFeatureClicked(feature: esri.Graphic) {
@@ -663,7 +666,7 @@ configureDetailPanels() {
               })[0];
               
               panel.features = [feature];
-              
+              console.log(feature.getAttribute("AccountID"));
               this.togglePanels(feature, (feature.layer as esri.FeatureLayer), true, true);
               this.router.navigate(['account',  feature.attributes.AccountID]);
               //debugger
@@ -710,15 +713,35 @@ configureDetailPanels() {
           });
         }
         crumbClicked(crumb: Crumb, index:number) {
-          if (!crumb.active) {
-            this.crumbs.forEach((crumb: Crumb, i: number) => {
-              crumb.active = false;
-              if (i > 0 && index === 0) {
-                crumb.visible = false;
+          this.crumbs.forEach((c,i)=> {
+            c.active = false;
+          });
+          [this.accountPanels, this.detailPanels].forEach((panelGroup: Panel[]) => {
+            panelGroup.forEach((panel: Panel) => {
+              if (crumb.panels.indexOf(panel) > -1) {
+                crumb.active = true;
+                this.togglePanels(this.shared.account.getValue(), panel.layer, crumb.showDetails, true);
               }
             });
-            crumb.active = true;
+          });
+          this.crumbs.forEach((c,i)=> {
+            if (crumb.panels[0].layer.isTable) {
+              
+            }
+            else if(c.title === crumb.title || i === 0) {
+              c.visible = true;
+            } else {
+              c.visible = false;
+            }
+
+          });
+
+
             if (index === 0) {
+              debugger
+              this.crumbs.forEach((c) => {
+                  c.visible = false;
+              })
               this.selectionMade(this.selectedProperty);
               this.accountPanels.forEach((panel: Panel) => {
                 panel.visible = true;
@@ -728,27 +751,51 @@ configureDetailPanels() {
               this.detailPanels.forEach((panel: Panel) => {
                 panel.showDetails = false;
                 panel.visible = false;
+                
                 panel.selectedFeature = null;
+
               });
-            } else {
-              [this.accountPanels, this.detailPanels].forEach((panelGroup: Panel[]) => {
-                panelGroup.forEach((panel: Panel) => {
-                  if (crumb.panels.indexOf(panel) > -1) {
+            }           
+
+          // if (!crumb.active) {
+          //   this.crumbs.forEach((crumb: Crumb, i: number) => {
+          //     crumb.active = false;
+          //     if (i > 0 && index === 0) {
+          //       crumb.visible = false;
+          //     }
+          //   });
+          //   crumb.active = true;
+          //   if (index === 0) {
+          //     this.selectionMade(this.selectedProperty);
+          //     this.accountPanels.forEach((panel: Panel) => {
+          //       panel.visible = true;
+          //       panel.showDetails = false;
+          //       panel.selectedFeature = null;
+          //     });
+          //     this.detailPanels.forEach((panel: Panel) => {
+          //       panel.showDetails = false;
+          //       panel.visible = false;
+          //       panel.selectedFeature = null;
+          //     });
+          //   } else {
+          //     [this.accountPanels, this.detailPanels].forEach((panelGroup: Panel[]) => {
+          //       panelGroup.forEach((panel: Panel) => {
+          //         if (crumb.panels.indexOf(panel) > -1) {
                     
-                    this.togglePanels(null, panel.layer, crumb.showDetails, true);
-                  }
-                });
-              });
-              if (index < 4 ) {
-                this.crumbs.forEach((crumb: Crumb, i) => {
-                  crumb.visible = false;
-                });
-              }        
-              // this.crumbs.forEach((crumb: Crumb, i) => {
-              //   crumb.visible = i <= index;
-              // });
-            }
-          }
+          //           this.togglePanels(null, panel.layer, crumb.showDetails, true);
+          //         }
+          //       });
+          //     });
+          //     if (index < 4 ) {
+          //       this.crumbs.forEach((crumb: Crumb, i) => {
+          //         crumb.visible = false;
+          //       });
+          //     }        
+          //     this.crumbs.forEach((crumb: Crumb, i) => {
+          //       crumb.visible = i <= index;
+          //     });
+          //   }
+          // }
         }
         crumbs: Crumb[] = [];
         configureCrumbs() {

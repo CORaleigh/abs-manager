@@ -58,8 +58,10 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.feature) {
+      console.log(changes.feature.currentValue.getAttribute('AccountID'));
+    }
     if (changes.visible){
-
       if (changes.visible.currentValue === true) {
         (this.feature.layer as esri.FeatureLayer).queryFeatures({
           objectIds:[this.feature.getAttribute('OBJECTID')],outFields:['*']
@@ -75,7 +77,7 @@ export class DetailPanelComponent implements OnInit, OnChanges {
           this.initializeFeature().then((featureWidget: esri.Feature) => {
   
             //@ts-ignore 
-                changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
+            changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
 
             //@ts-ignore
             changes.feature.currentValue.sourceLayer = changes.feature.currentValue.layer;
