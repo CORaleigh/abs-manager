@@ -542,18 +542,13 @@ configureDetailPanels() {
         
         
         togglePanels(feature: esri.Graphic, layer: esri.FeatureLayer, showDetails: boolean, update: boolean) {
-          
           [this.accountPanels, this.detailPanels].forEach((panelGroup: Panel[]) => {
             panelGroup.forEach((panel: Panel) => {
               panel.visible = panel.layer === layer;
-              
               if (panel.layer === layer) {
-                setTimeout(() => {
                   if (showDetails) {
                     panel.update = update;
-
                     if (update) {
-                      console.log(feature.getAttribute("AccountID"));
                       panel.selectedFeature = feature;
                     }
                     panel.showDetails = true;
@@ -561,18 +556,13 @@ configureDetailPanels() {
                     panel.selectedFeature = null;
                     panel.showDetails = false;
                   }
-                  setTimeout(() => {
                     this.toggleCrumbs(panel, showDetails);
-                  })
-                })
               }
             });
           });
         }
         accountSelected(feature: esri.Graphic) {
           this.selectedAccount = feature;
-          console.log(feature.getAttribute("AccountID"));
-
           this.togglePanels(feature, (feature.layer as esri.FeatureLayer), true, true);
         }
         createFeatureClicked(feature: esri.Graphic) {
@@ -633,13 +623,6 @@ configureDetailPanels() {
                 layer.queryFeatures({ where: "REID = '" + feature.attributes.REID + "'", outFields: ['*'], orderByFields: [panel.orderBy + ' desc'] }).then((featureSet: esri.FeatureSet) => {
                   panel.features = featureSet.features;
                   count += featureSet.features.length;
-                  // console.log(count);
-                  // if (count > 0) {
-                  //   this.accountPanels.forEach(p => {
-                  //     p.showDetails = false;
-                  //     p.visible = true;
-                  //   });
-                  // }
                   this.accountPanels.forEach(p => {
                     p.showDetails = false;
                     p.visible = true;
@@ -654,27 +637,18 @@ configureDetailPanels() {
                   });                  
                 });
               });
-
             } else {
               this.paymentEnabled = true;
-              
               this.selectedAccount = null;
-              //this.accountLayers.forEach(layer => {
               let panel = this.accountPanels.filter((panel: Panel) => {
                 return panel.layer === feature.layer;
               })[0];
-              
               panel.features = [feature];
-              console.log(feature.getAttribute("AccountID"));
               this.togglePanels(feature, (feature.layer as esri.FeatureLayer), true, true);
-              this.router.navigate(['account',  feature.attributes.AccountID]);
-              //debugger
-              //this.shared.account.next(feature);
-              // });       
+              this.router.navigate(['account',  feature.attributes.AccountID]);   
               this.accountSelected(feature);
             }
           }
-          
         }
         
         formSubmitted() {
@@ -734,27 +708,24 @@ configureDetailPanels() {
             }
 
           });
+          if (index === 0) {
+            this.crumbs.forEach((c) => {
+                c.visible = false;
+            })
+            this.selectionMade(this.selectedProperty);
+            this.accountPanels.forEach((panel: Panel) => {
+              panel.visible = true;
+              panel.showDetails = false;
+              panel.selectedFeature = null;
+            });
+            this.detailPanels.forEach((panel: Panel) => {
+              panel.showDetails = false;
+              panel.visible = false;
+              
+              panel.selectedFeature = null;
 
-
-            if (index === 0) {
-              debugger
-              this.crumbs.forEach((c) => {
-                  c.visible = false;
-              })
-              this.selectionMade(this.selectedProperty);
-              this.accountPanels.forEach((panel: Panel) => {
-                panel.visible = true;
-                panel.showDetails = false;
-                panel.selectedFeature = null;
-              });
-              this.detailPanels.forEach((panel: Panel) => {
-                panel.showDetails = false;
-                panel.visible = false;
-                
-                panel.selectedFeature = null;
-
-              });
-            }           
+            });
+          }           
 
           // if (!crumb.active) {
           //   this.crumbs.forEach((crumb: Crumb, i: number) => {

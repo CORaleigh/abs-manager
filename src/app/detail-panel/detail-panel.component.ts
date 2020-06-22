@@ -58,9 +58,6 @@ export class DetailPanelComponent implements OnInit, OnChanges {
     this.formSubmitted.emit();
   }
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.feature) {
-      console.log(changes.feature.currentValue.getAttribute('AccountID'));
-    }
     if (changes.visible){
       if (changes.visible.currentValue === true) {
         (this.feature.layer as esri.FeatureLayer).queryFeatures({

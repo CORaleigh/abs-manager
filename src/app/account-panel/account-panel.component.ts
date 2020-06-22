@@ -35,10 +35,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
 
   }
   featureSelected(feature: esri.Graphic) {
-    
     this.update = true;
-    console.log(feature.getAttribute("AccountID"));
-
     this.selectedFeature = feature;
     feature.layer = this.layer;
     if (this.layer.layerId < 4) {

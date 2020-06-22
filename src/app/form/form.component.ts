@@ -230,7 +230,6 @@ export class FormComponent implements OnChanges, OnInit {
   }
   refreshForm(form:esri.FeatureForm) {
     this.feature.attributes = form.feature.attributes;
-    debugger
     this.form.feature = this.feature;
     this.form.renderNow();
   }
