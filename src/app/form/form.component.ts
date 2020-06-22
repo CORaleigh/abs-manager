@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, ElementRef, ViewChild, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { loadModules, setDefaultOptions } from 'esri-loader';
+import { loadModules } from 'esri-loader';
 import esri = __esri;
 import { SharedService } from '../shared.service';
 import { FormgroupsService } from '../formgroups.service';
@@ -151,10 +151,12 @@ export class FormComponent implements OnChanges, OnInit {
         container: this.formDiv.nativeElement,
         groupDisplay: 'sequential'
       });
+      
       this.form.on('value-change', e => {
+        this.setDefaults(e);
+
         if (e.fieldName === 'StatusCode') {     
           this.setFormConfigByStatus(e.value, e.layer);
-          this.setDefaults(e);
         }
         if (e.fieldName === 'TotalLienAmount') {
           this.form.feature.setAttribute('PrincipalBalance', e.value);
