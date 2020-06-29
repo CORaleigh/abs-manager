@@ -136,25 +136,27 @@ export class ConfirmedFormgroupsService {
                 ]})
             },
             {
-              editable: false,
+              editable: true,
               required: true,
               label: 'Directing Resolution Number',
               name: "DirResNum",
             },
             {
-              editable: false,
+              editable: true,
               required: true,
               label: 'Directing Resolution Date',
               name: "DirResDate",
             },
             {
-              editable: false,
+              required: true,
+              editable: true,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
               maxLength:9
             },
             {
-              editable: false,
+              required: true,
+              editable: true,
               label: 'Confirming Resolution Date',
               name: "ConfResDate",
             },
@@ -355,6 +357,7 @@ export class ConfirmedFormgroupsService {
             },
             {
               editable: true,
+              required: true,
               label: 'Category Type Code',
               name: "CategoryTypeCode",
               domain: new CodedValueDomain({
@@ -379,14 +382,14 @@ export class ConfirmedFormgroupsService {
               })
             },
             {
-              editable: false,
+              editable: true,
               required: true,
               label: 'Contract #',
               name: "ContractNum",
               maxLength:9
             },
             {
-              editable: false,
+              editable: true,
               required: true,
               label: 'Contract Date',
               name: "ContractDate",
@@ -456,12 +459,60 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Action Type',
               name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]
+                })            
             },
             {
-              editable: false,
+              editable: true,
               label: 'Total Lien Amount',
               name: "TotalLienAmount",
-              required: false
+              required: true
             },
             {
               editable: false,
@@ -548,7 +599,8 @@ export class ConfirmedFormgroupsService {
                     code: "N"
                   }
                 ]
-              })                 
+              }),
+              visibilityExpression: "($feature.StatusCode != '1')"             
             },
             {
               editable: true,
@@ -625,6 +677,54 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Action Type',
               name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                  codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]
+                })           
             },
             {
               editable: true,
@@ -633,8 +733,8 @@ export class ConfirmedFormgroupsService {
               required: true
             },
             {
-              editable: true,
-              required: true,
+              editable: false,
+              required: false,
               label: 'Principal Balance',
               name: "PrincipalBalance",
             },
@@ -717,7 +817,8 @@ export class ConfirmedFormgroupsService {
                     code: "N"
                   }
                 ]
-              })                 
+              }),
+              visibilityExpression: "($feature.StatusCode != '1')"                 
             },
             {
               editable: true,
@@ -736,16 +837,16 @@ export class ConfirmedFormgroupsService {
           description: "Billing information",
           fieldConfig: [
             {
-              editable: true,
+              editable: false,
               label: 'Number of Years',
               name: "NumYears",
-              required: true
+              required: false
             },
             {
-              editable: true,
+              editable: false,
               label: 'Interest Rate',
               name: "InterestRate",
-              required: true
+              required: false
             },
             {
               editable: true,
@@ -755,10 +856,6 @@ export class ConfirmedFormgroupsService {
 
               domain: new CodedValueDomain({
                 codedValues: [
-                  {
-                    name: "Pending",
-                    code: "1"
-                  },
                   {
                     name: "Active",
                     code: "2"
@@ -794,6 +891,54 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Action Type',
               name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]
+                })           
             },
             {
               editable: true,
@@ -802,7 +947,7 @@ export class ConfirmedFormgroupsService {
               required: true
             },
             {
-              editable: true,
+              editable: false,
               required: true,
               label: 'Principal Balance',
               name: "PrincipalBalance",
@@ -830,8 +975,8 @@ export class ConfirmedFormgroupsService {
               name: "InterestStartDate",
             },
             {
-              editable: true,
-              required: true,
+              editable: false,
+              required: false,
               label: 'Installment Amount',
               name: "InstallmentAmount",
             },
@@ -869,7 +1014,7 @@ export class ConfirmedFormgroupsService {
               label: 'Payment Plan Date',
               name: "PaymentPlanDate",
               visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    
-            },
+            },         
             {
               editable: true,
               label: 'Bankrupt',
@@ -885,7 +1030,8 @@ export class ConfirmedFormgroupsService {
                     code: "N"
                   }
                 ]
-              })                 
+              }),
+              visibilityExpression: "($feature.StatusCode != '1')"                 
             },
             {
               editable: true,

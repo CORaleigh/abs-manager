@@ -115,7 +115,7 @@ export class FormgroupsService {
               })
             },
             {
-              editable: true,
+              editable: false,
               label: 'Roll #',
               name: "RollNum",
               required: false,
@@ -156,16 +156,16 @@ export class FormgroupsService {
               label: 'Directing Resolution Date',
               name: "DirResDate",
               editable: true,
-              required: true,              
+              required: true         
             },
             {
-              editable: true,
+              editable: false,
               label: 'Confirming Resolution Number',
               name: "ConfResNum",
               maxLength:9
             },
             {
-              editable: true,
+              editable: false,
               label: 'Confirming Resolution Date',
               name: "ConfResDate",
             },
@@ -463,6 +463,54 @@ export class FormgroupsService {
               editable: true,
               label: 'Action Type',
               name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]
+              })    
             },
             {
               editable: false,
@@ -554,7 +602,9 @@ export class FormgroupsService {
                     code: "N"
                   }
                 ]
-              })                 
+              }),
+              visibilityExpression: "($feature.StatusCode != '1')"
+              
             },
 
             {
@@ -649,6 +699,54 @@ export class FormgroupsService {
               editable: true,
               label: 'Action Type',
               name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]   
+              })     
             },
             {
               editable: true,
@@ -742,7 +840,8 @@ export class FormgroupsService {
                     code: "N"
                   }
                 ]
-              })                 
+              }),
+              visibilityExpression: "($feature.StatusCode != '1')"                        
             },
 
             {
@@ -837,6 +936,54 @@ export class FormgroupsService {
               editable: true,
               label: 'Action Type',
               name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]  
+              })     
             },
             {
               editable: true,
@@ -930,7 +1077,8 @@ export class FormgroupsService {
                     code: "N"
                   }
                 ]
-              })                 
+              }),
+              visibilityExpression: "($feature.StatusCode != '1')"          
             },
             {
               editable: true,
@@ -1082,7 +1230,7 @@ export class FormgroupsService {
           },
           {
             name: 'RollNum',
-            label: 'Roll Number',
+            label: 'Roll #',
             editable: false,
             maxLength:9
           },
@@ -1486,159 +1634,154 @@ export class FormgroupsService {
               name: "PaymentClassCode",
               label: "Payment Class Code",
               editable: true,
-              "domain": {
-                "type": "codedValue",
-                "name": "PaymentClassCodes",
-                "description": "Payment Class Code Descriptions",
-                "codedValues": [
+              domain: new CodedValueDomain({
+                codedValues: [
                 {
-                "name": "Principal",
-                "code": "0039"
+                name: "Principal",
+                code: "0039"
                 },
                 {
-                "name": "Interest",
-                "code": "0040"
+                name: "Interest",
+                code: "0040"
                 },
                 {
-                "name": "Principal - Advanced",
-                "code": "0100"
+                name: "Principal - Advanced",
+                code: "0100"
                 },
                 {
-                "name": "Principal - ADV Out",
-                "code": "0101"
+                name: "Principal - ADV Out",
+                code: "0101"
                 },
                 {
-                "name": "Principal - Advanced",
-                "code": "0102"
+                name: "Principal - Advanced",
+                code: "0102"
                 },
                 {
-                "name": "Principal - ADV Out",
-                "code": "0103"
+                name: "Principal - ADV Out",
+                code: "0103"
                 },
                 {
-                "name": "Principal - Advanced",
-                "code": "0104"
+                name: "Principal - Advanced",
+                code: "0104"
                 },
                 {
-                "name": "Principal - ADV Out",
-                "code": "0105"
+                name: "Principal - ADV Out",
+                code: "0105"
                 },
                 {
-                "name": "Principal - Advanced",
-                "code": "0106"
+                name: "Principal - Advanced",
+                code: "0106"
                 },
                 {
-                "name": "Principal - ADV FL",
-                "code": "0107"
+                name: "Principal - ADV FL",
+                code: "0107"
                 },
                 {
-                "name": "Principal - ADV FL",
-                "code": "0108"
+                name: "Principal - ADV FL",
+                code: "0108"
                 },
                 {
-                "name": "Principal - ADV FL",
-                "code": "0109"
+                name: "Principal - ADV FL",
+                code: "0109"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0112"
+                name: "Principal - Adv ETJ",
+                code: "0112"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0113"
+                name: "Principal - Adv ETJ",
+                code: "0113"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0114"
+                name: "Principal - Adv ETJ",
+                code: "0114"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0115"
+                name: "Principal - Adv ETJ",
+                code: "0115"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0116"
+                name: "Principal - Adv ETJ",
+                code: "0116"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0117"
+                name: "Principal - Adv ETJ",
+                code: "0117"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0118"
+                name: "Principal - Adv ETJ",
+                code: "0118"
                 },
                 {
-                "name": "Principal - Adv ETJ",
-                "code": "0119"
+                name: "Principal - Adv ETJ",
+                code: "0119"
                 },
                 {
-                "name": "Principal",
-                "code": "0120"
+                name: "Principal",
+                code: "0120"
                 },
                 {
-                "name": "Principal - Out",
-                "code": "0121"
+                name: "Principal - Out",
+                code: "0121"
                 },
                 {
-                "name": "Interest - ETJ",
-                "code": "0122"
+                name: "Interest - ETJ",
+                code: "0122"
                 },
                 {
-                "name": "Interest - Out",
-                "code": "0123"
+                name: "Interest - Out",
+                code: "0123"
                 },
                 {
-                "name": "Principal - ETJ",
-                "code": "0124"
+                name: "Principal - ETJ",
+                code: "0124"
                 },
                 {
-                "name": "Principal - Out",
-                "code": "0125"
+                name: "Principal - Out",
+                code: "0125"
                 },
                 {
-                "name": "Interest - ETJ",
-                "code": "0126"
+                name: "Interest - ETJ",
+                code: "0126"
                 },
                 {
-                "name": "Interest - Out",
-                "code": "0127"
+                name: "Interest - Out",
+                code: "0127"
                 },
                 {
-                "name": "Principal",
-                "code": "0339"
+                name: "Principal",
+                code: "0339"
                 },
                 {
-                "name": "Interest",
-                "code": "0340"
+                name: "Interest",
+                code: "0340"
                 },
                 {
-                "name": "Principal",
-                "code": "0439"
+                name: "Principal",
+                code: "0439"
                 },
                 {
-                "name": "Interest",
-                "code": "0440"
+                name: "Interest",
+                code: "0440"
                 },
                 {
-                "name": "Principal",
-                "code": "0539"
+                name: "Principal",
+                code: "0539"
                 },
                 {
-                "name": "Interest",
-                "code": "0540"
+                name: "Interest",
+                code: "0540"
                 },
                 {
-                "name": "Principal",
-                "code": "0739"
+                name: "Principal",
+                code: "0739"
                 },
                 {
-                "name": "Interest",
-                "code": "0740"
+                name: "Interest",
+                code: "0740"
                 }
-                ],
-                "mergePolicy": "esriMPTDefaultValue",
-                "splitPolicy": "esriSPTDefaultValue"
-                },              
+                ]
+                })              
             },
             {
               name: "PaymentAmount",

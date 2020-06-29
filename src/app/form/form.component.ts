@@ -22,7 +22,17 @@ export class FormComponent implements OnChanges, OnInit {
 
   @Output() formSubmitted = new EventEmitter<esri.FeatureLayer>();
   @Output() formCanceled = new EventEmitter<null>();
-
+  lookups:string[] = [
+    'Directing Resolution Number',
+    'Directing Resolution Date',
+    'Confirming Resolution Number',
+    'Confirming Resolution Date',    
+    'Roll #',
+    'Contract #',  
+    'Contract Date',  
+    'Correcting Resolution Number',
+    'Correcting Resolution Date',      
+  ]
   form: esri.FeatureForm = null;
   invalid: string[] = [];
   ngOnInit() {
@@ -51,7 +61,9 @@ export class FormComponent implements OnChanges, OnInit {
     this.feature.attributes['PrincipalAmount'] = parseFloat(values.principal.toFixed(2));
     this.feature.attributes['InterestAmount'] = parseFloat(values.interest.toFixed(2));
     this.form.feature = this.feature;
-    this.form.renderNow();
+          //@ts-ignore
+
+    this.form.renderFields();
   }
 
 
@@ -113,11 +125,15 @@ export class FormComponent implements OnChanges, OnInit {
     
             f.initialize();
             f._validate();
-            this.form.renderNow();
+            
+            
+          //@ts-ignore
+            this.form.renderFields();
+            //this.form.renderNow();
           });
           
         });
-
+        this.disableAttributeLookupFields();
     
   }
   setDefaults(e) {
@@ -157,14 +173,30 @@ export class FormComponent implements OnChanges, OnInit {
 
         if (e.fieldName === 'StatusCode') {     
           this.setFormConfigByStatus(e.value, e.layer);
+          setTimeout(()=>{
+
+            this.disableAttributeLookupFields();
+          });
+        }
+
+        //Set status to deliquent if attorney flag changed
+        if (e.fieldName === 'AttorneyFlag' && e.value == 'Y') {     
+          this.form.feature.setAttribute('StatusCode', '4');
+          this.feature.attributes = this.form.feature.attributes;
+          this.form.feature = this.feature;
+                    //@ts-ignore
+
+          this.form.renderFields();          
         }
         if (e.fieldName === 'TotalLienAmount') {
           this.form.feature.setAttribute('PrincipalBalance', e.value);
           this.form.feature.setAttribute('TotalLienAmount', e.value);
-
+          this.form.feature.setAttribute('InstallmentAmount', e.value/this.form.feature.getAttribute("NumYears"));
+          this.form.feature.setAttribute('CurrentInstallmentDue', e.value/this.form.feature.getAttribute("NumYears"));
           this.feature.attributes = this.form.feature.attributes;
           this.form.feature = this.feature;
-          this.form.renderNow();
+          //@ts-ignore
+          this.form.renderFields();
 
         }
       });
@@ -198,6 +230,8 @@ export class FormComponent implements OnChanges, OnInit {
          }
        });       
 
+      
+
       this.form.viewModel.watch('inputFields',()=> {
         
         this.refreshFields();   
@@ -213,6 +247,28 @@ export class FormComponent implements OnChanges, OnInit {
   submit() {
     this.form.submit();
   }
+  disableAttributeLookupFields() {
+    let labels = document.getElementsByClassName('esri-feature-form__label');
+    for (let i = 0;i < labels.length;i++) {
+     const labelText = (labels.item(i) as HTMLElement).firstChild.textContent;
+      if (this.lookups.includes(labelText)){
+        //@ts-ignore
+        let fields = this.form.viewModel._allInputFields.filter(field => {
+          return field.required && field.label === labelText;
+        });
+        if (fields.length) {
+          for(let j = 0;j < labels.item(i).getElementsByTagName('input').length;j++) {
+            debugger
+            labels.item(i).getElementsByTagName('input')[j].setAttribute('disabled', 'true');
+            let errors = labels.item(i).getElementsByClassName("esri-feature-form__field-error-message");
+            if (errors.length) {
+              errors[0].innerHTML = 'Set using attribute lookup tool';
+            }
+          }
+        }  
+      }
+    }  
+  }
   ngOnChanges(changes: SimpleChanges) {
     
     if (changes.feature.currentValue) {
@@ -220,7 +276,11 @@ export class FormComponent implements OnChanges, OnInit {
       if (!this.form) {
         this.initializeForm().then((form: esri.FeatureForm) => {
           this.form.feature = changes.feature.currentValue;
+          
           this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
+          setTimeout(()=>{
+            this.disableAttributeLookupFields();
+          });
         });
       } else {
         this.form.feature = changes.feature.currentValue;
@@ -233,6 +293,9 @@ export class FormComponent implements OnChanges, OnInit {
   refreshForm(form:esri.FeatureForm) {
     this.feature.attributes = form.feature.attributes;
     this.form.feature = this.feature;
+    this.refreshFields();
+          //@ts-ignore
+    this.form.renderFields();
     this.form.renderNow();
   }
 }

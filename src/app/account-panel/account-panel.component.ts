@@ -79,8 +79,8 @@ export class AccountPanelComponent implements OnInit, OnChanges {
       if (this.layer.getField('BankruptFlag')) {
         this.source.attributes['BankruptFlag'] = 'N';
       }            
-      if (this.layer.getField('ActionType')) {
-        this.source.attributes['ActionType'] = 0;
+      if (this.layer.getField('ActionTypeCode')) {
+        this.source.attributes['ActionTypeCode'] = 0;
       }     
       if (this.layer.getField('BillingTypeCode')) {
         if (this.layer.title.includes('Assessments')) {
@@ -100,8 +100,23 @@ export class AccountPanelComponent implements OnInit, OnChanges {
             feature.attributes[field.name] = "A";
           }
         }
+        if (field.name === 'Annexed') { 
+          if (cloned.getAttribute('CITY_DECODE') === 'RALEIGH') {
+            feature.attributes[field.name] = "Y";
+          } else {
+            feature.attributes[field.name] = "N";
+          }
+        }
       });
+
+      
       feature.setAttribute("StatusCode",'1');
+
+      if (this.layer.title.includes("Tap Fees")) {
+        feature.setAttribute("StatusCode", '2');
+      }
+      feature.setAttribute("NumInstallmentsMade", 0);        
+
       if (this.layer.title.includes("Abatements")) {
         feature.setAttribute("BillingTypeCode", "AB");
         feature.setAttribute("CategoryTypeCode", "05");
