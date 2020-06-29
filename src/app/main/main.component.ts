@@ -477,8 +477,8 @@ configureDetailPanels() {
         }
         toggleAccountCrumbs(panel: Panel) {
           if (panel.source.layer != panel.layer) {
-            this.crumbs[1].visible = (panel.source.layer as esri.FeatureLayer).layerId === 2;
-            this.crumbs[3].visible = (panel.source.layer as esri.FeatureLayer).layerId === 0;
+            this.crumbs[1].visible = (panel.source.layer as esri.FeatureLayer).layerId === 0;
+            this.crumbs[3].visible = (panel.source.layer as esri.FeatureLayer).layerId === 2;
             this.crumbs[2].visible = (panel.source.layer as esri.FeatureLayer).layerId === 1;
           }
         }
@@ -774,8 +774,8 @@ configureDetailPanels() {
             new Crumb('Assessment Details', [this.accountPanels[0]], false, false, true),
             new Crumb('Abatement Details', [this.accountPanels[1]], false, false, true),
             new Crumb('Tap Fee Details', [this.accountPanels[2]], false, false, true),
-            new Crumb('Billing', [this.detailPanels[0]], false, false, false),
-            new Crumb('Billing Details', [this.detailPanels[0]], false, false, true),
+            new Crumb('Bills', [this.detailPanels[0]], false, false, false),
+            new Crumb('Bill Details', [this.detailPanels[0]], false, false, true),
             new Crumb('Payments', [this.detailPanels[1]], false, false, false),
             new Crumb('Payment Details', [this.detailPanels[1]], false, false, true),
             new Crumb('Communications', [this.detailPanels[2]], false, false, false),

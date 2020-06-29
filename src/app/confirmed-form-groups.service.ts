@@ -1032,6 +1032,24 @@ export class ConfirmedFormgroupsService {
                 ]
               }),
               visibilityExpression: "($feature.StatusCode != '1')"                 
+            },            
+            {
+              editable: true,
+              label: 'Bankrupt',
+              name: "BankruptFlag",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Yes",
+                    code: "Y"
+                  },
+                  {
+                    name: "No",
+                    code: "N"
+                  }
+                ]
+              }),
+              visibilityExpression: "($feature.StatusCode != '1')"                 
             },
             {
               editable: true,

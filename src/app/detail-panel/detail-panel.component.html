@@ -29,7 +29,7 @@
     </section>
   </div>
   <div id="createDiv" *ngIf="!update">
-    <app-form [feature]="feature" [layers]="layers"   [update]="update" (formSubmitted)="submitted($event)">
+    <app-form *ngIf="title != 'Bill Details'" [feature]="feature" [layers]="layers"   [update]="update" (formSubmitted)="submitted($event)">
     </app-form>
   </div>
 </div>

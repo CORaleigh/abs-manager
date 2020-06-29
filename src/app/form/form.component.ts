@@ -75,39 +75,42 @@ export class FormComponent implements OnChanges, OnInit {
       this.form.fieldConfig = [this.formGroups.communicationFormGroup, this.formGroups.commSentToFormGroup];
     }    
     if (layer.title.includes("Bill")) {
+      debugger
       this.form.fieldConfig = [this.formGroups.billingDataFormGroup, this.formGroups.billSentToFormGroup, this.formGroups.billSiteAddressFormGroup];
     }        
     if (layer.title.includes("Comment")) {
       this.form.fieldConfig = [this.formGroups.commentsFormGroup];
     }       
-
-    if (status === '2') {
-      if (layer.title.includes("Abatement")) {
-        this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,
-        this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+    if (status) {
+      if (status === '2') {
+        if (layer.title.includes("Abatement")) {
+          this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,
+          this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+        }
+        if (layer.title.includes("Assessment")) {
+          this.form.fieldConfig = [this.confirmedFormGroups.assessmentFormGroup,
+            this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+        }
+        if (layer.title.includes("Tap Fee")) {
+          this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
+            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
+        }    
+      } else {
+        if (layer.title.includes("Abatement")) {
+          this.form.fieldConfig = [this.formGroups.abatementFormGroup,
+          this.formGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+        }
+        if (layer.title.includes("Assessment")) {
+          this.form.fieldConfig = [this.formGroups.assessmentFormGroup,
+            this.formGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+        }
+        if (layer.title.includes("Tap Fee")) {
+          this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
+            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
+        }       
       }
-      if (layer.title.includes("Assessment")) {
-        this.form.fieldConfig = [this.confirmedFormGroups.assessmentFormGroup,
-          this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
-      }
-      if (layer.title.includes("Tap Fee")) {
-        this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
-          this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
-      }    
-    } else {
-      if (layer.title.includes("Abatement")) {
-        this.form.fieldConfig = [this.formGroups.abatementFormGroup,
-        this.formGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
-      }
-      if (layer.title.includes("Assessment")) {
-        this.form.fieldConfig = [this.formGroups.assessmentFormGroup,
-          this.formGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
-      }
-      if (layer.title.includes("Tap Fee")) {
-        this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
-          this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
-      }       
     }
+    
     this.form.feature.attributes = this.form.getValues();
     this.refreshFields();
   }
@@ -115,22 +118,25 @@ export class FormComponent implements OnChanges, OnInit {
   refreshFields() {
         //@ts-ignore
         this.form.viewModel.inputFields.forEach(field => {
-          field.inputFields.forEach(f => {
-            
-            if (f.required && !f.value) {
-              f.valid = false;
-            } else if (!f.required) {
-              f.valid = true;
-            }
-    
-            f.initialize();
-            f._validate();
-            
-            
-          //@ts-ignore
-            this.form.renderFields();
-            //this.form.renderNow();
-          });
+          if (field.inputFields) {
+
+            field.inputFields.forEach(f => {
+              
+              if (f.required && !f.value) {
+                f.valid = false;
+              } else if (!f.required) {
+                f.valid = true;
+              }
+      
+              f.initialize();
+              f._validate();
+              
+              
+            //@ts-ignore
+              this.form.renderFields();
+              //this.form.renderNow();
+            });
+          }
           
         });
         this.disableAttributeLookupFields();
@@ -258,7 +264,7 @@ export class FormComponent implements OnChanges, OnInit {
         });
         if (fields.length) {
           for(let j = 0;j < labels.item(i).getElementsByTagName('input').length;j++) {
-            debugger
+            
             labels.item(i).getElementsByTagName('input')[j].setAttribute('disabled', 'true');
             let errors = labels.item(i).getElementsByClassName("esri-feature-form__field-error-message");
             if (errors.length) {
@@ -270,23 +276,26 @@ export class FormComponent implements OnChanges, OnInit {
     }  
   }
   ngOnChanges(changes: SimpleChanges) {
-    
-    if (changes.feature.currentValue) {
-      this.feature = changes.feature.currentValue;
-      if (!this.form) {
-        this.initializeForm().then((form: esri.FeatureForm) => {
-          this.form.feature = changes.feature.currentValue;
-          
-          this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
-          setTimeout(()=>{
-            this.disableAttributeLookupFields();
+    if (!changes.feature.currentValue.layer.title.includes('Billing') ) {
+      if (changes.feature.currentValue) {
+        this.feature = changes.feature.currentValue;
+        if (!this.form) {
+          this.initializeForm().then((form: esri.FeatureForm) => {
+            
+            this.form.feature = changes.feature.currentValue;
+            
+            this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
+            setTimeout(()=>{
+              this.disableAttributeLookupFields();
+            });
           });
-        });
-      } else {
-        this.form.feature = changes.feature.currentValue;
-        this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
+        } else {
+          
+          this.form.feature = changes.feature.currentValue;
+          this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
+        }
+  
       }
-
     }
 
   }
