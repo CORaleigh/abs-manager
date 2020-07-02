@@ -1883,7 +1883,8 @@ export class FormgroupsService {
             {
               name: "PaymentTransactionNum",
               label: "PaymentTransactionNum",
-              editable: true
+              editable: false,
+              description: "Set when payment submitted"
             },
             {
               name: "PaymentPrepayTransferFlag",
@@ -2095,18 +2096,19 @@ export class FormgroupsService {
         description: '',
         fieldConfig: [
           {
-            name: "ContractNum",
-            label: "Contract Number",
-            editable: true,
-            required: true,
-            maxLength:9
-          },
-          {
             name: "ContractDate",
             label: "Contract Date",
             editable: true,
             required: true,            
-          },     
+          },            
+          {
+            name: "ContractNum",
+            label: "Contract Number",
+            editable: false,
+            required: true,
+            maxLength:9,
+            description: "Set after entering contract date"
+          },
           {
             name: "ContractDescription",
             label: "Contract Description",

@@ -24,10 +24,10 @@
                     <h4 >{{section.title.replace('ABS - ', '')}}</h4>
                     <form>
                         <div class="grid-container">
-                           <div class="column-3" *ngFor="let field of section.fields; index as i; ">
+                           <div class="column-3" *ngFor="let input of section.inputs; index as i; ">
                               <label>
-                                {{section.inputs[i]}}
-                                  <input type="text" class="form-control" [id]="field" [name]="field" (ngModelChange)="section[field] = $event" [ngModel]="section[field]"  [value]="section[field]" >    
+                                {{section.inputs}}
+                                  <input type="text" class="form-control" [id]="section.fields[i]" [name]="section.fields[i]" (ngModelChange)="section[section.fields[i]] = $event" [ngModel]="section[section.fields[i]]"  [value]="section[section.fields[i]]" >    
                               </label>
                           </div>
                           <div class="column-3">
@@ -39,7 +39,7 @@
                       </div>
                       </form>
                       <div *ngIf="!section.features.length" class="alert alert-full modifier-class is-active">
-                          No resolutions found
+                          No resolution found
                           <button class="btn" (click)="showCreationForm(section)" >CREATE</button>
     
                       </div>   

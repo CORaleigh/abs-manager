@@ -1,4 +1,4 @@
-<a class="btn  btn-green js-modal-toggle" title="Payment Calculator" href="#" data-modal="foo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" class="svg-icon"><path d="M1 0v12h29.8V0H1zm27 9H4V3h24v6zM1 14v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4zm5-6v18h8V14h-8zm6 16h-4V16h4v14zM1 24v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4z"/></svg></a>
+<a class="btn  btn-green js-modal-toggle" (click)="calculatePayoff()" title="Payment Calculator" href="#" data-modal="foo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" class="svg-icon"><path d="M1 0v12h29.8V0H1zm27 9H4V3h24v6zM1 14v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4zm5-6v18h8V14h-8zm6 16h-4V16h4v14zM1 24v8h8v-8H1zm6 6H3v-4h4v4zm5-6v8h8v-8h-8zm6 6h-4v-4h4v4z"/></svg></a>
 <div class="js-modal modal-overlay modifier-class" data-modal="foo">
         <div class="modal-content column-12" role="dialog" aria-labelledby="modal" role="dialog">
       
@@ -20,7 +20,10 @@
               <div>Interest Due: {{interestDue | currency}}</div>
               <div>Total Due: {{totalDue | currency}}</div>
             </div>
-    
+            <form><label>
+              Payment Amount
+              <input *ngIf="source === 'form'" type="number" class="form-control" name="paymentAmount"
+              [(ngModel)]="paymentAmount" required>    </label></form>
           <div class="text-right">
               <button class="btn js-modal-toggle"  (click)="save()" *ngIf="source === 'form'">Save</button>
       

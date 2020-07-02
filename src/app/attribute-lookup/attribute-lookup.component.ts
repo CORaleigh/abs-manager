@@ -41,6 +41,43 @@ export class AttributeLookupComponent implements OnInit {
      //   }
         
       }
+      this.form.on('value-change', e => {
+        if (e.fieldName === 'ContractDate') {
+          const query = this.form.layer.createQuery();
+          query.outStatistics = {
+            //@ts-ignore
+            onStatisticField: "ContractNum", 
+            outStatisticFieldName: "ContractNum_max",
+            statisticType: "max"
+          };
+          query.outFields = ['ContractNum_max'];
+          query.returnGeometry = false;
+          this.form.layer.queryFeatures(query).then(result => {
+            if (result.features.length) {
+              let num = result.features[0].getAttribute('ContractNum_max');
+              num = (parseInt(num.substr(4)) + 1).toString();
+              if (num.length === 4) {
+                num = '0' + num;
+              }
+              if (num.length === 3) {
+                num = '00' + num;
+              }      
+              if (num.length === 2) {
+                num = '000' + num;
+              }          
+              if (num.length === 1) {
+                num = '0000' + num;
+              }          
+              this.form.feature.attributes = this.form.getValues();
+
+              num = new Date(this.form.getValues().ContractDate).getFullYear().toString() + num;     
+              this.form.feature.setAttribute('ContractNum', num + 1);
+              this.form.feature = this.form.feature.clone();
+          
+            }
+          });
+        }
+      });
 
     } catch (error) {
       console.log('EsriLoader: ', error);
@@ -51,7 +88,8 @@ export class AttributeLookupComponent implements OnInit {
     this.create = true;
     this.form.fieldConfig = [section.fieldConfig];
     this.form.feature = graphic;
-    this.form.renderNow();      
+    //@ts-ignore
+    this.form.renderFields();      
   }
 
   submit() {
@@ -107,7 +145,7 @@ export class AttributeLookupComponent implements OnInit {
         section.text += section.features[0].attributes[field] + ' ';
       }
     });
-    section.text += 'found';  
+    section.text += ' found';  
   }
  sections:any[] = [];
 
@@ -126,7 +164,7 @@ export class AttributeLookupComponent implements OnInit {
         this.sections.push({layer: layer, fieldConfig: this.formGroups.rollFormGroup, fields: ['RollNum'], inputs: ['Roll#'], values: [""], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});        
       }  
       if (layer.title.includes("Contract")) {
-        this.sections.push({layer: layer, fieldConfig: this.formGroups.contractFormGroup, fields: ['ContractNum','ContractDate'], inputs: ['Contract#'], values: [""], title: layer.title, text: '', accountTypes: ['Tap Fee'], features:[]});        
+        this.sections.push({layer: layer, fieldConfig: this.formGroups.contractFormGroup, fields: ['ContractNum', 'ContractDate'], inputs: ['Contact #'], values: [""], title: layer.title, text: '', accountTypes: ['Tap Fee'], features:[]});        
       }             
     })
   }

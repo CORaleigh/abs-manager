@@ -1,5 +1,7 @@
 <div *ngIf="!showDetails && visible" class="panel modifier-class account-panel">
     <h4 class="trailer-half">{{title}}</h4>
+
+
     <div class="trailer-0">
         <div class="overflow-auto">
             <table class="table table-striped modifier-class " id="assessmentsTable">
@@ -24,8 +26,8 @@
                 No records found
 
               </div>   
+    <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source" *ngIf="title != 'Bills' && source && (shared.role === 'admin' || (shared.role === 'cashier' && (title === 'Payments' || title === 'Comments')) || (shared.role === 'viewer' && (title === 'Comments')))">Create</button>
 
-        <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source" *ngIf="title != 'Bills' && source && (shared.role === 'admin' || (shared.role === 'cashier' && (title === 'Payments' || title === 'Comments')) || (shared.role === 'viewer' && (title === 'Comments')))">Create</button>
      
     </div>
 </div> 

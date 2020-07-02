@@ -63,9 +63,24 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         this.source = this.shared.account.getValue();
 
         if(this.layer.getField('PaymentDate')) {
-          this.source.attributes['PaymentDate'] = new Date();
+          this.source.attributes['PaymentDate'] = new Date().getTime();
         }
 
+        if(this.layer.getField('TransactionTypeCode')) {
+          this.source.attributes['TransactionTypeCode'] = 'PMT';
+        }        
+        if(this.layer.getField('PaymentClassCode')) {
+          this.source.attributes['PaymentClassCode'] = '0039';
+        } 
+        if (this.layer.getField('PaymentHoldingFlag')) {
+          this.source.setAttribute('PaymentHoldingFlag', 'N');
+        }
+        if (this.layer.getField('PaymentReversedFlag')) {
+          this.source.setAttribute('PaymentReversedFlag', 'N');
+        }     
+        if (this.layer.getField('PaymentPrepayTransferFlag')) {
+          this.source.setAttribute('PaymentPrepayTransferFlag', 'N');
+        }            
       }
       if (this.layer.getField('DirResNum')) {
         this.source.attributes['DirResNum'] = null;
@@ -152,9 +167,9 @@ export class AccountPanelComponent implements OnInit, OnChanges {
         })
       }         
       if (this.title === 'Payments') {
+
         if (this.shared.account.getValue()) {
           loadModules(["esri/layers/support/Field"]).then(([Field]) => {
-
               let balance:number = this.shared.account.getValue().attributes.TotalLienAmount;
               this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
                 return a.attributes.PaymentDate - b.attributes.PaymentDate;

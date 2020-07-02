@@ -7,7 +7,7 @@ import { SharedService } from '../shared.service';
   templateUrl: './payoff-calculator.component.html',
   styleUrls: ['./payoff-calculator.component.scss']
 })
-export class PayoffCalculatorComponent implements OnInit, OnChanges {
+export class PayoffCalculatorComponent implements OnInit, OnChanges{
 
   constructor(private shared:SharedService) { }
   @Input('feature') feature: esri.Graphic = null;
@@ -20,12 +20,14 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   fromDate: Date = null;
   fromDateLabel: string = "";
   totalDue: number = 0;
+  paymentAmount: number = 0;
   dailyRate:number = 0;
   minDate:Date = null;
   
   @Output() payoffCalculated = new EventEmitter<any>();
 
   ngOnInit() {
+
   }
   calculatePayoff() {
     let days = 0;
@@ -56,13 +58,18 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
 
     new Date(this.payoffDate).getTime() - new Date(this.shared.account.getValue().attributes['AdvertiseDate']).getTime()
     this.totalDue = this.principalDue + this.interestDue;
-
+    this.paymentAmount = parseFloat(this.totalDue.toFixed(2));
   }
 
-  save() {
-
+    save() {
+    if (this.paymentAmount > this.interestDue) {
+      this.principalDue = this.paymentAmount - this.interestDue;
+    } else {
+      this.principalDue = 0;
+      this.interestDue = this.paymentAmount;
+    }
     
-    this.payoffCalculated.emit({total: this.totalDue, principal: this.principalDue, interest: this.interestDue});
+    this.payoffCalculated.emit({total: this.totalDue, principal: this.principalDue, interest: this.interestDue, paymentAmount: this.paymentAmount});
   }
 
   isLeapYear(year) {
@@ -117,6 +124,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges {
   ngOnChanges(changes:SimpleChanges) {
     if (changes.feature) {
       if (changes.feature.currentValue) {
+
         if (changes.feature.currentValue.attributes) {
   
              if (changes.feature.currentValue.attributes['InterestPaidThruDate']) {
