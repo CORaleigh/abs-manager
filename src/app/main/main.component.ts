@@ -55,8 +55,8 @@ export class MainComponent implements OnInit {
         insertCssBefore: 'style'
       });
       const info: esri.OAuthInfo = new OAuthInfo({
-        appId: 'EHQRkH0b5LJnizhP',
-        portalUrl: 'https://mapstest.raleighnc.gov/portal',
+        appId: 'ae78emFrRCQMGOYD',
+        portalUrl: 'https://maps.raleighnc.gov/portal',
         popup: false
       });
       this.identity = esriId;
@@ -129,11 +129,11 @@ export class MainComponent implements OnInit {
         'esri/WebMap',
         'esri/config'
       ]);
-      esriConfig.portalUrl = 'https://mapstest.raleighnc.gov/portal';
+      esriConfig.portalUrl = 'https://maps.raleighnc.gov/portal';
       
       const webmap:esri.WebMap = new WebMap({
         portalItem: { // autocasts as new PortalItem()
-          id: "2a3e30ce4ad54380a1a7232301b1f3dd"
+          id: "07345f49e67a4e88bcc4131bfe273d47"
         }
       });
       
@@ -213,7 +213,7 @@ export class MainComponent implements OnInit {
       //PROPERTY LAYER//
       Layer.fromPortalItem({
         //@ts-ignore
-        portalItem: { id: 'e5cd98a8d7b741d4bb70ae6694486355' }
+        portalItem: { id: '554acd39a3134721b70b3dfb2d61e4a1' }
       }).then((propertyLayer: esri.FeatureLayer) => {
         propertyLayer.popupTemplate = {
           title: '{SITE_ADDRESS}',
@@ -312,7 +312,7 @@ export class MainComponent implements OnInit {
                       this.configureCrumbs();
                       this.loaded = !this.loaded;
                       loadCss('https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css')
-                      loadCss('https://js.arcgis.com/4.15/esri/css/main.css')
+                      loadCss('https://js.arcgis.com/4.16/esri/css/main.css')
                     });
                   
                     
@@ -347,12 +347,12 @@ darkModeToggle(event) {
 
   if (event.target.checked) {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web-dark.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/dark/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.16/esri/themes/dark/main.css');
     this.basemap = 'dark-gray-vector';
     window.localStorage.setItem('dark', 'true');
   } else {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/css/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.16/esri/themes/css/main.css');
     this.basemap = 'gray-vector';
     window.localStorage.setItem('dark', 'false');
   }

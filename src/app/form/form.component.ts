@@ -211,7 +211,7 @@ export class FormComponent implements OnChanges, OnInit {
          });
          if (e.invalid.length === 0) {          
            if (this.shared.role === 'viewer') {
-             const layer = new FeatureLayer({url:'https://mapstest.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
+             const layer = new FeatureLayer({url:'https://maps.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
              layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
                this.formSubmitted.emit(this.form.layer);
              });
