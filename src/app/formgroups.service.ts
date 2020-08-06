@@ -420,12 +420,97 @@ export class FormgroupsService {
               editable: true,
               label: 'Status',
               required: true,
-              name: "StatusCode"          
+              name: "StatusCode",
+
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Pending",
+                    code: "1"
+                  },
+                  {
+                    name: "Active",
+                    code: "2"
+                  },
+                  {
+                    name: "Paid",
+                    code: "3"
+                  },
+                  {
+                    name: "Delinquent",
+                    code: "4"
+                  },
+                  {
+                    name: "Waived",
+                    code: "5"
+                  },
+                  {
+                    name: "Inactive",
+                    code: "6"
+                  },
+                  {
+                    name: "Write Off",
+                    code: "7"
+                  },
+                  {
+                    name: "Flagged",
+                    code: "8"
+                  }
+                ]
+              }),              
             },
             {
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode"
+              name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]
+              })    
             },
             {
               editable: false,
@@ -572,12 +657,96 @@ export class FormgroupsService {
               label: 'Status',
               required: true,
               name: "StatusCode",
-       
+
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Pending",
+                    code: "1"
+                  },
+                  {
+                    name: "Active",
+                    code: "2"
+                  },
+                  {
+                    name: "Paid",
+                    code: "3"
+                  },
+                  {
+                    name: "Delinquent",
+                    code: "4"
+                  },
+                  {
+                    name: "Waived",
+                    code: "5"
+                  },
+                  {
+                    name: "Inactive",
+                    code: "6"
+                  },
+                  {
+                    name: "Write Off",
+                    code: "7"
+                  },
+                  {
+                    name: "Flagged",
+                    code: "8"
+                  }
+                ]
+              }),              
             },
             {
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode"  
+              name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]   
+              })     
             },
             {
               editable: true,
@@ -725,12 +894,96 @@ export class FormgroupsService {
               label: 'Status',
               required: true,
               name: "StatusCode",
-          
+
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Pending",
+                    code: "1"
+                  },
+                  {
+                    name: "Active",
+                    code: "2"
+                  },
+                  {
+                    name: "Paid",
+                    code: "3"
+                  },
+                  {
+                    name: "Delinquent",
+                    code: "4"
+                  },
+                  {
+                    name: "Waived",
+                    code: "5"
+                  },
+                  {
+                    name: "Inactive",
+                    code: "6"
+                  },
+                  {
+                    name: "Write Off",
+                    code: "7"
+                  },
+                  {
+                    name: "Flagged",
+                    code: "8"
+                  }
+                ]
+              }),              
             },
             {
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode"
+              name: "ActionTypeCode",
+              domain: new CodedValueDomain({
+                codedValues: [
+                {
+                name: "No Action",
+                code: 0
+                },
+                {
+                name: "Heirs/Trusts",
+                code: 1
+                },
+                {
+                name: "Uncollectible-Age",
+                code: 2
+                },
+                {
+                name: "See Cheri",
+                code: 3
+                },
+                {
+                name: "Row Abatement",
+                code: 4
+                },
+                {
+                name: "Held In Abeyance",
+                code: 5
+                },
+                {
+                name: "Garnishment",
+                code: 6
+                },
+                {
+                name: "Bankruptcy",
+                code: 7
+                },
+                {
+                name: "Payment Plan",
+                code: 8
+                },
+                {
+                name: "NCDSOP",
+                code: 9
+                },
+                {
+                name: "Stormwater",
+                code: 10
+                }
+                ]  
+              })     
             },
             {
               editable: true,
@@ -885,11 +1138,94 @@ export class FormgroupsService {
           {
             name: 'BillingTypeCode',
             label: 'Billing Type Code',
+            domain: new CodedValueDomain({
+              codedValues: [
+                {
+                  name: 'Abatement',
+                  code: 'AB'
+                },
+                {
+                  name: 'Assessment',
+                  code: 'AS'
+                },
+                {
+                  name: 'Joint Venture',
+                  code: 'JV'
+                },
+                {
+                  name: 'Tap Fee',
+                  code: 'TF'
+                },
+                {
+                  name: 'Stormwater',
+                  code: 'SW'
+                }
+              ]
+            }),
             editable: false
           },
           {
             name: 'CategoryTypeCode',
             label: 'Category Type Code',
+            domain: new CodedValueDomain({
+              codedValues: [
+                {
+                  name: 'Water',
+                  code: '01'
+                },
+                {
+                  name: 'Sewer',
+                  code: '02'
+                },
+                {
+                  name: 'Sidewalk',
+                  code: '04'
+                },
+                {
+                  name: 'Abatement',
+                  code: '05'
+                },
+                {
+                  name: 'Paving',
+                  code: '07'
+                },
+                {
+                  name: 'TF-Water',
+                  code: '31'
+                },
+                {
+                  name: 'TF-Sewer',
+                  code: '32'
+                },
+                {
+                  name: 'TF - Water/Sewer',
+                  code: '33'
+                },
+                {
+                  name: 'TF - Contract Fee in Lieu',
+                  code: '34'
+                },
+                {
+                  name: 'Public Nuisance',
+                  code: '51'
+                },
+                {
+                  name: 'Demolition',
+                  code: '52'
+                },
+                {
+                  name: 'Asbestos Testing',
+                  code: '53'
+                },
+                {
+                  name: 'Visual Obstruction',
+                  code: '54'
+                },
+                {
+                  name: 'Multiple Flagged',
+                  code: '99'
+                }]
+            }),
             editable: false
           },
           {
@@ -1103,6 +1439,70 @@ export class FormgroupsService {
             {
               name: 'CommTypeCode',
               label: 'Communication Type Code',
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: 'Annexation Advertisement',
+                    code: 'AA'
+                  },
+                  {
+                    name: 'Abatement Advertisement',
+                    code: 'AB'
+                  },
+                  {
+                    name: 'Assessment Advertisement',
+                    code: 'AD'
+                  },
+                  {
+                    name: 'ASMT Installment 1st',
+                    code: 'AI1'
+                  },
+                  {
+                    name: 'ASMT Installment 2nd',
+                    code: 'AI2'
+                  },
+                  {
+                    name: 'ASMT Installment 3rd',
+                    code: 'AI3'
+                  },
+                  {
+                    name: 'Annexation Letter',
+                    code: 'AX'
+                  },
+                  {
+                    name: 'Confirming Abate Letter',
+                    code: 'CA'
+                  },
+                  {
+                    name: 'Abatement Final Letter',
+                    code: 'CF'
+                  },
+                  {
+                    name: 'Confirming ASMT Letter',
+                    code: 'CL'
+                  },
+                  {
+                    name: 'Deferred Tap Fee Letter',
+                    code: 'CL2'
+                  },
+                  {
+                    name: 'Ownership Change',
+                    code: 'OC'
+                  },
+                  {
+                    name: 'TF Installment 1st',
+                    code: 'TI1'
+                  },
+                  {
+                    name: 'TF Installment 2nd',
+                    code: 'TI2'
+                  },
+                  {
+                    name: 'TF Installment 3rd',
+                    code: 'TI3'
+                  }
+                ]
+              }),
               editable: true
             },
             {
@@ -1177,6 +1577,51 @@ export class FormgroupsService {
               name: "TransactionTypeCode",
               required: true,
               label: "Transaction Type Codes",
+              domain:
+                new CodedValueDomain({
+                  codedValues: [
+                    {
+                      name: "Principal adjustment",
+                      code: "ADM"
+                    },
+                    {
+                      name: "Advanced Payment",
+                      code: "APT"
+                    },
+                    {
+                      name: "City owned adjustment",
+                      code: "CIT"
+                    },
+                    {
+                      name: "Paid In Permits",
+                      code: "PIP"
+                    },
+                    {
+                      name: "Payment",
+                      code: "PMT"
+                    },
+                    {
+                      name: "Payment - Pending Account",
+                      code: "PNP"
+                    },
+                    {
+                      name: "Refund",
+                      code: "REF"
+                    },
+                    {
+                      name: "Reversal",
+                      code: "REV"
+                    },
+                    {
+                      name: "Waived",
+                      code: "WAV"
+                    },
+                    {
+                      name: "Write off",
+                      code: "WRO"
+                    }
+                  ]
+                }),
               editable: true
             },
             {
@@ -1409,6 +1854,42 @@ export class FormgroupsService {
             {
               name: "StatusCode",
               label: "Status Code",
+              domain: new CodedValueDomain({
+                codedValues: [
+                  {
+                    name: "Pending",
+                    code: "1"
+                  },
+                  {
+                    name: "Active",
+                    code: "2"
+                  },
+                  {
+                    name: "Paid",
+                    code: "3"
+                  },
+                  {
+                    name: "Delinquent",
+                    code: "4"
+                  },
+                  {
+                    name: "Waived",
+                    code: "5"
+                  },
+                  {
+                    name: "Inactive",
+                    code: "6"
+                  },
+                  {
+                    name: "Write Off",
+                    code: "7"
+                  },
+                  {
+                    name: "Flagged",
+                    code: "8"
+                  }
+                ]
+              }),
               editable: true
             },
             {
