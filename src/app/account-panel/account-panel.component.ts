@@ -181,10 +181,10 @@ export class AccountPanelComponent implements OnInit, OnChanges {
                 const value = domain.codedValues.filter((cv:esri.CodedValueDomainCodedValues)=> {
                   return cv.code === feature.attributes.PaymentClassCode;
                 })[0];
-                if (value.name.indexOf("P") === 0) {
-                  balance = balance - feature.attributes.PaymentAmount;
+                if (value.name.indexOf("INTEREST") > 0) {
                   feature.attributes.Balance = balance;
                 } else {
+                  balance = balance - feature.attributes.PaymentAmount;
                   feature.attributes.Balance = balance;
                 }
 
