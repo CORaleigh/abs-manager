@@ -416,97 +416,12 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Status',
               required: true,
-              name: "StatusCode",
-
-              domain: new CodedValueDomain({
-                codedValues: [
-                  {
-                    name: "Pending",
-                    code: "1"
-                  },
-                  {
-                    name: "Active",
-                    code: "2"
-                  },
-                  {
-                    name: "Paid",
-                    code: "3"
-                  },
-                  {
-                    name: "Delinquent",
-                    code: "4"
-                  },
-                  {
-                    name: "Waived",
-                    code: "5"
-                  },
-                  {
-                    name: "Inactive",
-                    code: "6"
-                  },
-                  {
-                    name: "Write Off",
-                    code: "7"
-                  },
-                  {
-                    name: "Flagged",
-                    code: "8"
-                  }
-                ]
-              }),              
+              name: "StatusCode"            
             },
             {
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
-              domain: new CodedValueDomain({
-                codedValues: [
-                {
-                name: "No Action",
-                code: 0
-                },
-                {
-                name: "Heirs/Trusts",
-                code: 1
-                },
-                {
-                name: "Uncollectible-Age",
-                code: 2
-                },
-                {
-                name: "See Cheri",
-                code: 3
-                },
-                {
-                name: "Row Abatement",
-                code: 4
-                },
-                {
-                name: "Held In Abeyance",
-                code: 5
-                },
-                {
-                name: "Garnishment",
-                code: 6
-                },
-                {
-                name: "Bankruptcy",
-                code: 7
-                },
-                {
-                name: "Payment Plan",
-                code: 8
-                },
-                {
-                name: "NCDSOP",
-                code: 9
-                },
-                {
-                name: "Stormwater",
-                code: 10
-                }
-                ]
-                })            
+              name: "ActionTypeCode"      
             },
             {
               editable: true,
@@ -634,97 +549,12 @@ export class ConfirmedFormgroupsService {
               editable: true,
               label: 'Status',
               required: true,
-              name: "StatusCode",
-
-              domain: new CodedValueDomain({
-                codedValues: [
-                  {
-                    name: "Pending",
-                    code: "1"
-                  },
-                  {
-                    name: "Active",
-                    code: "2"
-                  },
-                  {
-                    name: "Paid",
-                    code: "3"
-                  },
-                  {
-                    name: "Delinquent",
-                    code: "4"
-                  },
-                  {
-                    name: "Waived",
-                    code: "5"
-                  },
-                  {
-                    name: "Inactive",
-                    code: "6"
-                  },
-                  {
-                    name: "Write Off",
-                    code: "7"
-                  },
-                  {
-                    name: "Flagged",
-                    code: "8"
-                  }
-                ]
-              }),              
+              name: "StatusCode"            
             },
             {
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
-              domain: new CodedValueDomain({
-                  codedValues: [
-                {
-                name: "No Action",
-                code: 0
-                },
-                {
-                name: "Heirs/Trusts",
-                code: 1
-                },
-                {
-                name: "Uncollectible-Age",
-                code: 2
-                },
-                {
-                name: "See Cheri",
-                code: 3
-                },
-                {
-                name: "Row Abatement",
-                code: 4
-                },
-                {
-                name: "Held In Abeyance",
-                code: 5
-                },
-                {
-                name: "Garnishment",
-                code: 6
-                },
-                {
-                name: "Bankruptcy",
-                code: 7
-                },
-                {
-                name: "Payment Plan",
-                code: 8
-                },
-                {
-                name: "NCDSOP",
-                code: 9
-                },
-                {
-                name: "Stormwater",
-                code: 10
-                }
-                ]
-                })           
+              name: "ActionTypeCode"        
             },
             {
               editable: true,
@@ -890,55 +720,7 @@ export class ConfirmedFormgroupsService {
             {
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
-              domain: new CodedValueDomain({
-                codedValues: [
-                {
-                name: "No Action",
-                code: 0
-                },
-                {
-                name: "Heirs/Trusts",
-                code: 1
-                },
-                {
-                name: "Uncollectible-Age",
-                code: 2
-                },
-                {
-                name: "See Cheri",
-                code: 3
-                },
-                {
-                name: "Row Abatement",
-                code: 4
-                },
-                {
-                name: "Held In Abeyance",
-                code: 5
-                },
-                {
-                name: "Garnishment",
-                code: 6
-                },
-                {
-                name: "Bankruptcy",
-                code: 7
-                },
-                {
-                name: "Payment Plan",
-                code: 8
-                },
-                {
-                name: "NCDSOP",
-                code: 9
-                },
-                {
-                name: "Stormwater",
-                code: 10
-                }
-                ]
-                })           
+              name: "ActionTypeCode"       
             },
             {
               editable: true,
