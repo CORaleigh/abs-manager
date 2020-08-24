@@ -71,7 +71,7 @@ export class AttributeLookupComponent implements OnInit {
               this.form.feature.attributes = this.form.getValues();
 
               num = new Date(this.form.getValues().ContractDate).getFullYear().toString() + num;     
-              this.form.feature.setAttribute('ContractNum', num + 1);
+              this.form.feature.setAttribute('ContractNum', num);
               this.form.feature = this.form.feature.clone();
           
             }
