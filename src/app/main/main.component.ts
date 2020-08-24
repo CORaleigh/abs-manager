@@ -65,13 +65,13 @@ export class MainComponent implements OnInit {
         const portal:esri.Portal = new Portal(info.portalUrl);
         portal.load().then(() => {
           this.shared.user = portal.user;
-          if (this.shared.user.roleId === "o8P1VswLYBUnsLsQ") {
+          if (this.shared.user.roleId === "rsAKCcRob9bHV33h") {
             this.shared.role = 'cashier';
           }
-          if (this.shared.user.roleId === 'PT9XAlXMaIiCdBej') {
+          if (this.shared.user.roleId === 'UlIW0R5RwSyKaUyT') {
             this.shared.role = 'admin';
           }
-          if (this.shared.user.roleId === 'rpT7LgMQ92eHhOef') {
+          if (this.shared.user.roleId === '3FYTQfFRKDR7vCEZ') {
             this.shared.role = 'viewer';
           }          
           if (this.shared.user.role === 'org_admin') {
