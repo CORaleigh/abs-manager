@@ -1478,6 +1478,11 @@ export class FormgroupsService {
             name: "Comment",
             label: "Comment",
             editable: true
+          },
+          {
+            name: "PaymentPlan",
+            label: "Payment Plan",
+            editable: true
           }
         ]
       });  
