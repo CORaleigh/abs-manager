@@ -170,7 +170,20 @@ export class AccountPanelComponent implements OnInit, OnChanges {
 
         if (this.shared.account.getValue()) {
           loadModules(["esri/layers/support/Field"]).then(([Field]) => {
-              let balance:number = this.shared.account.getValue().attributes.TotalLienAmount;
+              let lienamount = this.shared.account.getValue().attributes.TotalLienAmount;
+              let adminfee = this.shared.account.getValue().attributes.AdminFee;
+              let advfee = this.shared.account.getValue().attributes.AdvertiseFee;
+              if (!lienamount) {
+                lienamount = 0;
+              }
+              if (!adminfee) {
+                adminfee = 0;
+              }
+              if (!advfee) {
+                advfee = 0;
+              }
+
+              let balance:number = lienamount+adminfee+advfee;
               this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
                 return a.attributes.PaymentDate - b.attributes.PaymentDate;
               });
