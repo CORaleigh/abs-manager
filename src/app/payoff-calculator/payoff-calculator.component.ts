@@ -54,6 +54,12 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
         this.interestDue = 0;
         this.dailyRate = 0;
       }
+      else if (this.shared.account.getValue().getAttribute('Annexed') != 'Y' &&
+      (this.shared.account.getValue().getAttribute('BillingTypeCode') == 'AS' || 
+      this.shared.account.getValue().getAttribute('BillingTypeCode') == 'JV' )) {
+        this.interestDue = 0;
+        this.dailyRate = 0;
+      }
     }
 
     new Date(this.payoffDate).getTime() - new Date(this.shared.account.getValue().attributes['AdvertiseDate']).getTime()
