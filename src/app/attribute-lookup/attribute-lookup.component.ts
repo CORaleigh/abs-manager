@@ -77,6 +77,10 @@ export class AttributeLookupComponent implements OnInit {
             }
           });
         }
+        if (e.fieldName === 'ConfResDate') {
+          //@ts-ignore
+          e.target.setValue('ConfResDate', new Date(e.value).setHours(0,0,0,0));
+        }
       });
 
     } catch (error) {
