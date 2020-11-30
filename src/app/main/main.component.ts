@@ -71,7 +71,7 @@ export class MainComponent implements OnInit {
           if (this.shared.user.roleId === 'UlIW0R5RwSyKaUyT') {
             this.shared.role = 'admin';
           }
-          if (this.shared.user.roleId === '3FYTQfFRKDR7vCEZ') {
+          if (this.shared.user.roleId === '3FYTQfFRKDR7vCEZ' || portal.user.username.startsWith('Donetta.Powell')) {
             this.shared.role = 'viewer';
           }          
           if (this.shared.user.role === 'org_admin') {
