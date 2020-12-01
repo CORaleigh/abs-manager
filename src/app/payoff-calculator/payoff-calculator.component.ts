@@ -41,10 +41,11 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
       this.minDate = new Date(this.shared.account.getValue().attributes['ContractDate']);
       days = Math.round((new Date(this.payoffDate).getTime() - new Date(new Date(this.shared.account.getValue().attributes['ContractDate']).toDateString()).getTime())/(1000*60*60*24));
     }
-    
+
     this.principalDue = this.shared.account.getValue().attributes['PrincipalBalance'];
-    this.interestDue = ((this.shared.account.getValue().attributes['InterestRate']/100)/365 * days) * this.shared.account.getValue().attributes['PrincipalBalance'];
-    this.dailyRate = parseFloat((this.interestDue/days).toFixed(4));
+    this.dailyRate = this.principalDue * (this.shared.account.getValue().attributes['InterestRate']/100)/365;
+    this.dailyRate = parseFloat(this.dailyRate.toFixed(4));
+    this.interestDue = this.dailyRate * days;
     if (this.shared.account.getValue().attributes['BillingTypeCode'] != 'TF' ) {    
       if (!this.shared.account.getValue().attributes['AdvertiseDate']) {
         this.interestDue = 0;
@@ -64,6 +65,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
 
     new Date(this.payoffDate).getTime() - new Date(this.shared.account.getValue().attributes['AdvertiseDate']).getTime()
     this.totalDue = this.principalDue + this.interestDue;
+    debugger;
     this.paymentAmount = parseFloat(this.totalDue.toFixed(2));
   }
 
