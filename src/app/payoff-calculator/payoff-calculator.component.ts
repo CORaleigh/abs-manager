@@ -29,6 +29,9 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
   ngOnInit() {
 
   }
+  open() {
+    this.payoffDate = new Date().toISOString().slice(0,10);
+  }
   calculatePayoff() {
     let days = 0;
     
@@ -46,6 +49,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
     this.dailyRate = this.principalDue * (this.shared.account.getValue().attributes['InterestRate']/100)/365;
     this.dailyRate = parseFloat(this.dailyRate.toFixed(4));
     this.interestDue = this.dailyRate * days;
+    debugger;
     if (this.shared.account.getValue().attributes['BillingTypeCode'] != 'TF' ) {    
       if (!this.shared.account.getValue().attributes['AdvertiseDate']) {
         this.interestDue = 0;
@@ -65,7 +69,6 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
 
     new Date(this.payoffDate).getTime() - new Date(this.shared.account.getValue().attributes['AdvertiseDate']).getTime()
     this.totalDue = this.principalDue + this.interestDue;
-    debugger;
     this.paymentAmount = parseFloat(this.totalDue.toFixed(2));
   }
 
