@@ -29,6 +29,9 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
   ngOnInit() {
 
   }
+  open() {
+    this.payoffDate = new Date().toISOString().slice(0,10);
+  }
   calculatePayoff() {
     let days = 0;
     
