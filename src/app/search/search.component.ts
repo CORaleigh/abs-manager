@@ -409,7 +409,7 @@ export class SearchComponent implements OnInit, OnChanges {
               dateField = 'DirResDate';
               numField = 'DirResNum';
             }
-            
+            const where: string = `EXTRACT(YEAR FROM ${dateField}) = ${new Date(event.result.feature.attributes[dateField]).getFullYear()} and ${numField} = '${event.result.feature.attributes[numField]}'`;            
             this.getLayerByTitle('Assessment').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
             + "' and "+numField+" = '" + event.result.feature.attributes[numField]+"'"}).then(featureSet => {
               features = features.concat(featureSet.features);
