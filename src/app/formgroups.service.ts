@@ -138,11 +138,11 @@ export class FormgroupsService {
                 codedValues: [
                   {
                     name: "Inside City Limits",
-                    code: "A"
+                    code: ""
                   },
                   {
                     name: "Outside City Limits",
-                    code: ""
+                    code: "A"
                   }
                 ]})
             },
@@ -1009,11 +1009,11 @@ export class FormgroupsService {
               codedValues: [
                 {
                   name: "Inside City Limits",
-                  code: "A"
+                  code: ""
                 },
                 {
                   name: "Outside City Limits",
-                  code: ""
+                  code: "A"
                 }
               ]})
           },
@@ -1543,11 +1543,11 @@ export class FormgroupsService {
               codedValues: [
                 {
                   name: "Inside City Limits",
-                  code: "A"
+                  code: ""
                 },
                 {
                   name: "Outside City Limits",
-                  code: ""
+                  code: "A"
                 }
               ]})            
           },     
