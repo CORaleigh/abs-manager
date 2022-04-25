@@ -89,7 +89,7 @@ export class SearchComponent implements OnInit, OnChanges {
 
   getAccountSuggestions(params, field, layer) {
     return layer.queryFeatures({
-      where: field+" like '" + params.suggestTerm.toUpperCase() + "%'",
+      where: field+" = (" + params.suggestTerm.toUpperCase()+")",
       num: 6,
       outFields: [field, 'REID'],
       returnDistinctValues: true,
@@ -108,7 +108,7 @@ export class SearchComponent implements OnInit, OnChanges {
   getAccountResults(params, field, layer:esri.FeatureLayer) {
     
     return layer.queryFeatures({
-      where: field + " = '"+params.suggestResult.text.toUpperCase() + "'",
+      where: field + " = "+params.suggestResult.text.toUpperCase(),
       outFields: ['*'],
       returnGeometry: false
     }).then(results => {
@@ -144,7 +144,6 @@ export class SearchComponent implements OnInit, OnChanges {
   getResolutionSuggestions(params, dateField, numField, layer) {
     let year = null;
     let num = null;
-    
     if (params.suggestTerm.indexOf('-') > -1) {
       let array = params.suggestTerm.split('-');
       year = array[0];
