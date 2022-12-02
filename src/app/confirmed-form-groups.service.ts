@@ -430,7 +430,7 @@ export class ConfirmedFormgroupsService {
               required: true
             },
             {
-              editable: false,
+              editable: true,
               required: false,
               label: 'Principal Balance',
               name: "PrincipalBalance",
@@ -563,7 +563,7 @@ export class ConfirmedFormgroupsService {
               required: true
             },
             {
-              editable: false,
+              editable: true,
               required: false,
               label: 'Principal Balance',
               name: "PrincipalBalance",
@@ -729,7 +729,7 @@ export class ConfirmedFormgroupsService {
               required: true
             },
             {
-              editable: false,
+              editable: true,
               required: true,
               label: 'Principal Balance',
               name: "PrincipalBalance",

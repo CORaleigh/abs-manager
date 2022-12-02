@@ -75,7 +75,7 @@ export class FormComponent implements OnChanges, OnInit {
       this.form.fieldConfig = [this.formGroups.commentsFormGroup];
     }       
     if (status) {
-      if (status === '2') {
+      if (status === '2' || status === '3') {
         if (layer.title.includes("Abatement")) {
           this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,
           this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
