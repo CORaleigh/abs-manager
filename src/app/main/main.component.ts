@@ -90,7 +90,6 @@ export class MainComponent implements OnInit {
   }
   
   storeLayer(layer: esri.FeatureLayer, layers: esri.FeatureLayer[]) {
-
     if (layer.title.includes("Tap Fees")) {
       this.tapfeesLayer = layer;
     }
@@ -145,8 +144,8 @@ export class MainComponent implements OnInit {
             this.storeLayer(layer, layers);
           });
           webmap.tables.forEach((table:esri.FeatureLayer) => {
-            let layer:esri.FeatureLayer = new FeatureLayer({url: (table as esri.FeatureLayer).url, title: table.title});
-            this.storeLayer(layer, layers);     
+            //let layer:esri.FeatureLayer = new FeatureLayer({url: (table as esri.FeatureLayer).url, title: table.title});
+            this.storeLayer(table, layers);     
           });
         });
       });
@@ -263,9 +262,13 @@ export class MainComponent implements OnInit {
           ]
         }]
       }
-      layers.push(propertyLayer);
+  
       
       propertyLayer.load().then(() => {
+
+        propertyLayer = (propertyLayer as any).layers.getItemAt(0);
+        propertyLayer.load().then(() => {
+          layers.push(propertyLayer);
         this.assessmentsLayer.load().then(() => {
           this.accountLayers.push(this.assessmentsLayer);
           this.abatementsLayer.load().then(() => {
@@ -312,7 +315,7 @@ export class MainComponent implements OnInit {
                       this.configureCrumbs();
                       this.loaded = !this.loaded;
                       loadCss('https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css')
-                      loadCss('https://js.arcgis.com/4.15/esri/css/main.css')
+                      loadCss('https://js.arcgis.com/4.24/esri/css/main.css')
                     });
                   
                     
@@ -323,6 +326,7 @@ export class MainComponent implements OnInit {
           });
         });
       });
+    });
     });
   } catch (error) {
     console.log('EsriLoader: ', error);
@@ -347,12 +351,12 @@ darkModeToggle(event) {
 
   if (event.target.checked) {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web-dark.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/dark/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.24/esri/themes/dark/main.css');
     this.basemap = 'dark-gray-vector';
     window.localStorage.setItem('dark', 'true');
   } else {
     this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/css/main.css');
+    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.24/esri/themes/css/main.css');
     this.basemap = 'gray-vector';
     window.localStorage.setItem('dark', 'false');
   }

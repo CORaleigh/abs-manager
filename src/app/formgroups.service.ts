@@ -5,64 +5,71 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class FormgroupsService {
-  assessmentFormGroup: esri.FieldGroupConfig;
-  abatementFormGroup: esri.FieldGroupConfig;
-  tapFeeFormGroup: esri.FieldGroupConfig;
-  assessmentBillingFormGroup: esri.FieldGroupConfig;
-  abatementBillingFormGroup: esri.FieldGroupConfig;
-  tapFeeBillingFormGroup: esri.FieldGroupConfig;
-  billingDataFormGroup: esri.FieldGroupConfig;
-  billSentToFormGroup: esri.FieldGroupConfig;
-  billSiteAddressFormGroup: esri.FieldGroupConfig;
-  communicationFormGroup: esri.FieldGroupConfig;
-  commSentToFormGroup: esri.FieldGroupConfig;
-  paymentFormGroup: esri.FieldGroupConfig;
-  commentsFormGroup: esri.FieldGroupConfig;
-  contractFormGroup: esri.FieldGroupConfig;
-  rollFormGroup: esri.FieldGroupConfig;
-  confResFormGroup: esri.FieldGroupConfig;
-  dirResFormGroup: esri.FieldGroupConfig;
-  corrResFormGroup: esri.FieldGroupConfig;
-  altBillingFormGroup: esri.FieldGroupConfig;
+  assessmentFormGroup: esri.GroupElement;
+  abatementFormGroup: esri.GroupElement;
+  tapFeeFormGroup: esri.GroupElement;
+  assessmentBillingFormGroup: esri.GroupElement;
+  abatementBillingFormGroup: esri.GroupElement;
+  tapFeeBillingFormGroup: esri.GroupElement;
+  billingDataFormGroup: esri.GroupElement;
+  billSentToFormGroup: esri.GroupElement;
+  billSiteAddressFormGroup: esri.GroupElement;
+  communicationFormGroup: esri.GroupElement;
+  commSentToFormGroup: esri.GroupElement;
+  paymentFormGroup: esri.GroupElement;
+  commentsFormGroup: esri.GroupElement;
+  contractFormGroup: esri.GroupElement;
+  rollFormGroup: esri.GroupElement;
+  confResFormGroup: esri.GroupElement;
+  dirResFormGroup: esri.GroupElement;
+  corrResFormGroup: esri.GroupElement;
+  altBillingFormGroup: esri.GroupElement;
   constructor() {
-    loadModules(['esri/widgets/FeatureForm/FieldGroupConfig', 'esri/layers/support/CodedValueDomain']).then(
-      ([FieldGroupConfig, CodedValueDomain]) => {
-        this.assessmentFormGroup = new FieldGroupConfig({
+    loadModules(['esri/form/elements/GroupElement', 'esri/layers/support/CodedValueDomain']).then(
+      ([GroupElement, CodedValueDomain]) => {
+        this.assessmentFormGroup = new GroupElement({
           label: "Assessment",
           description: "Assessment information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
               editable: false,
               label: 'Account ID',
-              name: "AccountID"
+              fieldName: "AccountID"
             },
             {
+              type: 'field',
               editable: false,
               label: 'Account Date',
-              name: "AccountDate"
+              fieldName: "AccountDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               label: 'Real Estate ID',
-              name: "REID",
+              fieldName: "REID",
               maxLength: 7
             },
             {
+              type: 'field',
               editable: false,
               label: 'Complete Subaddress ID',
-              name: "CSAID",
+              fieldName: "CSAID",
             },
             {
+              type: 'field',
               editable: false,
               label: 'PIN #',
-              name: "NCPIN",
+              fieldName: "NCPIN",
               maxLength: 10
             },
             {
+              type: 'field',
               editable: true,
               label: 'Billing Type Code',
-              name: "BillingTypeCode",
-              required: true, 
+              fieldName: "BillingTypeCode",
+              requiredExpression: 'required', 
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -81,10 +88,11 @@ export class FormgroupsService {
               })
             },
             {
+              type: 'field',
               editable: true,
               label: 'Category Type Code',
-              name: "CategoryTypeCode",
-              required: true, 
+              fieldName: "CategoryTypeCode",
+              requiredExpression: 'required', 
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -115,24 +123,27 @@ export class FormgroupsService {
               })
             },
             {
+              type: 'field',
               editable: false,
               label: 'Roll #',
-              name: "RollNum",
+              fieldName: "RollNum",
               required: false,
               maxLength: 9             
             },
             {
+              type: 'field',
               editable: true,
               label: 'Roll Lot',
-              name: "RollLotNum",
+              fieldName: "RollLotNum",
               required: false,
               maxLength: 3              
             },            
             {
+              type: 'field',
               editable: true,
               label: 'Roll # In/Out',
-              name: "RollNumInOut",
-              required: true,
+              fieldName: "RollNumInOut",
+              requiredExpression: 'required',
               maxLength: 1,
               domain: new CodedValueDomain({
                 codedValues: [
@@ -148,80 +159,97 @@ export class FormgroupsService {
             },
             {
               label: 'Directing Resolution Number',
-              name: "DirResNum",
+              
+              type: 'field',fieldName: "DirResNum",
               editable: true,
-              required: true           
+              requiredExpression: 'required'           
             },
             {
               label: 'Directing Resolution Date',
-              name: "DirResDate",
+              
+              type: 'field',fieldName: "DirResDate",
               editable: true,
-              required: true         
+              requiredExpression: 'required',
+              input: { type: "datetime-picker"}        
             },
             {
+              type: 'field',
               editable: false,
               label: 'Confirming Resolution Number',
-              name: "ConfResNum",
+              fieldName: "ConfResNum",
               maxLength:9
             },
             {
+              type: 'field',
               editable: false,
               label: 'Confirming Resolution Date',
-              name: "ConfResDate",
+              fieldName: "ConfResDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               label: 'Advertise Date',
-              name: "AdvertiseDate",
+              fieldName: "AdvertiseDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: true,
               label: 'Advertise Fee',
-              name: "AdvertiseFee",
+              fieldName: "AdvertiseFee",
             },              
             {
+              type: 'field',
               editable: true,
               label: 'Assessment Fee ID',
-              name: "AssmntFeeID",
+              fieldName: "AssmntFeeID",
             }
           ]
         });
-        this.abatementFormGroup = new FieldGroupConfig({
+        this.abatementFormGroup = new GroupElement({
           label: "Abatements",
           description: "Abatement information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
               editable: false,
               label: 'Account ID',
-              name: "AccountID"
+              fieldName: "AccountID"
             },
             {
+              type: 'field',
               editable: false,
               label: 'Account Date',
-              name: "AccountDate"
+              fieldName: "AccountDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               label: 'Real Estate ID',
-              name: "REID",
+              fieldName: "REID",
               maxLength: 7
             },
             {
+              type: 'field',
               editable: false,
               label: 'Complete Subaddress ID',
-              name: "CSAID",
+              fieldName: "CSAID",
             },
             {
+              type: 'field',
               editable: false,
               label: 'PIN #',
-              name: "NCPIN",
+              fieldName: "NCPIN",
               maxLength: 10
             },
             {
+              type: 'field',
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Billing Type Code',
-              name: "BillingTypeCode",
+              fieldName: "BillingTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -232,10 +260,11 @@ export class FormgroupsService {
               })
             },
             {
+              type: 'field',
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Category Type Code',
-              name: "CategoryTypeCode",
+              fieldName: "CategoryTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -266,91 +295,110 @@ export class FormgroupsService {
               })
             },
             {
+              type: 'field',
               editable: true,
               label: 'Adjustment Amount',
-              name: "ABAdjustmentAmount",
+              fieldName: "ABAdjustmentAmount",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Council Date',
-              name: "ABCouncilDate",
+              fieldName: "ABCouncilDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               label: 'Confirming Resolution Number',
-              name: "ConfResNum",
+              fieldName: "ConfResNum",
               maxLength:9
             },
             {
+              type: 'field',
               editable: false,
               label: 'Confirming Resolution Date',
-              name: "ConfResDate",
+              fieldName: "ConfResDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               label: 'Advertise Date',
-              name: "AdvertiseDate",
+              fieldName: "AdvertiseDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: true,
               label: 'Advertise Fee',
-              name: "AdvertiseFee",
+              fieldName: "AdvertiseFee",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Housing Reference',
-              name: "ABHousingRef",
+              fieldName: "ABHousingRef",
               maxLength:9
             },
             {
+              type: 'field',
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Housing Letter 1 Sent On',
-              name: "ABHousingLetter1",
+              fieldName: "ABHousingLetter1",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Housing Letter 2 Sent On',
-              name: "ABHousingLetter2",
+              fieldName: "ABHousingLetter2",
             }
           ]
         });
-        this.tapFeeFormGroup = new FieldGroupConfig({
+        this.tapFeeFormGroup = new GroupElement({
           label: "Tap Fees",
           description: "Tap fee information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
               editable: false,
               label: 'Account ID',
-              name: "AccountID"
+              fieldName: "AccountID"
             },
             {
+              type: 'field',
               editable: false,
               label: 'Account Date',
-              name: "AccountDate"
+              fieldName: "AccountDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               label: 'Real Estate ID',
-              name: "REID",
+              fieldName: "REID",
               maxLength: 7
             },
             {
+              type: 'field',
               editable: false,
               label: 'Complete Subaddress ID',
-              name: "CSAID",
+              fieldName: "CSAID",
             },
             {
+              type: 'field',
               editable: false,
               label: 'PIN #',
-              name: "NCPIN",
+              fieldName: "NCPIN",
               maxLength: 10
             },
             {
+              type: 'field',
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Billing Type Code',
-              name: "BillingTypeCode",
+              fieldName: "BillingTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -361,9 +409,10 @@ export class FormgroupsService {
               })
             },
             {
+              type: 'field',
               editable: true,
               label: 'Category Type Code',
-              name: "CategoryTypeCode",
+              fieldName: "CategoryTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -386,41 +435,47 @@ export class FormgroupsService {
               })
             },
             {
+              type: 'field',
               editable: false,
-              required: true,
+              requiredExpression: 'required',
               label: 'Contract #',
-              name: "ContractNum",
+              fieldName: "ContractNum",
               maxLength:9
             },
             {
+              type: 'field',
               editable: false,
-              required: true,
+              requiredExpression: 'required',
               label: 'Contract Date',
-              name: "ContractDate",
+              fieldName: "ContractDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });
-        this.assessmentBillingFormGroup = new FieldGroupConfig({
+        this.assessmentBillingFormGroup = new GroupElement({
           label: "Billing",
           description: "Billing information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
               editable: true,
               label: 'Number of Years',
-              name: "NumYears",
+              fieldName: "NumYears",
               required: false
             },
             {
+              type: 'field',
               editable: true,
               label: 'Interest Rate',
-              name: "InterestRate",
+              fieldName: "InterestRate",
               required: false
             },
             {
+              type: 'field',
               editable: true,
               label: 'Status',
-              required: true,
-              name: "StatusCode",
+              requiredExpression: 'required',
+              fieldName: "StatusCode",
 
               domain: new CodedValueDomain({
                 codedValues: [
@@ -460,9 +515,10 @@ export class FormgroupsService {
               }),              
             },
             {
+              type: 'field',
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
+              fieldName: "ActionTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                 {
@@ -513,54 +569,65 @@ export class FormgroupsService {
               })    
             },
             {
+              type: 'field',
               editable: false,
               label: 'Total Lien Amount',
-              name: "TotalLienAmount",
+              fieldName: "TotalLienAmount",
               required: false
             },
             {
+              type: 'field',
               editable: false,
               required: false,
               label: 'Principal Balance',
-              name: "PrincipalBalance",
+              fieldName: "PrincipalBalance",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Principal Past Due',
-              name: "PrincipalPastDue",
+              fieldName: "PrincipalPastDue",
             },
             {
+              type: 'field',
               editable: false,
               label: 'Principal Pre-paid',
-              name: "PrincipalPrePaid",
+              fieldName: "PrincipalPrePaid",
             },
             {
+              type: 'field',
               editable: false,
               required: false,
               label: 'Interest Paid Thru',
-              name: "InterestPaidThruDate",
+              fieldName: "InterestPaidThruDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               required: false,
               label: 'Interest Start Date',
-              name: "InterestStartDate",
+              fieldName: "InterestStartDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: true,
               required: false,
               label: 'Installment Amount',
-              name: "InstallmentAmount",
+              fieldName: "InstallmentAmount",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Number of Installments Made',
-              name: "NumInstallmentsMade",
+              fieldName: "NumInstallmentsMade",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan',
-              name: "PaymentPlanFlag",
+              fieldName: "PaymentPlanFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -575,22 +642,26 @@ export class FormgroupsService {
               })              
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan Description',
-              name: "PaymentPlanDesc",
+              fieldName: "PaymentPlanDesc",
               maxLength: 35,
               visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan Date',
-              name: "PaymentPlanDate",
-              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
+              fieldName: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: true,
               label: 'Bankrupt',
-              name: "BankruptFlag",
+              fieldName: "BankruptFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -608,9 +679,10 @@ export class FormgroupsService {
             },
 
             {
+              type: 'field',
               editable: true,
               label: 'Estate',
-              name: "EstateFlag",
+              fieldName: "EstateFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -625,38 +697,44 @@ export class FormgroupsService {
               })                 
             },              
             {
+              type: 'field',
               editable: true,
               label: 'Current Installment Due',
-              name: "CurrentInstallmentDue",
+              fieldName: "CurrentInstallmentDue",
             },
             {
+              type: 'field',
               editable: false,
               label: 'Last Payment Date',
-              name: "LastPaymentDate",
+              fieldName: "LastPaymentDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });
-        this.abatementBillingFormGroup = new FieldGroupConfig({
+        this.abatementBillingFormGroup = new GroupElement({
           label: "Billing",
           description: "Billing information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
               editable: true,
               label: 'Number of Years',
-              name: "NumYears",
+              fieldName: "NumYears",
               required: false
             },
             {
+              type: 'field',
               editable: true,
               label: 'Interest Rate',
-              name: "InterestRate",
+              fieldName: "InterestRate",
               required: false
             },
             {
+              type: 'field',
               editable: true,
               label: 'Status',
-              required: true,
-              name: "StatusCode",
+              requiredExpression: 'required',
+              fieldName: "StatusCode",
 
               domain: new CodedValueDomain({
                 codedValues: [
@@ -696,9 +774,10 @@ export class FormgroupsService {
               }),              
             },
             {
+              type: 'field',
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
+              fieldName: "ActionTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                 {
@@ -749,54 +828,65 @@ export class FormgroupsService {
               })     
             },
             {
+              type: 'field',
               editable: true,
               label: 'Total Lien Amount',
-              name: "TotalLienAmount",
-              required: true
+              fieldName: "TotalLienAmount",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
               editable: false,
-              required: true,
+              requiredExpression: 'required',
               label: 'Principal Balance',
-              name: "PrincipalBalance",
+              fieldName: "PrincipalBalance",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Principal Past Due',
-              name: "PrincipalPastDue",
+              fieldName: "PrincipalPastDue",
             },
             {
+              type: 'field',
               editable: false,
               label: 'Principal Pre-paid',
-              name: "PrincipalPrePaid",
+              fieldName: "PrincipalPrePaid",
             },
             {
+              type: 'field',
               editable: false,
               required: false,
               label: 'Interest Paid Thru',
-              name: "InterestPaidThruDate",
+              fieldName: "InterestPaidThruDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               required: false,
               label: 'Interest Start Date',
-              name: "InterestStartDate",
+              fieldName: "InterestStartDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: true,
               required: false,
               label: 'Installment Amount',
-              name: "InstallmentAmount",
+              fieldName: "InstallmentAmount",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Number of Installments Made',
-              name: "NumInstallmentsMade",
+              fieldName: "NumInstallmentsMade",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan',
-              name: "PaymentPlanFlag",
+              fieldName: "PaymentPlanFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -811,24 +901,28 @@ export class FormgroupsService {
               })                 
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan Description',
-              name: "PaymentPlanDesc",
+              fieldName: "PaymentPlanDesc",
               maxLength: 35,
               visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
 
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan Date',
-              name: "PaymentPlanDate",
-              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
+              fieldName: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')",
+              input: { type: "datetime-picker"}
 
             },
             {
+              type: 'field',
               editable: true,
               label: 'Bankrupt',
-              name: "BankruptFlag",
+              fieldName: "BankruptFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -845,9 +939,10 @@ export class FormgroupsService {
             },
 
             {
+              type: 'field',
               editable: true,
               label: 'Estate',
-              name: "EstateFlag",
+              fieldName: "EstateFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -862,38 +957,44 @@ export class FormgroupsService {
               })                 
             },              
             {
+              type: 'field',
               editable: true,
               label: 'Current Installment Due',
-              name: "CurrentInstallmentDue",
+              fieldName: "CurrentInstallmentDue",
             },
             {
+              type: 'field',
               editable: false,
               label: 'Last Payment Date',
-              name: "LastPaymentDate",
+              fieldName: "LastPaymentDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });
-        this.tapFeeBillingFormGroup = new FieldGroupConfig({
+        this.tapFeeBillingFormGroup = new GroupElement({
           label: "Billing",
           description: "Billing information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
               editable: true,
               label: 'Number of Years',
-              name: "NumYears",
-              required: true
+              fieldName: "NumYears",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
               editable: true,
               label: 'Interest Rate',
-              name: "InterestRate",
-              required: true
+              fieldName: "InterestRate",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
               editable: true,
               label: 'Status',
-              required: true,
-              name: "StatusCode",
+              requiredExpression: 'required',
+              fieldName: "StatusCode",
 
               domain: new CodedValueDomain({
                 codedValues: [
@@ -933,9 +1034,10 @@ export class FormgroupsService {
               }),              
             },
             {
+              type: 'field',
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
+              fieldName: "ActionTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                 {
@@ -986,54 +1088,65 @@ export class FormgroupsService {
               })     
             },
             {
+              type: 'field',
               editable: true,
               label: 'Total Lien Amount',
-              name: "TotalLienAmount",
-              required: true
+              fieldName: "TotalLienAmount",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
               editable: false,
-              required: true,
+              requiredExpression: 'required',
               label: 'Principal Balance',
-              name: "PrincipalBalance",
+              fieldName: "PrincipalBalance",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Principal Past Due',
-              name: "PrincipalPastDue",
+              fieldName: "PrincipalPastDue",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Principal Pre-paid',
-              name: "PrincipalPrePaid",
+              fieldName: "PrincipalPrePaid",
             },
             {
+              type: 'field',
               editable: false,
               required: false,
               label: 'Interest Paid Thru',
-              name: "InterestPaidThruDate",
+              fieldName: "InterestPaidThruDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: false,
               required: false,
               label: 'Interest Start Date',
-              name: "InterestStartDate",
+              fieldName: "InterestStartDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Installment Amount',
-              name: "InstallmentAmount",
+              fieldName: "InstallmentAmount",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Number of Installments Made',
-              name: "NumInstallmentsMade",
+              fieldName: "NumInstallmentsMade",
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan',
-              name: "PaymentPlanFlag",
+              fieldName: "PaymentPlanFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -1048,24 +1161,28 @@ export class FormgroupsService {
               })                 
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan Description',
-              name: "PaymentPlanDesc",
+              fieldName: "PaymentPlanDesc",
               maxLength: 35,
               visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
 
             },
             {
+              type: 'field',
               editable: true,
               label: 'Payment Plan Date',
-              name: "PaymentPlanDate",
-              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"
+              fieldName: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')",
+              input: { type: "datetime-picker"}
 
             },
             {
+              type: 'field',
               editable: true,
               label: 'Bankrupt',
-              name: "BankruptFlag",
+              fieldName: "BankruptFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -1081,9 +1198,10 @@ export class FormgroupsService {
               visibilityExpression: "($feature.StatusCode != '1')"          
             },
             {
+              type: 'field',
               editable: true,
               label: 'Estate',
-              name: "EstateFlag",
+              fieldName: "EstateFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -1098,45 +1216,52 @@ export class FormgroupsService {
               })                 
             },            
             {
+              type: 'field',
               editable: true,
               label: 'Current Installment Due',
-              name: "CurrentInstallmentDue",
+              fieldName: "CurrentInstallmentDue",
             },
             {
+              type: 'field',
               editable: false,
               label: 'Last Payment Date',
-              name: "LastPaymentDate",
+              fieldName: "LastPaymentDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });                
-        this.billingDataFormGroup = new FieldGroupConfig({
+        this.billingDataFormGroup = new GroupElement({
           label: "Billing Data",
           description: 'Billing information',
-          fieldConfig: [{
-            name: 'AccountID',
-            label: 'Billing Account ID',
+          elements: [{
+            fieldName: 'AccountID',
+            
+            type: 'field',label: 'Billing Account ID',
             editable: false
           },
           {
-            name: 'REID',
-            label: 'Real Estate ID',
+            fieldName: 'REID',
+            
+            type: 'field',label: 'Real Estate ID',
             editable: false,
             maxLength: 7
           },
           {
-            name: 'NCPIN',
-            label: 'NCPIN',
+            fieldName: 'NCPIN',
+            
+            type: 'field',label: 'NCPIN',
             editable: false,
             maxLength: 10
           },
           {
-            name: 'NCPIN_Ext',
-            label: 'NCPIN Extension',
+            fieldName: 'NCPIN_Ext',
+            
+            type: 'field',label: 'NCPIN Extension',
             editable: false,
             maxLength: 3
           },
           {
-            name: 'BillingTypeCode',
+            fieldName: 'BillingTypeCode',
             label: 'Billing Type Code',
             domain: new CodedValueDomain({
               codedValues: [
@@ -1161,11 +1286,12 @@ export class FormgroupsService {
                   code: 'SW'
                 }
               ]
-            }),
+            
+            }),type: 'field',
             editable: false
           },
           {
-            name: 'CategoryTypeCode',
+            fieldName: 'CategoryTypeCode',
             label: 'Category Type Code',
             domain: new CodedValueDomain({
               codedValues: [
@@ -1225,18 +1351,21 @@ export class FormgroupsService {
                   name: 'Multiple Flagged',
                   code: '99'
                 }]
-            }),
+            
+             }),type: 'field', 
             editable: false
           },
           {
-            name: 'RollNum',
-            label: 'Roll #',
+            fieldName: 'RollNum',
+            
+            type: 'field',label: 'Roll #',
             editable: false,
             maxLength:9
           },
           {
-            name: 'RollNumInOut',
-            label: 'Roll Number In Out',
+            fieldName: 'RollNumInOut',
+            
+            type: 'field',label: 'Roll Number In Out',
             editable: false,
             maxLength:1,
             domain: new CodedValueDomain({
@@ -1252,192 +1381,229 @@ export class FormgroupsService {
               ]})
           },
           {
-            name: 'RollLotNum',
-            label: 'Roll Lot Number',
+            fieldName: 'RollLotNum',
+            
+            type: 'field',label: 'Roll Lot Number',
             editable: false,
             maxLength:3
           },
           {
-            name: 'NoticeDate',
-            label: 'NoticeDate',
+            fieldName: 'NoticeDate',
+            
+            type: 'field',label: 'NoticeDate',
+            editable: true,
+            input: { type: "datetime-picker"}
+          },
+          {
+            fieldName: 'NoticeNum',
+            
+            type: 'field',label: 'NoticeNum',
             editable: true
           },
           {
-            name: 'NoticeNum',
-            label: 'NoticeNum',
+            fieldName: 'PrincipalBal',
+            
+            type: 'field',label: 'PrincipalBal',
             editable: true
           },
           {
-            name: 'PrincipalBal',
-            label: 'PrincipalBal',
+            fieldName: 'InterestFromDate',
+            
+            type: 'field',label: 'InterestFromDate',
+            editable: true,
+            input: { type: "datetime-picker"}
+          },
+          {
+            fieldName: 'InterestThruDate',
+            
+            type: 'field',label: 'InterestThruDate',
+            editable: true,
+            input: { type: "datetime-picker"}
+          },
+          {
+            fieldName: 'ProjInterestAmount',
+            
+            type: 'field',label: 'ProjInterestAmount',
             editable: true
           },
           {
-            name: 'InterestFromDate',
-            label: 'InterestFromDate',
+            fieldName: 'ProjDuePrincipal',
+            
+            type: 'field',label: 'ProjDuePrincipal',
             editable: true
           },
           {
-            name: 'InterestThruDate',
-            label: 'InterestThruDate',
+            fieldName: 'PrincipalPastDue',
+            
+            type: 'field',label: 'PrincipalPastDue',
             editable: true
           },
           {
-            name: 'ProjInterestAmount',
-            label: 'ProjInterestAmount',
+            fieldName: 'TotalDue',
+            
+            type: 'field',label: 'TotalDue',
             editable: true
           },
           {
-            name: 'ProjDuePrincipal',
-            label: 'ProjDuePrincipal',
+            fieldName: 'NumberOfDays',
+            
+            type: 'field',label: 'NumberOfDays',
             editable: true
           },
           {
-            name: 'PrincipalPastDue',
-            label: 'PrincipalPastDue',
+            fieldName: 'InstallmentAmount',
+            
+            type: 'field',label: 'InstallmentAmount',
             editable: true
           },
           {
-            name: 'TotalDue',
-            label: 'TotalDue',
+            fieldName: 'PayoffAmount',
+            
+            type: 'field',label: 'PayoffAmount',
             editable: true
           },
           {
-            name: 'NumberOfDays',
-            label: 'NumberOfDays',
-            editable: true
-          },
-          {
-            name: 'InstallmentAmount',
-            label: 'InstallmentAmount',
-            editable: true
-          },
-          {
-            name: 'PayoffAmount',
-            label: 'PayoffAmount',
-            editable: true
-          },
-          {
-            name: 'NoticeYear',
-            label: 'NoticeYear',
+            fieldName: 'NoticeYear',
+            
+            type: 'field',label: 'NoticeYear',
             editable: true,
             maxLength: 4
           }]
         });
       
-        this.billSentToFormGroup = new FieldGroupConfig({
+        this.billSentToFormGroup = new GroupElement({
           label: "Bill Sent To",
           description: 'Billee information',
-          fieldConfig: [
+          elements: [
             {
-              name: 'BillSentToName1',
-              label: 'BillSentToName1',
+              fieldName: 'BillSentToName1',
+              
+              type: 'field',label: 'BillSentToName1',
               editable: true
             },
             {
-              name: 'BillSentToName2',
-              label: 'BillSentToName2',
+              fieldName: 'BillSentToName2',
+              
+              type: 'field',label: 'BillSentToName2',
               editable: true
             },
             {
-              name: 'BillSentToAddr1',
-              label: 'BillSentToAddr1',
+              fieldName: 'BillSentToAddr1',
+              
+              type: 'field',label: 'BillSentToAddr1',
               editable: true
             },
             {
-              name: 'BillSentToAddr2',
-              label: 'BillSentToAddr2',
+              fieldName: 'BillSentToAddr2',
+              
+              type: 'field',label: 'BillSentToAddr2',
               editable: true
             },
             {
-              name: 'BillSentToAddr3',
-              label: 'BillSentToAddr3',
+              fieldName: 'BillSentToAddr3',
+              
+              type: 'field',label: 'BillSentToAddr3',
               editable: true
             },
             {
-              name: 'BillSentToZipCode',
-              label: 'BillSentToZipCode',
+              fieldName: 'BillSentToZipCode',
+              
+              type: 'field',label: 'BillSentToZipCode',
               editable: true
             },
             {
-              name: 'BillSentToZipPlus',
-              label: 'BillSentToZipPlus',
+              fieldName: 'BillSentToZipPlus',
+              
+              type: 'field',label: 'BillSentToZipPlus',
               editable: true
             }
           ]
         });
-        this.billSiteAddressFormGroup = new FieldGroupConfig({
+        this.billSiteAddressFormGroup = new GroupElement({
           label: "Bill Site Address",
           description: 'Bill site address information',
-          fieldConfig: [
+          elements: [
             {
-              name: 'SiteStreetNum',
-              label: 'SiteStreetNum',
+              fieldName: 'SiteStreetNum',
+              
+              type: 'field',label: 'SiteStreetNum',
               editable: true
             },
             {
-              name: 'SiteStreetSuite',
-              label: 'SiteStreetSuite',
+              fieldName: 'SiteStreetSuite',
+              
+              type: 'field',label: 'SiteStreetSuite',
               editable: true
             },
             {
-              name: 'SiteStreetName',
-              label: 'SiteStreetName',
+              fieldName: 'SiteStreetName',
+              
+              type: 'field',label: 'SiteStreetName',
               editable: true
             },
             {
-              name: 'SiteStreetType',
-              label: 'SiteStreetType',
+              fieldName: 'SiteStreetType',
+              
+              type: 'field',label: 'SiteStreetType',
               editable: true
             },
             {
-              name: 'SiteStreetDirPre',
-              label: 'SiteStreetDirPre',
+              fieldName: 'SiteStreetDirPre',
+              
+              type: 'field',label: 'SiteStreetDirPre',
               editable: true
             },
             {
-              name: 'SiteStreetDirSuf',
-              label: 'SiteStreetDirSuf',
+              fieldName: 'SiteStreetDirSuf',
+              
+              type: 'field',label: 'SiteStreetDirSuf',
               editable: true
             },
             {
-              name: 'SiteStreetCity',
-              label: 'SiteStreetCity',
+              fieldName: 'SiteStreetCity',
+              
+              type: 'field',label: 'SiteStreetCity',
               editable: true
             },
             {
-              name: 'SiteStreetState',
-              label: 'SiteStreetState',
+              fieldName: 'SiteStreetState',
+              
+              type: 'field',label: 'SiteStreetState',
               editable: true
             },
             {
-              name: 'SiteStreetZip',
-              label: 'SiteStreetZip',
+              fieldName: 'SiteStreetZip',
+              
+              type: 'field',label: 'SiteStreetZip',
               editable: true
             },
             {
-              name: 'SiteStreetCounty',
-              label: 'SiteStreetCounty',
+              fieldName: 'SiteStreetCounty',
+              
+              type: 'field',label: 'SiteStreetCounty',
               editable: true
             }
           ]
         });
-        this.communicationFormGroup = new FieldGroupConfig({
+        this.communicationFormGroup = new GroupElement({
           label: "Communication",
           description: 'Communication information',
-          fieldConfig: [
+          elements: [
             {
-              name: 'AccountID',
-              label: 'Billing Account ID',
+              fieldName: 'AccountID',
+              
+              type: 'field',label: 'Billing Account ID',
               editable: true
             },
             {
-              name: 'CommDate',
-              label: 'Communication Date',
-              editable: true
+              fieldName: 'CommDate',
+              
+              type: 'field',label: 'Communication Date',
+              editable: true,
+              input: { type: "datetime-picker"}
             },
             {
-              name: 'CommTypeCode',
+              fieldName: 'CommTypeCode',
               label: 'Communication Type Code',
               domain: new CodedValueDomain({
                 codedValues: [
@@ -1502,80 +1668,93 @@ export class FormgroupsService {
                     code: 'TI3'
                   }
                 ]
-              }),
+              
+              }),type: 'field',
               editable: true
             },
             {
-              name: 'CommCompletedDate',
-              label: 'Communication Completed Date',
-              editable: true
+              fieldName: 'CommCompletedDate',
+              
+              type: 'field',label: 'Communication Completed Date',
+              editable: true,
+              input: { type: "datetime-picker"}
             },
             {
-              name: 'CommRtrnRcptRcvdDate',
-              label: 'Communication Return Receipt Received Date',
-              editable: true
+              fieldName: 'CommRtrnRcptRcvdDate',
+              
+              type: 'field',label: 'Communication Return Receipt Received Date',
+              editable: true,
+              input: { type: "datetime-picker"}
             }]
         });
-        this.commSentToFormGroup = new FieldGroupConfig({
+        this.commSentToFormGroup = new GroupElement({
           label: "Communication Sent To",
           description: 'Communication sent to information',
-          fieldConfig: [
+          elements: [
             {
-              name: 'SentToName1',
-              label: 'Sent To Name 1',
+              fieldName: 'SentToName1',
+              
+              type: 'field',label: 'Sent To Name 1',
               editable: true,
               maxLength: 35
             },
             {
-              name: 'SentToName2',
-              label: 'Sent To Name 2',
+              fieldName: 'SentToName2',
+              
+              type: 'field',label: 'Sent To Name 2',
               editable: true,
               maxLength: 35
             },
             {
-              name: 'SentToAddr1',
-              label: 'Sent To Address 1',
+              fieldName: 'SentToAddr1',
+              
+              type: 'field',label: 'Sent To Address 1',
               editable: true,
               maxLength: 35
             },
             {
-              name: 'SentToAddr2',
-              label: 'Sent To Address 2',
+              fieldName: 'SentToAddr2',
+              
+              type: 'field',label: 'Sent To Address 2',
               editable: true,
               maxLength: 35
             },
             {
-              name: 'SentToAddr3',
-              label: 'Sent To Address 3',
+              fieldName: 'SentToAddr3',
+              
+              type: 'field',label: 'Sent To Address 3',
               editable: true,
               maxLength: 35
             },
             {
-              name: 'SentToZipCode',
-              label: 'Sent To Zip Code',
+              fieldName: 'SentToZipCode',
+              
+              type: 'field',label: 'Sent To Zip Code',
               editable: true,
               maxLength: 5
             },
             {
-              name: 'SentToZipPlus',
-              label: 'Sent To Zip Plus',
+              fieldName: 'SentToZipPlus',
+              
+              type: 'field',label: 'Sent To Zip Plus',
               editable: true,
               maxLength: 4
             }
           ]
         });
-        this.paymentFormGroup = new FieldGroupConfig({
+        this.paymentFormGroup = new GroupElement({
           label: "Payments",
           description: 'Payment information',
-          fieldConfig: [
+          elements: [
             {
-              name: "AccountID",
+              fieldName: "AccountID",
+              type: 'field',
               label: "Billing Account ID",
               editable: false
             },
             {
-              name: "TransactionTypeCode",
-              required: true,
+              fieldName: "TransactionTypeCode",
+              requiredExpression: 'required',
               label: "Transaction Type Codes",
               domain:
                 new CodedValueDomain({
@@ -1621,18 +1800,23 @@ export class FormgroupsService {
                       code: "WRO"
                     }
                   ]
-                }),
+              
+              })
+              ,type: 'field',  
               editable: true
             },
             {
-              name: "PaymentDate",
-              label: "PaymentDate",
+              fieldName: "PaymentDate",
+              
+              type: 'field',label: "PaymentDate",
               editable: true,
-              required: true
+              requiredExpression: 'required',
+              input: { type: "datetime-picker"}
             },
             {
-              name: "PaymentClassCode",
-              label: "Payment Class Code",
+              fieldName: "PaymentClassCode",
+              
+              type: 'field',label: "Payment Class Code",
               editable: true,
               domain: new CodedValueDomain({
                 codedValues: [
@@ -1784,69 +1968,82 @@ export class FormgroupsService {
                 })              
             },
             {
-              name: "PaymentAmount",
-              label: "Payment Amount",
+              fieldName: "PaymentAmount",
+              
+              type: 'field',label: "Payment Amount",
               editable: true,
-              required: true
+              requiredExpression: 'required'
             },
             {
-              name: "PrincipalAmount",
-              label: "Principal Amount",
+              fieldName: "PrincipalAmount",
+              
+              type: 'field',label: "Principal Amount",
               editable: true,
-              required: true
+              requiredExpression: 'required'
             },
             {
-              name: "InterestAmount",
-              label: "Interest Amount",
+              fieldName: "InterestAmount",
+              
+              type: 'field',label: "Interest Amount",
               editable: true,
-              required: true
+              requiredExpression: 'required'
             },                        
             {
-              name: "PaymentReceiptNumber",
-              label: "Payment Receipt Number",
+              fieldName: "PaymentReceiptNumber",
+              
+              type: 'field',label: "Payment Receipt Number",
               editable: true,
               maxLength: 8,
-              required: false
+              requiredExpression: 'required'
             },
             {
-              name: "PaymentPostingDate",
-              label: "Payment Posting Date",
+              fieldName: "PaymentPostingDate",
+              
+              type: 'field',label: "Payment Posting Date",
               editable: true,
-              required: false
+              required: false,
+              input: { type: "datetime-picker"}
             },
             {
-              name: "PaymentInterestPaidThruDate",
-              label: "Payment Interest Paid Thru Date",
+              fieldName: "PaymentInterestPaidThruDate",
+              
+              type: 'field',label: "Payment Interest Paid Thru Date",
               editable: false,
-              required: false
+              required: false,
+              input: { type: "datetime-picker"}
             },
             {
-              name: "PaymentSource",
-              label: "Payment Source",
+              fieldName: "PaymentSource",
+              
+              type: 'field',label: "Payment Source",
               editable: true,
               maxLength: 3
             },
             {
-              name: "PaymentMethod",
-              label: "Payment Method",
+              fieldName: "PaymentMethod",
+              
+              type: 'field',label: "Payment Method",
               editable: true,
               maxLength: 3
             },
             {
-              name: "PaymentJournalVoucherNum",
-              label: "Payment Journal Voucher Number",
+              fieldName: "PaymentJournalVoucherNum",
+              
+              type: 'field',label: "Payment Journal Voucher Number",
               editable: true,
               maxLength: 8
             },
             {
-              name: "PaymentDescription",
-              label: "Payment Description",
+              fieldName: "PaymentDescription",
+              
+              type: 'field',label: "Payment Description",
               editable: true,
               maxLength: 25
             },
             {
-              name: "PaymentReversedFlag",
-              label: "Payment Reversed Flag",
+              fieldName: "PaymentReversedFlag",
+              
+              type: 'field',label: "Payment Reversed Flag",
               editable: true,
               maxLength: 1,
               domain: new CodedValueDomain({
@@ -1863,8 +2060,9 @@ export class FormgroupsService {
               })   
             },
             {
-              name: "PaymentHoldingFlag",
-              label: "Payment Holding Flag",
+              fieldName: "PaymentHoldingFlag",
+              
+              type: 'field',label: "Payment Holding Flag",
               editable: true,
               maxLength: 1,
               domain: new CodedValueDomain({
@@ -1881,14 +2079,16 @@ export class FormgroupsService {
               })   
             },
             {
-              name: "PaymentTransactionNum",
-              label: "PaymentTransactionNum",
+              fieldName: "PaymentTransactionNum",
+              
+              type: 'field',label: "PaymentTransactionNum",
               editable: false,
               description: "Set when payment submitted"
             },
             {
-              name: "PaymentPrepayTransferFlag",
-              label: "Payment Prepay Transfer Flag",
+              fieldName: "PaymentPrepayTransferFlag",
+              
+              type: 'field',label: "Payment Prepay Transfer Flag",
               editable: true,
               maxLength: 1,
               domain: new CodedValueDomain({
@@ -1905,7 +2105,7 @@ export class FormgroupsService {
               })   
             },
             {
-              name: "BillingTypeCode",
+              fieldName: "BillingTypeCode",
               label: "Billing Type Code",
               domain: new CodedValueDomain({
                 codedValues: [
@@ -1930,11 +2130,12 @@ export class FormgroupsService {
                     code: "SW"
                   }
                 ]
-              }),
+              
+             }) ,type: 'field',
               editable: false
             },
             {
-              name: "CategoryTypeCode",
+              fieldName: "CategoryTypeCode",
               label: "Category Type Code",
               domain: new CodedValueDomain({
                 codedValues: [
@@ -1995,11 +2196,12 @@ export class FormgroupsService {
                     code: "99"
                   }
                 ]
-              }),
+              
+              }),type: 'field',
               editable: false
             },
             {
-              name: "StatusCode",
+              fieldName: "StatusCode",
               label: "Status Code",
               domain: new CodedValueDomain({
                 codedValues: [
@@ -2037,112 +2239,130 @@ export class FormgroupsService {
                   }
                 ]
               }),
+              type: 'field',
               editable: true
             },
             {
-              name: "CashieringTransactionNum",
-              label: "Cashiering Transaction Number",
+              fieldName: "CashieringTransactionNum",
+              
+              type: 'field',label: "Cashiering Transaction Number",
               editable: true,
               maxLength: 6
             },
             {
-              name: "CashieringUserID",
-              label: "Cashiering User ID",
+              fieldName: "CashieringUserID",
+              
+              type: 'field',label: "Cashiering User ID",
               editable: true,
               maxLength: 20
             },
             {
-              name: "CashieringLocationCode",
-              label: "Cashiering Location Code",
+              fieldName: "CashieringLocationCode",
+              
+              type: 'field',label: "Cashiering Location Code",
               editable: true,
               maxLength: 4
             },
             {
-              name: "CashieringWorkstationNum",
-              label: "Cashiering Workstation Number",
+              fieldName: "CashieringWorkstationNum",
+              
+              type: 'field',label: "Cashiering Workstation Number",
               editable: true,
               maxLength: 10
             }
           ]
         });
-        this.commentsFormGroup = new FieldGroupConfig({
+        this.commentsFormGroup = new GroupElement({
         label: "Comments",
         description: 'Comment information',
-        fieldConfig: [
+        elements: [
           {
-            name: "AccountID",
-            label: "Billing Account ID",
+            fieldName: "AccountID",
+            
+            type: 'field',label: "Billing Account ID",
             editable: false
           },
           {
-            name: "CommentCode",
-            label: "Comment Code",
+            fieldName: "CommentCode",
+            
+            type: 'field',label: "Comment Code",
             editable: true
           },          
           {
-            name: "CommentDate",
-            label: "Comment Date",
-            editable: true
+            fieldName: "CommentDate",
+            
+            type: 'field',label: "Comment Date",
+            editable: true,
+            input: { type: "datetime-picker"}
           },
           {
-            name: "Comment",
-            label: "Comment",
+            fieldName: "Comment",
+            
+            type: 'field',label: "Comment",
             editable: true
           }
         ]
       });  
-      this.contractFormGroup = new FieldGroupConfig({
+      this.contractFormGroup = new GroupElement({
         label: "Contracts",
         description: '',
-        fieldConfig: [
+        elements: [
           {
-            name: "ContractDate",
-            label: "Contract Date",
+            fieldName: "ContractDate",
+            
+            type: 'field',label: "Contract Date",
             editable: true,
-            required: true,            
+            requiredExpression: 'required',
+            input: { type: "datetime-picker"}       
           },            
           {
-            name: "ContractNum",
-            label: "Contract Number",
+            fieldName: "ContractNum",
+            
+            type: 'field',label: "Contract Number",
             editable: false,
-            required: true,
+            requiredExpression: 'required',
             maxLength:9,
             description: "Set after entering contract date"
           },
           {
-            name: "ContractDescription",
-            label: "Contract Description",
+            fieldName: "ContractDescription",
+            
+            type: 'field',label: "Contract Description",
             editable: true,
-            required: true,            
+            requiredExpression: 'required',            
             maxLength: 100
           },     
           {
-            name: "ContractDeedBook",
-            label: "Deed Book",
+            fieldName: "ContractDeedBook",
+            
+            type: 'field',label: "Deed Book",
             editable: true,
             maxLength: 4
           },     
           {
-            name: "ContractDeedPage",
-            label: "Deed Page",
+            fieldName: "ContractDeedPage",
+            
+            type: 'field',label: "Deed Page",
             editable: true,
             maxLength: 4
           }    
         ]
       });      
-      this.rollFormGroup = new FieldGroupConfig({
+      this.rollFormGroup = new GroupElement({
         label: "Rolls",
         description: '',
-        fieldConfig: [
+        elements: [
           {
-            name: "RollNum",
-            label: "Roll Number",
+            fieldName: "RollNum",
+            
+            type: 'field',label: "Roll Number",
             editable: true,
             maxLength: 9
           },
           {
-            name: "RollNumInOut",
-            label: "Roll Number In/Out",
+            fieldName: "RollNumInOut",
+            
+            type: 'field',label: "Roll Number In/Out",
             editable: true,
             domain: new CodedValueDomain({
               codedValues: [
@@ -2157,154 +2377,182 @@ export class FormgroupsService {
               ]})            
           },     
           {
-            name: "ConfResNum",
-            label: "Confirming Resolution Number",
+            fieldName: "ConfResNum",
+            
+            type: 'field',label: "Confirming Resolution Number",
             editable: true,
             maxLength:9
           },     
           {
-            name: "ConfResDate",
-            label: "Confirming Resolution Date",
-            editable: true
+            fieldName: "ConfResDate",
+            
+            type: 'field',label: "Confirming Resolution Date",
+            editable: true,
+            input: { type: "datetime-picker"}
           },     
           {
-            name: "DirResNum",
-            label: "Directing Resolution Number",
+            fieldName: "DirResNum",
+            
+            type: 'field',label: "Directing Resolution Number",
             editable: true,
             maxLength: 9
           },     
           {
-            name: "DirResDate",
-            label: "Directing Resolution Date",
-            editable: true
+            fieldName: "DirResDate",
+            
+            type: 'field',label: "Directing Resolution Date",
+            editable: true,
+            input: { type: "datetime-picker"}
           },     
         ]
       });                    
-      this.confResFormGroup = new FieldGroupConfig({
+      this.confResFormGroup = new GroupElement({
         label: "Confirming Resolution",
         description: '',
-        fieldConfig: [
+        elements: [
           {
-            name: "ConfResNum",
-            label: "Resolution Number",
+            fieldName: "ConfResNum",
+            
+            type: 'field',label: "Resolution Number",
             editable: true,
             maxLength:9
           },
           {
-            name: "ConfResDate",
-            label: "Resolution Date",
-            editable: true
+            fieldName: "ConfResDate",
+            
+            type: 'field',label: "Resolution Date",
+            editable: true,
+            input: { type: "datetime-picker"}
           },     
           {
-            name: "ConfResDesc",
-            label: "Resolution Description",
+            fieldName: "ConfResDesc",
+            
+            type: 'field',label: "Resolution Description",
             editable: true,
             maxLength: 100
           }
         ]
       });    
       
-      this.dirResFormGroup = new FieldGroupConfig({
+      this.dirResFormGroup = new GroupElement({
         label: "Directing Resolution",
         description: '',
-        fieldConfig: [
+        elements: [
           {
-            name: "DirResNum",
-            label: "Resolution Number",
+            fieldName: "DirResNum",
+            
+            type: 'field',label: "Resolution Number",
             editable: true,
             maxLength: 9
           },
           {
-            name: "DirResDate",
-            label: "Resolution Date",
-            editable: true
+            fieldName: "DirResDate",
+            
+            type: 'field',label: "Resolution Date",
+            editable: true,
+            input: { type: "datetime-picker"}
           },     
           {
-            name: "ConditionCode",
-            label: "Condition Code",
+            fieldName: "ConditionCode",
+            
+            type: 'field',label: "Condition Code",
             editable: true,
             maxLength: 2
           }
         ]
       });  
-      this.corrResFormGroup = new FieldGroupConfig({
+      this.corrResFormGroup = new GroupElement({
         label: "Correcting Resolution",
         description: '',
-        fieldConfig: [
+        elements: [
           {
-            name: "CorrResNum",
-            label: "Resolution Number",
+            fieldName: "CorrResNum",
+            
+            type: 'field',label: "Resolution Number",
             editable: true,
             maxLength: 9
           },
           {
-            name: "CorrResDate",
-            label: "Resolution Date",
-            editable: true
+            fieldName: "CorrResDate",
+            
+            type: 'field',label: "Resolution Date",
+            editable: true,
+            input: { type: "datetime-picker"}
           },     
           {
-            name: "CorrResDesc",
-            label: "Description",
+            fieldName: "CorrResDesc",
+            
+            type: 'field',label: "Description",
             editable: true,
             maxLength: 100
           },
           {
-            name: "ConfResNum",
-            label: "Confirming Resolution Number",
+            fieldName: "ConfResNum",
+            
+            type: 'field',label: "Confirming Resolution Number",
             editable: true,
             maxLength:9
           },
           {
-            name: "ConfResDate",
-            label: "Confirming Resolution Date",
-            editable: true
+            fieldName: "ConfResDate",
+            
+            type: 'field',label: "Confirming Resolution Date",
+            editable: true,
+            input: { type: "datetime-picker"}
           },           
         ]
       });             
-        this.altBillingFormGroup = new FieldGroupConfig({
+        this.altBillingFormGroup = new GroupElement({
           label: "Alternate Billing",
           description: "Alternate Billing information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
               editable: true,
               label: 'Alternate Bill To Name 1',
-              name: "AltBillToName1",
+              fieldName: "AltBillToName1",
               maxLength: 35
             },
             {
+              type: 'field',
               editable: true,
               label: 'Alternate Bill To Name 2',
-              name: "AltBillToName2",
+              fieldName: "AltBillToName2",
               maxLength: 35
             },
             {
+              type: 'field',
               editable: true,
               label: 'Alternate Bill To Address 1',
-              name: "AltBillToAddr1",
+              fieldName: "AltBillToAddr1",
               maxLength: 35
             },
             {
+              type: 'field',
               editable: true,
               label: 'Alternate Bill To Address 2',
-              name: "AltBillToAddr2",
+              fieldName: "AltBillToAddr2",
               maxLength: 35
             },
             {
+              type: 'field',
               editable: true,
               label: 'Alternate Bill To Address 3',
-              name: "AltBillToAddr3",
+              fieldName: "AltBillToAddr3",
               maxLength: 35
             },
             {
+              type: 'field',
               editable: true,
               label: 'Alternate Bill To Zip Code',
-              name: "AltBillToZipCode",
+              fieldName: "AltBillToZipCode",
               maxLength: 5
             },
             {
+              type: 'field',
               editable: true,
               label: 'Alternate Bill To Zip Plus',
-              name: "AltBillToZipPlus",
+              fieldName: "AltBillToZipPlus",
               maxLength: 4
             }
           ]

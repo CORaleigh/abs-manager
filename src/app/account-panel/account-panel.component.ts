@@ -178,7 +178,7 @@ export class AccountPanelComponent implements OnInit, OnChanges {
                 return field.name === 'PaymentClassCode';
               })[0].domain;
               this.features.forEach((feature:esri.Graphic) => {
-                const value = domain.codedValues.filter((cv:esri.CodedValueDomainCodedValues)=> {
+                const value = domain.codedValues.filter((cv:esri.CodedValue)=> {
                   return cv.code === feature.attributes.PaymentClassCode;
                 })[0];
                 if (value.name.indexOf("P") === 0) {

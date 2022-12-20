@@ -5,53 +5,66 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class ConfirmedFormgroupsService {
-  assessmentFormGroup: esri.FieldGroupConfig;
-  abatementFormGroup: esri.FieldGroupConfig;
-  tapFeeFormGroup: esri.FieldGroupConfig;
-  assessmentBillingFormGroup: esri.FieldGroupConfig;
-  abatementBillingFormGroup: esri.FieldGroupConfig;
-  tapFeeBillingFormGroup: esri.FieldGroupConfig;
+  assessmentFormGroup: esri.GroupElement;
+  abatementFormGroup: esri.GroupElement;
+  tapFeeFormGroup: esri.GroupElement;
+  assessmentBillingFormGroup: esri.GroupElement;
+  abatementBillingFormGroup: esri.GroupElement;
+  tapFeeBillingFormGroup: esri.GroupElement;
 
   constructor() {
-    loadModules(['esri/widgets/FeatureForm/FieldGroupConfig', 'esri/layers/support/CodedValueDomain']).then(
-      ([FieldGroupConfig, CodedValueDomain]) => {
-        this.assessmentFormGroup = new FieldGroupConfig({
+    loadModules(['esri/form/elements/GroupElement', 'esri/layers/support/CodedValueDomain']).then(
+      ([GroupElement, CodedValueDomain]) => {
+        this.assessmentFormGroup = new GroupElement({
           label: "Assessment",
           description: "Assessment information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
+
               editable: false,
               label: 'Account ID',
-              name: "AccountID"
+              fieldName: "AccountID"
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Account Date',
-              name: "AccountDate"
+              fieldName: "AccountDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Real Estate ID',
-              name: "REID",
+              fieldName: "REID",
               maxLength: 7
 
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Complete Subaddress ID',
-              name: "CSAID",
+              fieldName: "CSAID",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'PIN #',
-              name: "NCPIN",
+              fieldName: "NCPIN",
               maxLength: 10
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Billing Type Code',
-              name: "BillingTypeCode",
-              required: true, 
+              fieldName: "BillingTypeCode",
+              requiredExpression: 'required', 
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -70,10 +83,12 @@ export class ConfirmedFormgroupsService {
               })
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Category Type Code',
-              name: "CategoryTypeCode",
-              required: true, 
+              fieldName: "CategoryTypeCode",
+              requiredExpression: 'required', 
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -104,24 +119,30 @@ export class ConfirmedFormgroupsService {
               })
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Roll #',
-              name: "RollNum",
-              required: true,
+              fieldName: "RollNum",
+              requiredExpression: 'required',
               maxLength:9          
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Roll Lot',
-              name: "RollLotNum",
-              required: true,
+              fieldName: "RollLotNum",
+              requiredExpression: 'required',
               maxLength:3             
             },            
             {
+              type: 'field',
+
               editable: true,
               label: 'Roll # In/Out',
-              name: "RollNumInOut",
-              required: true,
+              fieldName: "RollNumInOut",
+              requiredExpression: 'required',
               maxLength:1,
               domain: new CodedValueDomain({
                 codedValues: [
@@ -136,83 +157,112 @@ export class ConfirmedFormgroupsService {
                 ]})
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Directing Resolution Number',
-              name: "DirResNum",
+              fieldName: "DirResNum",
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Directing Resolution Date',
-              name: "DirResDate",
+              fieldName: "DirResDate",
+              input: { type: "datetime-picker"}
             },
             {
-              required: true,
+              type: 'field',
+              requiredExpression: 'required',
               editable: true,
               label: 'Confirming Resolution Number',
-              name: "ConfResNum",
+              fieldName: "ConfResNum",
               maxLength:9
             },
             {
-              required: true,
+              
+              type: 'field',
+              requiredExpression: 'required',
               editable: true,
               label: 'Confirming Resolution Date',
-              name: "ConfResDate",
+              fieldName: "ConfResDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Advertise Date',
-              name: "AdvertiseDate",
+              fieldName: "AdvertiseDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Advertise Fee',
-              name: "AdvertiseFee",
+              fieldName: "AdvertiseFee",
             },            
             {
+              type: 'field',
+
               editable: true,
               label: 'Assessment Fee ID',
-              name: "AssmntFeeID",
+              fieldName: "AssmntFeeID",
             }
           ]
         });
-        this.abatementFormGroup = new FieldGroupConfig({
+        this.abatementFormGroup = new GroupElement({
           label: "Abatements",
           description: "Abatement information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
+
               editable: false,
               label: 'Account ID',
-              name: "AccountID"
+              fieldName: "AccountID"
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Account Date',
-              name: "AccountDate"
+              fieldName: "AccountDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Real Estate ID',
-              name: "REID",
+              fieldName: "REID",
               maxLength: 7
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Complete Subaddress ID',
-              name: "CSAID",
+              fieldName: "CSAID",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'PIN #',
-              name: "NCPIN",
+              fieldName: "NCPIN",
               maxLength: 10
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Billing Type Code',
-              name: "BillingTypeCode",
+              fieldName: "BillingTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -223,10 +273,12 @@ export class ConfirmedFormgroupsService {
               })
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Category Type Code',
-              name: "CategoryTypeCode",
+              fieldName: "CategoryTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -257,95 +309,129 @@ export class ConfirmedFormgroupsService {
               })
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Adjustment Amount',
-              name: "ABAdjustmentAmount",
+              fieldName: "ABAdjustmentAmount",
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Council Date',
-              name: "ABCouncilDate",
+              fieldName: "ABCouncilDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
-              required: true,
+              requiredExpression: 'required',
               label: 'Confirming Resolution Number',
-              name: "ConfResNum",
+              fieldName: "ConfResNum",
               maxLength:9
             },
             {
+              type: 'field',
+
               editable: false,
-              required: true,
+              requiredExpression: 'required',
               label: 'Confirming Resolution Date',
-              name: "ConfResDate",
+              fieldName: "ConfResDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Advertise Date',
-              name: "AdvertiseDate",
+              fieldName: "AdvertiseDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Advertise Fee',
-              name: "AdvertiseFee",
+              fieldName: "AdvertiseFee",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Housing Reference',
-              name: "ABHousingRef",
+              fieldName: "ABHousingRef",
               maxLength:9
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Housing Letter 1 Sent On',
-              name: "ABHousingLetter1",
+              fieldName: "ABHousingLetter1",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Housing Letter 2 Sent On',
-              name: "ABHousingLetter2",
+              fieldName: "ABHousingLetter2",
             }
           ]
         });
-        this.tapFeeFormGroup = new FieldGroupConfig({
+        this.tapFeeFormGroup = new GroupElement({
           label: "Tap Fees",
           description: "Tap fee information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
+
               editable: false,
               label: 'Account ID',
-              name: "AccountID"
+              fieldName: "AccountID"
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Account Date',
-              name: "AccountDate"
+              fieldName: "AccountDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Real Estate ID',
-              name: "REID",
+              fieldName: "REID",
               maxLength: 7
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Complete Subaddress ID',
-              name: "CSAID",
+              fieldName: "CSAID",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'PIN #',
-              name: "NCPIN",
+              fieldName: "NCPIN",
               maxLength: 10
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Billing Type Code',
-              name: "BillingTypeCode",
+              fieldName: "BillingTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -356,10 +442,12 @@ export class ConfirmedFormgroupsService {
               })
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Category Type Code',
-              name: "CategoryTypeCode",
+              fieldName: "CategoryTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -382,41 +470,52 @@ export class ConfirmedFormgroupsService {
               })
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Contract #',
-              name: "ContractNum",
+              fieldName: "ContractNum",
               maxLength:9
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Contract Date',
-              name: "ContractDate",
+              fieldName: "ContractDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });
-        this.assessmentBillingFormGroup = new FieldGroupConfig({
+        this.assessmentBillingFormGroup = new GroupElement({
           label: "Billing",
           description: "Billing information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
+
               editable: true,
               label: 'Number of Years',
-              name: "NumYears",
-              required: true
+              fieldName: "NumYears",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Interest Rate',
-              name: "InterestRate",
-              required: true
+              fieldName: "InterestRate",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Status',
-              required: true,
-              name: "StatusCode",
+              requiredExpression: 'required',
+              fieldName: "StatusCode",
 
               domain: new CodedValueDomain({
                 codedValues: [
@@ -456,9 +555,11 @@ export class ConfirmedFormgroupsService {
               }),              
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
+              fieldName: "ActionTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                 {
@@ -509,54 +610,74 @@ export class ConfirmedFormgroupsService {
                 })            
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Total Lien Amount',
-              name: "TotalLienAmount",
-              required: true
+              fieldName: "TotalLienAmount",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Principal Balance',
-              name: "PrincipalBalance",
+              fieldName: "PrincipalBalance",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Principal Past Due',
-              name: "PrincipalPastDue",
+              fieldName: "PrincipalPastDue",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Principal Pre-paid',
-              name: "PrincipalPrePaid",
+              fieldName: "PrincipalPrePaid",
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Interest Paid Thru',
-              name: "InterestPaidThruDate",
+              fieldName: "InterestPaidThruDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Interest Start Date',
-              name: "InterestStartDate",
+              fieldName: "InterestStartDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: true,
-              required: true,
+              requiredExpression: 'required',
               label: 'Installment Amount',
-              name: "InstallmentAmount",
+              fieldName: "InstallmentAmount",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Number of Installments Made',
-              name: "NumInstallmentsMade",
+              fieldName: "NumInstallmentsMade",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan',
-              name: "PaymentPlanFlag",
+              fieldName: "PaymentPlanFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -571,23 +692,30 @@ export class ConfirmedFormgroupsService {
               })              
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan Description',
-              name: "PaymentPlanDesc",
+              fieldName: "PaymentPlanDesc",
               maxLength: 35,
               visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan Date',
-              name: "PaymentPlanDate",
-              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    
+              fieldName: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    ,
+              input: { type: "datetime-picker"}
 
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Bankrupt',
-              name: "BankruptFlag",
+              fieldName: "BankruptFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -603,38 +731,49 @@ export class ConfirmedFormgroupsService {
               visibilityExpression: "($feature.StatusCode != '1')"             
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Current Installment Due',
-              name: "CurrentInstallmentDue",
+              fieldName: "CurrentInstallmentDue",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Last Payment Date',
-              name: "LastPaymentDate",
+              fieldName: "LastPaymentDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });
-        this.abatementBillingFormGroup = new FieldGroupConfig({
+        this.abatementBillingFormGroup = new GroupElement({
           label: "Billing",
           description: "Billing information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
+
               editable: true,
               label: 'Number of Years',
-              name: "NumYears",
+              fieldName: "NumYears",
               required: false
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Interest Rate',
-              name: "InterestRate",
-              required: true
+              fieldName: "InterestRate",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Status',
-              required: true,
-              name: "StatusCode",
+              requiredExpression: 'required',
+              fieldName: "StatusCode",
 
               domain: new CodedValueDomain({
                 codedValues: [
@@ -674,9 +813,11 @@ export class ConfirmedFormgroupsService {
               }),              
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
+              fieldName: "ActionTypeCode",
               domain: new CodedValueDomain({
                   codedValues: [
                 {
@@ -727,54 +868,74 @@ export class ConfirmedFormgroupsService {
                 })           
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Total Lien Amount',
-              name: "TotalLienAmount",
-              required: true
+              fieldName: "TotalLienAmount",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Principal Balance',
-              name: "PrincipalBalance",
+              fieldName: "PrincipalBalance",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Principal Past Due',
-              name: "PrincipalPastDue",
+              fieldName: "PrincipalPastDue",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Principal Pre-paid',
-              name: "PrincipalPrePaid",
+              fieldName: "PrincipalPrePaid",
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Interest Paid Thru',
-              name: "InterestPaidThruDate",
+              fieldName: "InterestPaidThruDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Interest Start Date',
-              name: "InterestStartDate",
+              fieldName: "InterestStartDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: true,
               required: false,
               label: 'Installment Amount',
-              name: "InstallmentAmount",
+              fieldName: "InstallmentAmount",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Number of Installments Made',
-              name: "NumInstallmentsMade",
+              fieldName: "NumInstallmentsMade",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan',
-              name: "PaymentPlanFlag",
+              fieldName: "PaymentPlanFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -789,23 +950,30 @@ export class ConfirmedFormgroupsService {
               })              
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan Description',
-              name: "PaymentPlanDesc",
+              fieldName: "PaymentPlanDesc",
               maxLength: 35,
               visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"              
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan Date',
-              name: "PaymentPlanDate",
-              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"              
+              fieldName: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    ,
+              input: { type: "datetime-picker"}          
 
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Bankrupt',
-              name: "BankruptFlag",
+              fieldName: "BankruptFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -821,38 +989,49 @@ export class ConfirmedFormgroupsService {
               visibilityExpression: "($feature.StatusCode != '1')"                 
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Current Installment Due',
-              name: "CurrentInstallmentDue",
+              fieldName: "CurrentInstallmentDue",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Last Payment Date',
-              name: "LastPaymentDate",
+              fieldName: "LastPaymentDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });
-        this.tapFeeBillingFormGroup = new FieldGroupConfig({
+        this.tapFeeBillingFormGroup = new GroupElement({
           label: "Billing",
           description: "Billing information",
-          fieldConfig: [
+          elements: [
             {
+              type: 'field',
+
               editable: false,
               label: 'Number of Years',
-              name: "NumYears",
+              fieldName: "NumYears",
               required: false
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Interest Rate',
-              name: "InterestRate",
+              fieldName: "InterestRate",
               required: false
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Status',
-              required: true,
-              name: "StatusCode",
+              requiredExpression: 'required',
+              fieldName: "StatusCode",
 
               domain: new CodedValueDomain({
                 codedValues: [
@@ -888,9 +1067,11 @@ export class ConfirmedFormgroupsService {
               }),              
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Action Type',
-              name: "ActionTypeCode",
+              fieldName: "ActionTypeCode",
               domain: new CodedValueDomain({
                 codedValues: [
                 {
@@ -941,54 +1122,74 @@ export class ConfirmedFormgroupsService {
                 })           
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Total Lien Amount',
-              name: "TotalLienAmount",
-              required: true
+              fieldName: "TotalLienAmount",
+              requiredExpression: 'required'
             },
             {
+              type: 'field',
+
               editable: false,
-              required: true,
+              requiredExpression: 'required',
               label: 'Principal Balance',
-              name: "PrincipalBalance",
+              fieldName: "PrincipalBalance",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Principal Past Due',
-              name: "PrincipalPastDue",
+              fieldName: "PrincipalPastDue",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Principal Pre-paid',
-              name: "PrincipalPrePaid",
+              fieldName: "PrincipalPrePaid",
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Interest Paid Thru',
-              name: "InterestPaidThruDate",
+              fieldName: "InterestPaidThruDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Interest Start Date',
-              name: "InterestStartDate",
+              fieldName: "InterestStartDate",
+              input: { type: "datetime-picker"}
             },
             {
+              type: 'field',
+
               editable: false,
               required: false,
               label: 'Installment Amount',
-              name: "InstallmentAmount",
+              fieldName: "InstallmentAmount",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Number of Installments Made',
-              name: "NumInstallmentsMade",
+              fieldName: "NumInstallmentsMade",
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan',
-              name: "PaymentPlanFlag",
+              fieldName: "PaymentPlanFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -1003,22 +1204,29 @@ export class ConfirmedFormgroupsService {
               })              
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan Description',
-              name: "PaymentPlanDesc",
+              fieldName: "PaymentPlanDesc",
               maxLength: 35,
               visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"                  
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Payment Plan Date',
-              name: "PaymentPlanDate",
-              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"    
+              fieldName: "PaymentPlanDate",
+              visibilityExpression: "($feature.PaymentPlanFlag == 'Y')"  ,
+              input: { type: "datetime-picker"}  
             },         
             {
+              type: 'field',
+
               editable: true,
               label: 'Bankrupt',
-              name: "BankruptFlag",
+              fieldName: "BankruptFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -1034,9 +1242,11 @@ export class ConfirmedFormgroupsService {
               visibilityExpression: "($feature.StatusCode != '1')"                 
             },            
             {
+              type: 'field',
+
               editable: true,
               label: 'Bankrupt',
-              name: "BankruptFlag",
+              fieldName: "BankruptFlag",
               domain: new CodedValueDomain({
                 codedValues: [
                   {
@@ -1052,14 +1262,19 @@ export class ConfirmedFormgroupsService {
               visibilityExpression: "($feature.StatusCode != '1')"                 
             },
             {
+              type: 'field',
+
               editable: true,
               label: 'Current Installment Due',
-              name: "CurrentInstallmentDue",
+              fieldName: "CurrentInstallmentDue",
             },
             {
+              type: 'field',
+
               editable: false,
               label: 'Last Payment Date',
-              name: "LastPaymentDate",
+              fieldName: "LastPaymentDate",
+              input: { type: "datetime-picker"}
             }
           ]
         });         

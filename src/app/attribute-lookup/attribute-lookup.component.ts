@@ -86,7 +86,8 @@ export class AttributeLookupComponent implements OnInit {
 
   setForm(section, graphic) {
     this.create = true;
-    this.form.fieldConfig = [section.fieldConfig];
+    //this.form.fieldConfig = [section.fieldConfig];
+    this.form.formTemplate.elements.push(section.fieldConfig);
     this.form.feature = graphic;
     //@ts-ignore
     this.form.renderFields();      

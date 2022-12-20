@@ -8,7 +8,7 @@ export class Panel {
     fields: esri.Field[];
     headers: string[];
     orderBy: string;
-    formgroups: esri.FieldGroupConfig[];
+    formgroups: esri.GroupElement[];
     showDetails: boolean;
     visible: boolean;
     source: esri.Graphic;
@@ -22,7 +22,7 @@ export class Panel {
         fields: esri.Field[],
         headers: string[],
         orderBy: string,
-        formgroups: esri.FieldGroupConfig[],
+        formgroups: esri.GroupElement[],
         showDetails: boolean,
         visible: boolean) {
         this.title = title;

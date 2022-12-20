@@ -87,11 +87,13 @@ export class SearchComponent implements OnInit, OnChanges {
     }).catch(reason => console.log(reason));;
   }
 
-  getAccountSuggestions(params, field, layer) {
+  getAccountSuggestions(params, field, layer, isText) {
+    const where = (isText) ? field + " like '" + params.suggestTerm.toUpperCase() + "%'" : field+" = (" + params.suggestTerm.toUpperCase()+")";
+    
     return layer.queryFeatures({
-      where: field+" like '" + params.suggestTerm.toUpperCase() + "%'",
+      where: where,
       num: 6,
-      outFields: [field, 'REID'],
+      outFields: [field],
       returnDistinctValues: true,
       returnGeometry: false,
       orderByFields: [field]
@@ -105,10 +107,10 @@ export class SearchComponent implements OnInit, OnChanges {
       })
     }).catch(reason => console.log(reason));
   }
-  getAccountResults(params, field, layer:esri.FeatureLayer) {
-    
+  getAccountResults(params, field, layer:esri.FeatureLayer, isText) {
+    const where = (isText) ? field + " = '" + params.suggestResult.text.toUpperCase() + "'" : field+" = " + params.suggestResult.text.toUpperCase();
     return layer.queryFeatures({
-      where: field + " = '"+params.suggestResult.text.toUpperCase() + "'",
+      where: where,
       outFields: ['*'],
       returnGeometry: false
     }).then(results => {
@@ -122,6 +124,7 @@ export class SearchComponent implements OnInit, OnChanges {
       return searchResults;
     }).catch(reason => console.log(reason));
   }  
+  
   getResolutionResults(where, dateField, numField, layer) {
     
     return layer.queryFeatures({
@@ -144,7 +147,6 @@ export class SearchComponent implements OnInit, OnChanges {
   getResolutionSuggestions(params, dateField, numField, layer) {
     let year = null;
     let num = null;
-    
     if (params.suggestTerm.indexOf('-') > -1) {
       let array = params.suggestTerm.split('-');
       year = array[0];
@@ -184,6 +186,7 @@ export class SearchComponent implements OnInit, OnChanges {
       const reidSource: esri.SearchSource = new SearchSource({
         placeholder:"Search By REID",
         getSuggestions: (params) => {
+          
           return this.getSuggestions(params, 'REID', false)
         },
         getResults: params => {
@@ -195,6 +198,7 @@ export class SearchComponent implements OnInit, OnChanges {
       const pinSource: esri.SearchSource = new SearchSource({
         placeholder:"Search By PIN",
         getSuggestions: (params) => {
+          
           return this.getSuggestions(params, 'PIN_NUM', false)
         },
         getResults: params => {
@@ -206,6 +210,7 @@ export class SearchComponent implements OnInit, OnChanges {
       const addrSource: esri.SearchSource = new SearchSource({
         placeholder:"Search By Site Address",
         getSuggestions: (params) => {
+          
           return this.getSuggestions(params, 'SITE_ADDRESS', false)
         },
         getResults: params => {
@@ -217,6 +222,7 @@ export class SearchComponent implements OnInit, OnChanges {
       const ownerSource: esri.SearchSource = new SearchSource({
         placeholder:"Search By Owner",
         getSuggestions: (params) => {
+          
           return this.getSuggestions(params, 'OWNER', false);
         },
         getResults: params => {
@@ -231,10 +237,11 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Assessment ID',     
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Assessment'));
+          
+          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Assessment'), false);
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Assessment'));
+          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Assessment'), false);
         }
       });
 
@@ -243,10 +250,11 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Abatement ID',           
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Abatements'));
+          
+          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Abatements'), false);
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Abatements'));
+          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Abatements'), false);
 
         }
       });
@@ -255,10 +263,11 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Tap Fee ID',             
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Tap Fees'));
+          
+          return this.getAccountSuggestions(params, 'AccountID', this.getLayerByTitle('Tap Fees'), false);
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Tap Fees'));
+          return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Tap Fees'), false);
         }
       });     
       const rollNumSource: esri.SearchSource = new SearchSource({
@@ -266,10 +275,11 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Roll Number',     
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'RollNum', this.getLayerByTitle('Rolls'));
+          
+          return this.getAccountSuggestions(params, 'RollNum', this.getLayerByTitle('Rolls'), true);
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'RollNum', this.getLayerByTitle('Assessment'));
+          return this.getAccountResults(params, 'RollNum', this.getLayerByTitle('Assessment'), true);
         }
       });
       const contractSource: esri.SearchSource = new SearchSource({
@@ -277,10 +287,11 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 3,
         name: 'Contract Number',     
         getSuggestions: (params) => {
-          return this.getAccountSuggestions(params, 'ContractNum', this.getLayerByTitle('Contracts'));
+          
+          return this.getAccountSuggestions(params, 'ContractNum', this.getLayerByTitle('Contracts'), true);
         },
         getResults: (params) => {
-          return this.getAccountResults(params, 'ContractNum', this.getLayerByTitle('Tap Fees'));
+          return this.getAccountResults(params, 'ContractNum', this.getLayerByTitle('Tap Fees'), true);
         }
       });           
       const confirmResSource: esri.SearchSource = new SearchSource({
@@ -288,6 +299,7 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 4,
         name: 'Confirming Resolution',             
         getSuggestions: (params) => {
+          
           const layer = this.getLayerByTitle('Confirming Resolutions');
           if (layer) {
             return this.getResolutionSuggestions(params, 'ConfResDate', 'ConfResNum', layer);
@@ -314,6 +326,7 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 4,
         name: 'Directing Resolution',             
         getSuggestions: (params) => {
+          
           const layer = this.getLayerByTitle('Directing Resolutions');
           if (layer) {
             return this.getResolutionSuggestions(params, 'DirResDate', 'DirResNum', layer);
@@ -340,6 +353,7 @@ export class SearchComponent implements OnInit, OnChanges {
         minSuggestCharacters: 4,
         name: 'Correcting Resolutions',             
         getSuggestions: (params) => {
+          
           const layer = this.getLayerByTitle('Correcting Resolutions');
           
           if (layer) {
@@ -409,12 +423,10 @@ export class SearchComponent implements OnInit, OnChanges {
               dateField = 'DirResDate';
               numField = 'DirResNum';
             }
-            
-            this.getLayerByTitle('Assessment').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
-            + "' and "+numField+" = '" + event.result.feature.attributes[numField]+"'"}).then(featureSet => {
+            const where: string = `EXTRACT(YEAR FROM ${dateField}) = ${new Date(event.result.feature.attributes[dateField]).getFullYear()} and ${numField} = '${event.result.feature.attributes[numField]}'`
+            this.getLayerByTitle('Assessment').queryFeatures({outFields: ['AccountID', 'REID'], where: where}).then(featureSet => {
               features = features.concat(featureSet.features);
-              this.getLayerByTitle('Abatements').queryFeatures({outFields: ['AccountID', 'REID'], where: dateField + " = '" + new Date(event.result.feature.attributes[dateField]).toLocaleDateString()
-              + "' and "+numField+" = '" + event.result.feature.attributes[numField]+"'"}).then(featureSet => {
+              this.getLayerByTitle('Abatements').queryFeatures({outFields: ['AccountID', 'REID'], where: where}).then(featureSet => {
                 features = features.concat(featureSet.features);
                 this.selectionMadeMultiple.emit(features);
             
@@ -559,10 +571,16 @@ export class SearchComponent implements OnInit, OnChanges {
     if (changes.layers) {
       if (changes.layers.currentValue.length) {
         changes.layers.currentValue.forEach((layer: esri.FeatureLayer) => {
-          if (layer.url.indexOf('Property') > -1) {
-              this.propertyLayer = layer;
-            
+          if (layer.type === 'feature') {
+            if (layer.url) {
+              if (layer.url.indexOf('Property') > -1) {
+                this.propertyLayer = layer;
+              
+            }
+            }
+
           }
+   
         });
         this.createMap();
       }

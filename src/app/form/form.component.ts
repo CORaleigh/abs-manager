@@ -61,49 +61,175 @@ export class FormComponent implements OnChanges, OnInit {
     this.form.feature = this.form.feature.clone();
   }
 
-  setFormConfigByStatus(status:string, layer:esri.FeatureLayer) {
+  async setFormConfigByStatus(status:string, layer:esri.FeatureLayer) {
+    try {
+      // Load the modules for the ArcGIS API for JavaScript
+      const [FormTemplate] = await loadModules([
+        'esri/form/FormTemplate',
+      ]);
+
     if (layer.title.includes("Payment")) {
-      this.form.fieldConfig = [this.formGroups.paymentFormGroup];
+      //this.form.fieldConfig = [this.formGroups.paymentFormGroup];
+      
+      this.form.formTemplate = new FormTemplate({
+        title: "Payment",
+        description: "",
+        elements: [this.formGroups.paymentFormGroup],
+        expressionInfos: [
+          {
+            expression: 'true',
+            name: 'required'
+          }
+        ]
+      });
     }
     if (layer.title.includes("Communication")) {
-      this.form.fieldConfig = [this.formGroups.communicationFormGroup, this.formGroups.commSentToFormGroup];
+      this.form.formTemplate = new FormTemplate({
+        title: "Communication",
+        description: "",
+        elements: [this.formGroups.communicationFormGroup, this.formGroups.commSentToFormGroup],
+        expressionInfos: [
+          {
+            expression: 'true',
+            name: 'required'
+          }
+        ]
+      });      
+      //this.form.fieldConfig = [this.formGroups.communicationFormGroup, this.formGroups.commSentToFormGroup];
     }    
     if (layer.title.includes("Bill")) {
-      this.form.fieldConfig = [this.formGroups.billingDataFormGroup, this.formGroups.billSentToFormGroup, this.formGroups.billSiteAddressFormGroup];
+      //this.form.fieldConfig = [this.formGroups.billingDataFormGroup, this.formGroups.billSentToFormGroup, this.formGroups.billSiteAddressFormGroup];
+      this.form.formTemplate = new FormTemplate({
+        title: "Bill",
+        description: "",
+        elements: [this.formGroups.billingDataFormGroup, this.formGroups.billSentToFormGroup, this.formGroups.billSiteAddressFormGroup],
+        expressionInfos: [
+          {
+            expression: 'true',
+            name: 'required'
+          }
+        ]
+      });      
     }        
     if (layer.title.includes("Comment")) {
-      this.form.fieldConfig = [this.formGroups.commentsFormGroup];
+      //this.form.fieldConfig = [this.formGroups.commentsFormGroup];
+      this.form.formTemplate = new FormTemplate({
+        title: "Comment",
+        description: "",
+        elements: [this.formGroups.commentsFormGroup],
+        expressionInfos: [
+          {
+            expression: 'true',
+            name: 'required'
+          }
+        ]
+      });           
     }       
     if (status) {
       if (status === '2') {
         if (layer.title.includes("Abatement")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,
-          this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+          //this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,
+          //this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+          this.form.formTemplate = new FormTemplate({
+            title: "Abatement",
+            description: "",
+            elements: [this.confirmedFormGroups.abatementFormGroup,
+              this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup],
+              expressionInfos: [
+                {
+                  expression: 'true',
+                  name: 'required'
+                }
+              ]
+          });
         }
         if (layer.title.includes("Assessment")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.assessmentFormGroup,
-            this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+          //this.form.fieldConfig = [this.confirmedFormGroups.assessmentFormGroup,
+            //this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]      
+            this.form.formTemplate = new FormTemplate({
+              title: "Assessment",
+              description: "",
+              elements: [this.confirmedFormGroups.assessmentFormGroup,
+                this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]  ,
+                expressionInfos: [
+                  {
+                    expression: 'true',
+                    name: 'required'
+                  }
+                ]
+            });                    
         }
         if (layer.title.includes("Tap Fee")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
-            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
+          // this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
+          //   this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]   
+            this.form.formTemplate = new FormTemplate({
+              title: "Tap Fees",
+              description: "",
+              elements: [this.confirmedFormGroups.tapFeeFormGroup,
+                this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup],
+                expressionInfos: [
+                  {
+                    expression: 'true',
+                    name: 'required'
+                  }
+                ]    
+            });                          
         }    
       } else {
         if (layer.title.includes("Abatement")) {
-          this.form.fieldConfig = [this.formGroups.abatementFormGroup,
-          this.formGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+          // this.form.fieldConfig = [this.formGroups.abatementFormGroup,
+          // this.formGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
+          this.form.formTemplate = new FormTemplate({
+            title: "Abatement",
+            description: "",
+            elements: [this.confirmedFormGroups.abatementFormGroup,
+              this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup],
+              expressionInfos: [
+                {
+                  expression: 'true',
+                  name: 'required'
+                }
+              ]
+          }); 
         }
         if (layer.title.includes("Assessment")) {
-          this.form.fieldConfig = [this.formGroups.assessmentFormGroup,
-            this.formGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+          // this.form.fieldConfig = [this.formGroups.assessmentFormGroup,
+          //   this.formGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]  
+          this.form.formTemplate = new FormTemplate({
+            title: "Assessment",
+            description: "",
+            elements: [this.confirmedFormGroups.assessmentFormGroup,
+              this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup] ,
+              expressionInfos: [
+                {
+                  expression: 'true',
+                  name: 'required'
+                }
+              ] 
+          });                         
         }
         if (layer.title.includes("Tap Fee")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
-            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
+          // this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
+          //   this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]          
+          this.form.formTemplate = new FormTemplate({
+            title: "Tap Fees",
+            description: "",
+            elements: [this.confirmedFormGroups.tapFeeFormGroup,
+              this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup],
+              expressionInfos: [
+                {
+                  expression: 'true',
+                  name: 'required'
+                }
+              ]    
+          });                 
         }       
       }
     }
-    this.form.feature = this.form.feature.clone();
+      this.form.feature = this.form.feature.clone();
+    } catch (error) {
+      console.log('EsriLoader: ', error);
+    }
   }
 
   refreshFields() {
@@ -265,7 +391,7 @@ export class FormComponent implements OnChanges, OnInit {
      const labelText = (labels.item(i) as HTMLElement).firstChild.textContent;
       if (this.lookups.includes(labelText)){
         //@ts-ignore
-        let fields = this.form.viewModel._allInputFields.filter(field => {
+        let fields = this.form.viewModel.allInputFields.filter(field => {
           return field.required && field.label === labelText;
         });
         if (fields.length) {
