@@ -87,41 +87,64 @@ export class SearchComponent implements OnInit, OnChanges {
     }).catch(reason => console.log(reason));;
   }
 
-  getAccountSuggestions(params, field, layer) {
-    return layer.queryFeatures({
-      where: field+" like '" + params.suggestTerm.toUpperCase() + "%'",
-      num: 6,
-      outFields: [field, 'REID'],
-      returnDistinctValues: true,
-      returnGeometry: false,
-      orderByFields: [field]
-    }).then((results) => {
-      return results.features.map(feature => {
-        return {
-          key: field,
-          text: feature.attributes[field].toString(),
-          sourceIndex: params.sourceIndex
-        }
-      })
-    }).catch(reason => console.log(reason));
+private isNumericField(layer: __esri.FeatureLayer, field: string): boolean {
+  const f = layer.fields?.find(x => x.name.toLowerCase() === field.toLowerCase());
+  return !!f && ['integer', 'small-integer', 'long', 'single', 'double', 'oid'].includes(f.type);
+}
+
+private escapeSql(value: string): string {
+  return String(value).replace(/'/g, "''");
+}
+
+getAccountSuggestions(params, field, layer: __esri.FeatureLayer) {
+  const term = this.escapeSql(params.suggestTerm.trim().toUpperCase());
+
+  // "like" only works on text, so convert number fields to text for the prefix match
+  const where = this.isNumericField(layer, field)
+    ? `CAST(${field} AS VARCHAR(20)) LIKE '${term}%'`
+    : `UPPER(${field}) LIKE '${term}%'`;
+
+  return layer.queryFeatures({
+    where,
+    num: 6,
+    outFields: [field, 'REID'],
+    returnDistinctValues: true,
+    returnGeometry: false,
+    orderByFields: [field]
+  }).then(results =>
+    results.features.map(feature => ({
+      key: field,
+      text: String(feature.attributes[field]),
+      sourceIndex: params.sourceIndex
+    }))
+  ).catch(reason => { console.log(reason); return []; });
+}
+
+getAccountResults(params, field, layer: __esri.FeatureLayer) {
+  const raw = String(params.suggestResult.text).trim();
+  let where: string;
+
+  if (this.isNumericField(layer, field)) {
+    const n = Number(raw);
+    if (!Number.isFinite(n)) {
+      return Promise.resolve([]); // not a number, so no match and nothing unsafe reaches the query
+    }
+    where = `${field} = ${n}`;                                  // AccountID = 14056
+  } else {
+    where = `${field} = '${this.escapeSql(raw.toUpperCase())}'`; // text fields keep quotes
   }
-  getAccountResults(params, field, layer:esri.FeatureLayer) {
-    
-    return layer.queryFeatures({
-      where: field + " = '"+params.suggestResult.text.toUpperCase() + "'",
-      outFields: ['*'],
-      returnGeometry: false
-    }).then(results => {
-      let searchResults = results.features.map(feature => {
-        let searchResult = {
-          feature: feature,
-          name: feature.attributes[field].toString()
-        }
-        return searchResult;
-      });
-      return searchResults;
-    }).catch(reason => console.log(reason));
-  }  
+
+  return layer.queryFeatures({
+    where,
+    outFields: ['*'],
+    returnGeometry: false
+  }).then(results =>
+    results.features.map(feature => ({
+      feature,
+      name: String(feature.attributes[field])
+    }))
+  ).catch(reason => { console.log(reason); return []; });
+}
   getResolutionResults(where, dateField, numField, layer) {
     
     return layer.queryFeatures({
@@ -554,16 +577,14 @@ export class SearchComponent implements OnInit, OnChanges {
     });
   }
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.layers) {
-      if (changes.layers.currentValue.length) {
-        changes.layers.currentValue.forEach((layer: esri.FeatureLayer) => {
-          if (layer.url.indexOf('Property') > -1) {
-              this.propertyLayer = layer;
-            
-          }
-        });
-        this.createMap();
+    const layers = changes['layers']?.currentValue as __esri.FeatureLayer[] | undefined;
+
+    if (layers?.length) {
+      const property = layers.find(layer => layer?.url?.includes('Property'));
+      if (property) {
+        this.propertyLayer = property;
       }
+      this.createMap();
     }
     if (changes.basemap) {
       loadModules(['esri/Basemap']).then(([Basemap]) => {
