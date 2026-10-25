@@ -5,9 +5,10 @@ import * as calcite from 'calcite-web';
 import { SharedService } from '../shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 @Component({
-  selector: 'app-account-panel',
-  templateUrl: './account-panel.component.html',
-  styleUrls: ['./account-panel.component.scss']
+    selector: 'app-account-panel',
+    templateUrl: './account-panel.component.html',
+    styleUrls: ['./account-panel.component.scss'],
+    standalone: false
 })
 export class AccountPanelComponent implements OnInit, OnChanges {
   constructor(public shared:SharedService, private router:Router) { }

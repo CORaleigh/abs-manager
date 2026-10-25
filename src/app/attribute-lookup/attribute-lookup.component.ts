@@ -3,9 +3,10 @@ import { loadModules } from "esri-loader";
 import esri = __esri;
 import { FormgroupsService } from '../formgroups.service';
 @Component({
-  selector: 'app-attribute-lookup',
-  templateUrl: './attribute-lookup.component.html',
-  styleUrls: ['./attribute-lookup.component.scss']
+    selector: 'app-attribute-lookup',
+    templateUrl: './attribute-lookup.component.html',
+    styleUrls: ['./attribute-lookup.component.scss'],
+    standalone: false
 })
 export class AttributeLookupComponent implements OnInit {
   @ViewChild('createForm') private formDiv: ElementRef;

@@ -3,9 +3,10 @@ import esri = __esri;
 import { SharedService } from '../shared.service';
 
 @Component({
-  selector: 'app-payoff-calculator',
-  templateUrl: './payoff-calculator.component.html',
-  styleUrls: ['./payoff-calculator.component.scss']
+    selector: 'app-payoff-calculator',
+    templateUrl: './payoff-calculator.component.html',
+    styleUrls: ['./payoff-calculator.component.scss'],
+    standalone: false
 })
 export class PayoffCalculatorComponent implements OnInit, OnChanges{
 

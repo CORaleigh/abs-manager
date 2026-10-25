@@ -9,9 +9,10 @@ import { SharedService } from '../shared.service';
 import * as calcite from 'calcite-web';
 
 @Component({
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss']
+    selector: 'app-main',
+    templateUrl: './main.component.html',
+    styleUrls: ['./main.component.scss'],
+    standalone: false
 })
 export class MainComponent implements OnInit {
   constructor(private formGroupService: FormgroupsService, private route: ActivatedRoute, private router:Router, public shared:SharedService) {

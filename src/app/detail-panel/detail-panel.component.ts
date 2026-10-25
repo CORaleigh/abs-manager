@@ -5,9 +5,10 @@ import esri = __esri;
 import * as calcite from 'calcite-web';
 import { SharedService } from '../shared.service';
 @Component({
-  selector: 'app-detail-panel',
-  templateUrl: './detail-panel.component.html',
-  styleUrls: ['./detail-panel.component.scss']
+    selector: 'app-detail-panel',
+    templateUrl: './detail-panel.component.html',
+    styleUrls: ['./detail-panel.component.scss'],
+    standalone: false
 })
 export class DetailPanelComponent implements OnInit, OnChanges {
   constructor(public shared:SharedService) { }

@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import esri = __esri;
 @Component({
-  selector: 'app-payment-button',
-  templateUrl: './payment-button.component.html',
-  styleUrls: ['./payment-button.component.scss']
+    selector: 'app-payment-button',
+    templateUrl: './payment-button.component.html',
+    styleUrls: ['./payment-button.component.scss'],
+    standalone: false
 })
 export class PaymentButtonComponent implements OnInit, OnChanges {
   constructor() { }

@@ -6,9 +6,10 @@ import esri = __esri;
 import { Subscription } from 'rxjs';
 import { SharedService } from '../shared.service';
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    standalone: false
 })
 export class SearchComponent implements OnInit, OnChanges {
   constructor(public shared:SharedService, private route: ActivatedRoute, private router: Router) { 

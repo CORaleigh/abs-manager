@@ -5,9 +5,10 @@ import { SharedService } from '../shared.service';
 import { FormgroupsService } from '../formgroups.service';
 import { ConfirmedFormgroupsService } from '../confirmed-form-groups.service'
 @Component({
-  selector: 'app-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+    selector: 'app-form',
+    templateUrl: './form.component.html',
+    styleUrls: ['./form.component.scss'],
+    standalone: false
 })
 export class FormComponent implements OnChanges, OnInit {
   @ViewChild('formDiv') private formDiv: ElementRef;
