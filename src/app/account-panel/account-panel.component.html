@@ -1,36 +1,53 @@
-<div *ngIf="!showDetails && visible" class="panel modifier-class account-panel">
+@if (!showDetails && visible) {
+  <div class="panel modifier-class account-panel">
     <h4 class="trailer-half">{{title}}</h4>
-
-
     <div class="trailer-0">
-        <div class="overflow-auto">
-            <table class="table table-striped modifier-class " id="assessmentsTable">
-                <thead>
-                    <tr>
-                        <th *ngFor="let header of headers">{{header}}</th>
-                    </tr>
-                </thead>
-                <tbody id="assessmentsTableBody" class="panel-table-body account-table-body">
-                    <tr *ngFor="let feature of features" (click)="featureSelected(feature)">
-                        <td *ngFor="let field of fields">
-                            <span *ngIf="field.type != 'date' && !field.domain && !currencyFields.includes(field.name)">{{feature.attributes[field.name]}}</span>
-                            <span *ngIf="field.type === 'date'">{{feature.attributes[field.name] | date}}</span>
-                            <span *ngIf="currencyFields.includes(field.name)">{{feature.attributes[field.name] | currency}}</span>
-                            <span *ngIf="field.domain">{{getCodedValue(feature.attributes[field.name], field)}}</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+      <div class="overflow-auto">
+        <table class="table table-striped modifier-class " id="assessmentsTable">
+          <thead>
+            <tr>
+              @for (header of headers; track header) {
+                <th>{{header}}</th>
+              }
+            </tr>
+          </thead>
+          <tbody id="assessmentsTableBody" class="panel-table-body account-table-body">
+            @for (feature of features; track feature) {
+              <tr (click)="featureSelected(feature)">
+                @for (field of fields; track field) {
+                  <td>
+                    @if (field.type != 'date' && !field.domain && !currencyFields.includes(field.name)) {
+                      <span>{{feature.attributes[field.name]}}</span>
+                    }
+                    @if (field.type === 'date') {
+                      <span>{{feature.attributes[field.name] | date}}</span>
+                    }
+                    @if (currencyFields.includes(field.name)) {
+                      <span>{{feature.attributes[field.name] | currency}}</span>
+                    }
+                    @if (field.domain) {
+                      <span>{{getCodedValue(feature.attributes[field.name], field)}}</span>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (!features.length) {
+        <div class="alert alert-full modifier-class is-active">
+          No records found
         </div>
-        <div *ngIf="!features.length" class="alert alert-full modifier-class is-active">
-                No records found
-
-              </div>   
-    <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source" *ngIf="title != 'Bills' && source && (shared.role === 'admin' || (shared.role === 'cashier' && (title === 'Payments' || title === 'Comments')) || (shared.role === 'viewer' && (title === 'Comments')))">Create</button>
-
-     
+      }
+      @if (title != 'Bills' && source && (shared.role === 'admin' || (shared.role === 'cashier' && (title === 'Payments' || title === 'Comments')) || (shared.role === 'viewer' && (title === 'Comments')))) {
+        <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source">Create</button>
+      }
     </div>
-</div> 
-<app-detail-panel *ngIf="showDetails && visible" (relatedFeatureReturned)="relatedFeatureReturned($event)"
-(formSubmitted)="formSubmittedEvent()"  
-[title]="detailsTitle" [feature]="selectedFeature" [layers]="layers"  [update]="update" [formgroups]="formgroups" [detailButtons]="!layer.isTable"></app-detail-panel>
+  </div>
+}
+@if (showDetails && visible) {
+  <app-detail-panel (relatedFeatureReturned)="relatedFeatureReturned($event)"
+    (formSubmitted)="formSubmittedEvent()"
+  [title]="detailsTitle" [feature]="selectedFeature" [layers]="layers"  [update]="update" [formgroups]="formgroups" [detailButtons]="!layer.isTable"></app-detail-panel>
+}

@@ -1,14 +1,20 @@
 <button  class="btn btn-green modifier-class" (click)="submit()">Submit</button>
 
-<app-attribute-lookup *ngIf="showAttributeLookup()" (refreshForm)="refreshForm($event)" [sourceForm]="form" [layers]="layers" [accountType]="feature.layer.title"></app-attribute-lookup>
+@if (showAttributeLookup()) {
+  <app-attribute-lookup (refreshForm)="refreshForm($event)" [sourceForm]="form" [layers]="layers" [accountType]="feature.layer.title"></app-attribute-lookup>
+}
 
 
 <button  class="btn  btn-green modifier-class" (click)="cancel()">Cancel</button>
-<app-payoff-calculator *ngIf="showPayoffCalculator()" [source]="'form'" [feature]="feature" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
+@if (showPayoffCalculator()) {
+  <app-payoff-calculator [source]="'form'" [feature]="feature" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
+}
 
-<div *ngIf="invalid.length" class="invalid">
+@if (invalid.length) {
+  <div class="invalid">
     Errors with following fields: {{invalid.toString()}}
-</div>
+  </div>
+}
 <div #formDiv></div>
 
 
