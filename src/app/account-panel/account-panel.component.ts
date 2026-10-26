@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { loadModules } from 'esri-loader';
-import esri = __esri;
-import * as calcite from 'calcite-web';
+import Graphic from '@arcgis/core/Graphic.js';
+import type * as esri from '../esri';
 import { SharedService } from '../shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 @Component({
@@ -33,8 +32,6 @@ export class AccountPanelComponent implements OnInit, OnChanges {
   @Input('source') source: esri.Graphic;
   currencyFields:string[] = ['PaymentAmount', 'PrincipalBalance', 'PrincipalBal', 'TotalDue', 'Balance'];
   ngOnInit() {
-    setTimeout(()=>{calcite.init()})
-
   }
   featureSelected(feature: esri.Graphic) {
     this.update = true;
@@ -57,100 +54,98 @@ export class AccountPanelComponent implements OnInit, OnChanges {
     return value;
   }
   createFeature() {
-    loadModules(['esri/Graphic']).then(([Graphic]) => {
-      this.update = false;
-      let feature:esri.Graphic = new Graphic({ attributes: {} });
-      feature.layer = this.layer;
-      if (this.layer.isTable) {
-        this.source = this.shared.account.getValue();
+    this.update = false;
+    let feature:esri.Graphic = new Graphic({ attributes: {} });
+    feature.layer = this.layer;
+    if (this.layer.isTable) {
+      this.source = this.shared.account.getValue();
 
-        if(this.layer.getField('PaymentDate')) {
-          this.source.attributes['PaymentDate'] = new Date().getTime();
-        }
+      if(this.layer.getField('PaymentDate')) {
+        this.source.attributes['PaymentDate'] = new Date().getTime();
+      }
 
-        if(this.layer.getField('TransactionTypeCode')) {
-          this.source.attributes['TransactionTypeCode'] = 'PMT';
-        }        
-        if(this.layer.getField('PaymentClassCode')) {
-          this.source.attributes['PaymentClassCode'] = '0039';
-        } 
-        if (this.layer.getField('PaymentHoldingFlag')) {
-          this.source.setAttribute('PaymentHoldingFlag', 'N');
-        }
-        if (this.layer.getField('PaymentReversedFlag')) {
-          this.source.setAttribute('PaymentReversedFlag', 'N');
-        }     
-        if (this.layer.getField('PaymentPrepayTransferFlag')) {
-          this.source.setAttribute('PaymentPrepayTransferFlag', 'N');
-        }            
+      if(this.layer.getField('TransactionTypeCode')) {
+        this.source.attributes['TransactionTypeCode'] = 'PMT';
+      }        
+      if(this.layer.getField('PaymentClassCode')) {
+        this.source.attributes['PaymentClassCode'] = '0039';
+      } 
+      if (this.layer.getField('PaymentHoldingFlag')) {
+        this.source.setAttribute('PaymentHoldingFlag', 'N');
       }
-      if (this.layer.getField('DirResNum')) {
-        this.source.attributes['DirResNum'] = null;
-      }      
-      if (this.layer.getField('PaymentPlanFlag')) {
-        this.source.attributes['PaymentPlanFlag'] = 'N';
-      }
-      if (this.layer.getField('EstateFlag')) {
-        this.source.attributes['EstateFlag'] = 'N';
-      }      
-      if (this.layer.getField('BankruptFlag')) {
-        this.source.attributes['BankruptFlag'] = 'N';
-      }            
-      if (this.layer.getField('ActionTypeCode')) {
-        this.source.attributes['ActionTypeCode'] = 0;
+      if (this.layer.getField('PaymentReversedFlag')) {
+        this.source.setAttribute('PaymentReversedFlag', 'N');
       }     
-      if (this.layer.getField('BillingTypeCode')) {
-        if (this.layer.title.includes('Assessments')) {
-          this.source.attributes['BillingTypeCode'] = 'AS';
-        }
-      }                
-      let cloned: esri.Graphic = this.source.clone();
-      feature.geometry = cloned.geometry;
-
-      this.layer.fields.forEach((field: esri.Field) => {
-        feature.attributes[field.name] = null;
-        if (cloned.attributes[field.name]) {
-          feature.attributes[field.name] = cloned.attributes[field.name];
-        }
-        if (field.name === 'RollNumInOut' && this.layer.title.includes("Assessments")) {
-          if (cloned.getAttribute('CITY_DECODE') === 'RALEIGH') {
-            feature.attributes[field.name] = "A";
-          }
-        }
-        if (field.name === 'Annexed') { 
-          if (cloned.getAttribute('CITY_DECODE') === 'RALEIGH') {
-            feature.attributes[field.name] = "Y";
-          } else {
-            feature.attributes[field.name] = "N";
-          }
-        }
-      });
-
-      
-      feature.setAttribute("StatusCode",'1');
-
-      if (this.layer.title.includes("Tap Fees")) {
-        feature.setAttribute("StatusCode", '2');
+      if (this.layer.getField('PaymentPrepayTransferFlag')) {
+        this.source.setAttribute('PaymentPrepayTransferFlag', 'N');
+      }            
+    }
+    if (this.layer.getField('DirResNum')) {
+      this.source.attributes['DirResNum'] = null;
+    }      
+    if (this.layer.getField('PaymentPlanFlag')) {
+      this.source.attributes['PaymentPlanFlag'] = 'N';
+    }
+    if (this.layer.getField('EstateFlag')) {
+      this.source.attributes['EstateFlag'] = 'N';
+    }      
+    if (this.layer.getField('BankruptFlag')) {
+      this.source.attributes['BankruptFlag'] = 'N';
+    }            
+    if (this.layer.getField('ActionTypeCode')) {
+      this.source.attributes['ActionTypeCode'] = 0;
+    }     
+    if (this.layer.getField('BillingTypeCode')) {
+      if (this.layer.title.includes('Assessments')) {
+        this.source.attributes['BillingTypeCode'] = 'AS';
       }
-      feature.setAttribute("NumInstallmentsMade", 0);        
+    }                
+    let cloned: esri.Graphic = this.source.clone();
+    feature.geometry = cloned.geometry;
 
-      if (this.layer.title.includes("Abatements")) {
-        feature.setAttribute("BillingTypeCode", "AB");
-        feature.setAttribute("CategoryTypeCode", "05");
+    this.layer.fields.forEach((field: esri.Field) => {
+      feature.attributes[field.name] = null;
+      if (cloned.attributes[field.name]) {
+        feature.attributes[field.name] = cloned.attributes[field.name];
       }
-      if (this.layer.title.includes("Tap Fees")) {
-        feature.setAttribute("BillingTypeCode", "TF");
-      }      
-      if (!this.layer.isTable) {
-        feature.attributes.NCPIN = cloned.attributes.PIN_NUM;
-        feature.attributes.AccountID = 0;
+      if (field.name === 'RollNumInOut' && this.layer.title.includes("Assessments")) {
+        if (cloned.getAttribute('CITY_DECODE') === 'RALEIGH') {
+          feature.attributes[field.name] = "A";
+        }
       }
-      console.log(feature.getAttribute("AccountID"));
+      if (field.name === 'Annexed') { 
+        if (cloned.getAttribute('CITY_DECODE') === 'RALEIGH') {
+          feature.attributes[field.name] = "Y";
+        } else {
+          feature.attributes[field.name] = "N";
+        }
+      }
+    });
 
-      this.selectedFeature = feature;
+    
+    feature.setAttribute("StatusCode",'1');
 
-      this.createFeatureClicked.emit(feature);
-    })
+    if (this.layer.title.includes("Tap Fees")) {
+      feature.setAttribute("StatusCode", '2');
+    }
+    feature.setAttribute("NumInstallmentsMade", 0);        
+
+    if (this.layer.title.includes("Abatements")) {
+      feature.setAttribute("BillingTypeCode", "AB");
+      feature.setAttribute("CategoryTypeCode", "05");
+    }
+    if (this.layer.title.includes("Tap Fees")) {
+      feature.setAttribute("BillingTypeCode", "TF");
+    }      
+    if (!this.layer.isTable) {
+      feature.attributes.NCPIN = cloned.attributes.PIN_NUM;
+      feature.attributes.AccountID = 0;
+    }
+    console.log(feature.getAttribute("AccountID"));
+
+    this.selectedFeature = feature;
+
+    this.createFeatureClicked.emit(feature);
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes.selectedFeature) {
@@ -171,44 +166,41 @@ export class AccountPanelComponent implements OnInit, OnChanges {
       if (this.title === 'Payments') {
 
         if (this.shared.account.getValue()) {
-          loadModules(["esri/layers/support/Field"]).then(([Field]) => {
-              let lienamount = this.shared.account.getValue().attributes.TotalLienAmount;
-              let adminfee = this.shared.account.getValue().attributes.AdminFee;
-              let advfee = this.shared.account.getValue().attributes.AdvertiseFee;
-              if (!lienamount) {
-                lienamount = 0;
-              }
-              if (!adminfee) {
-                adminfee = 0;
-              }
-              if (!advfee) {
-                advfee = 0;
-              }
+          let lienamount = this.shared.account.getValue().attributes.TotalLienAmount;
+          let adminfee = this.shared.account.getValue().attributes.AdminFee;
+          let advfee = this.shared.account.getValue().attributes.AdvertiseFee;
+          if (!lienamount) {
+            lienamount = 0;
+          }
+          if (!adminfee) {
+            adminfee = 0;
+          }
+          if (!advfee) {
+            advfee = 0;
+          }
 
-              let balance:number = lienamount+adminfee+advfee;
-              this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
-                return a.attributes.PaymentDate - b.attributes.PaymentDate;
-              });
-              const domain:any = this.fields.filter((field:esri.Field) => {
-                return field.name === 'PaymentClassCode';
-              })[0].domain;
-              this.features.forEach((feature:esri.Graphic) => {
-                const value = domain.codedValues.filter((cv:esri.CodedValueDomainCodedValues)=> {
-                  return cv.code === feature.attributes.PaymentClassCode;
-                })[0];
-                if (value.name.indexOf("INTEREST") > 0) {
-                  feature.attributes.Balance = balance;
-                } else {
-                  balance = balance - feature.attributes.PaymentAmount;
-                  feature.attributes.Balance = balance;
-                }
-
-              });
-              // this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
-              //   return b.attributes.PaymentDate - a.attributes.PaymentDate;
-              // });
+          let balance:number = lienamount+adminfee+advfee;
+          this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+            return a.attributes.PaymentDate - b.attributes.PaymentDate;
           });
-        
+          const domain:any = this.fields.filter((field:esri.Field) => {
+            return field.name === 'PaymentClassCode';
+          })[0].domain;
+          this.features.forEach((feature:esri.Graphic) => {
+            const value = domain.codedValues.filter((cv:esri.CodedValueDomainCodedValues)=> {
+              return cv.code === feature.attributes.PaymentClassCode;
+            })[0];
+            if (value.name.indexOf("INTEREST") > 0) {
+              feature.attributes.Balance = balance;
+            } else {
+              balance = balance - feature.attributes.PaymentAmount;
+              feature.attributes.Balance = balance;
+            }
+
+          });
+          // this.features = this.features.sort((a:esri.Graphic,b:esri.Graphic)=> {
+          //   return b.attributes.PaymentDate - a.attributes.PaymentDate;
+          // });
 
         }
 

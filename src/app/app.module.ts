@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SearchComponent } from './search/search.component';
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MainComponent } from './main/main.component';
 import { PayoffCalculatorComponent } from './payoff-calculator/payoff-calculator.component';
 import { AttributeLookupComponent } from './attribute-lookup/attribute-lookup.component';
+import './calcite-components';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,8 @@ import { AttributeLookupComponent } from './attribute-lookup/attribute-lookup.co
     FormsModule
   ],
   providers: [],
+  // allows the ArcGIS map components (<arcgis-*>) and Calcite components (<calcite-*>) in templates
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

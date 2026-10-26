@@ -1,76 +1,56 @@
 @if (loaded) {
-  <header class="top-nav fade-in">
-    <div class="grid-container">
-      <div class="column-24">
-        <a class="skip-to-content" href="#skip-to-content">Skip To Content</a>
-        <div class="c-header__logo">
-          <a href="/" title="Home" rel="home" class="logo">
-            <img src="assets/logo.svg" alt="Raleighnc.gov logo" class="logo__image">
-          </a>
-        </div>
-        <a href="#" class="top-nav-title right">ABS Manager</a>
-        <div id="user-nav" class="dropdown js-dropdown right">
-          <a class="top-nav-link icon-ui-user margin-left-1 js-dropdown-toggle" tabindex="0" aria-haspopup="true" aria-expanded="false" href="#">{{shared.user.username}}</a>
-          <nav  class="dropdown-menu dropdown-right" role="menu">
-            <label class="dropdown-link toggle-switch modifier-class" role="menu-item">
-              <input type="checkbox" class="toggle-switch-input" (change)="darkModeToggle($event)" [checked]="dark">
-              <span class="toggle-switch-track margin-right-1"></span>
-              <span class="toggle-switch-label font-size--1">Dark Mode</span>
-            </label>
-            <a href="#" class="dropdown-link" role="menu-item" (click)="signOut()">Sign Out</a>
-          </nav>
-        </div>
-        <nav class="class-top-nav-list right" role="navigation" aria-labelledby="usernav">
-        </nav>
-      </div>
-    </div>
-  </header>
+  <a class="skip-to-content" href="#skip-to-content">Skip To Content</a>
+  <calcite-navigation class="top-nav fade-in" label="ABS Manager">
+    <calcite-navigation-logo slot="logo" href="/" rel="home" heading="ABS Manager" thumbnail="assets/logo.svg" label="Raleighnc.gov logo"></calcite-navigation-logo>
+    <calcite-dropdown slot="user" placement="bottom-end">
+      <calcite-navigation-user slot="trigger" [fullName]="shared.user.username"></calcite-navigation-user>
+      <calcite-dropdown-group selection-mode="multiple">
+        <calcite-dropdown-item icon-start="brightness" [selected]="dark" (calciteDropdownItemSelect)="darkModeToggle()">Dark Mode</calcite-dropdown-item>
+      </calcite-dropdown-group>
+      <calcite-dropdown-group selection-mode="none">
+        <calcite-dropdown-item icon-start="sign-out" (calciteDropdownItemSelect)="signOut()">Sign Out</calcite-dropdown-item>
+      </calcite-dropdown-group>
+    </calcite-dropdown>
+  </calcite-navigation>
 }
 @if (loaded) {
-  <div class="grid-container fade-in" >
-    <div class="column-24">
-      <app-search [layers]="layers" (selectionMade)="selectionMade($event)" (selectionMadeMultiple)="selectionMadeMultiple($event)" (propertiesSelected)="propertiesSelected($event)" [basemap]="basemap"></app-search>
-      <div class="grid-container">
-        <div class="column-24">
-          <nav class="breadcrumbs modifier-class" id="crumbs">
-            @for (crumb of crumbs; track crumb; let i = $index) {
-              <a class="crumb link-green"
-                [ngStyle]="{'display': (crumb.visible) ? 'block':'none'}" [ngClass]="{'is-active': crumb.active}"
-              (click)="crumbClicked(crumb, i)">{{crumb.title}}</a>
-            }
-          </nav>
-        </div>
+  <main class="page fade-in" id="skip-to-content">
+    <app-search [layers]="layers" (selectionMade)="selectionMade($event)" (selectionMadeMultiple)="selectionMadeMultiple($event)" (propertiesSelected)="propertiesSelected($event)" [basemap]="basemap"></app-search>
+    <nav class="breadcrumbs" id="crumbs" aria-label="Breadcrumbs">
+      @for (crumb of crumbs; track crumb; let i = $index) {
+        <a class="crumb"
+          [ngStyle]="{'display': (crumb.visible) ? 'block':'none'}" [ngClass]="{'is-active': crumb.active}"
+        (click)="crumbClicked(crumb, i)">{{crumb.title}}</a>
+      }
+    </nav>
+    @for (panel of accountPanels; track panel) {
+      <div>
+        <app-account-panel [title]="panel.title" [visible]="panel.visible" (accountSelected)="accountSelected($event)"
+          (createFeatureClicked)="createFeatureClicked($event)" (formSubmitted)="formSubmitted()" (formCanceled)="formSubmitted()"  [update]="panel.update"
+          [source]="selectedProperty" [layer]="panel.layer" [features]="panel.features" [fields]="panel.fields"
+          [layers]="layers" [selectedFeature]="panel.selectedFeature" [headers]="panel.headers" [formgroups]="panel.formgroups"
+          [showDetails]="panel.showDetails" (showRelatedTable)="showRelatedTable($event)"
+        [detailsTitle]="panel.detailsTitle"></app-account-panel>
       </div>
-      @for (panel of accountPanels; track panel) {
-        <div>
-          <app-account-panel [title]="panel.title" [visible]="panel.visible" (accountSelected)="accountSelected($event)"
-            (createFeatureClicked)="createFeatureClicked($event)" (formSubmitted)="formSubmitted()" (formCanceled)="formSubmitted()"  [update]="panel.update"
-            [source]="selectedProperty" [layer]="panel.layer" [features]="panel.features" [fields]="panel.fields"
-            [layers]="layers" [selectedFeature]="panel.selectedFeature" [headers]="panel.headers" [formgroups]="panel.formgroups"
-            [showDetails]="panel.showDetails" (showRelatedTable)="showRelatedTable($event)"
-          [detailsTitle]="panel.detailsTitle"></app-account-panel>
-        </div>
-      }
-      @for (panel of detailPanels; track panel) {
-        <div>
-          <app-account-panel [title]="panel.title" [visible]="panel.visible" (accountSelected)="accountSelected($event)"
-            (createFeatureClicked)="createFeatureClicked($event)" [update]="panel.update" [source]="selectedAccount"
-            [layer]="panel.layer" [layers]="layers" [selectedFeature]="panel.selectedFeature"
-            (showRelatedTable)="showRelatedTable($event)" [features]="panel.features" [fields]="panel.fields"
-            [headers]="panel.headers" [formgroups]="panel.formgroups" [showDetails]="panel.showDetails"
-          [detailsTitle]="panel.detailsTitle"></app-account-panel>
-        </div>
-      }
-    </div>
+    }
+    @for (panel of detailPanels; track panel) {
+      <div>
+        <app-account-panel [title]="panel.title" [visible]="panel.visible" (accountSelected)="accountSelected($event)"
+          (createFeatureClicked)="createFeatureClicked($event)" [update]="panel.update" [source]="selectedAccount"
+          [layer]="panel.layer" [layers]="layers" [selectedFeature]="panel.selectedFeature"
+          (showRelatedTable)="showRelatedTable($event)" [features]="panel.features" [fields]="panel.fields"
+          [headers]="panel.headers" [formgroups]="panel.formgroups" [showDetails]="panel.showDetails"
+        [detailsTitle]="panel.detailsTitle"></app-account-panel>
+      </div>
+    }
     <!-- <app-payment-button [enabled]="paymentEnabled" [layers]="accountLayers" [features]="paymentFeatures" (clicked)="paymentClicked()" (getPayments)="getPayments($event)"></app-payment-button> -->
-  </div>
+  </main>
 }
 @if (loaded) {
-  <footer class="footer leader-3 fade-in">
+  <footer class="footer fade-in">
     <img src="assets/logo-footer.svg" alt>
   </footer>
 }
-<div class="loader padding-leader-3 padding-trailer-3" [ngClass]="{'is-active': !loaded}">
-  <div class="loader-bars"></div>
-  <div class="loader-text">Loading...</div>
-</div>
+@if (!loaded) {
+  <calcite-loader label="Loading" text="Loading..."></calcite-loader>
+}

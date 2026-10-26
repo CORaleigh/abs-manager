@@ -1,10 +1,22 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { loadModules } from 'esri-loader';
 import { ActivatedRoute, Router } from '@angular/router';
+import '@arcgis/map-components/components/arcgis-map';
+import '@arcgis/map-components/components/arcgis-search';
+import '@arcgis/map-components/components/arcgis-expand';
+import '@arcgis/map-components/components/arcgis-basemap-gallery';
+import '@arcgis/map-components/components/arcgis-fullscreen';
+import '@arcgis/map-components/components/arcgis-popup';
+import Collection from '@arcgis/core/core/Collection.js';
+import Color from '@arcgis/core/Color.js';
+import Extent from '@arcgis/core/geometry/Extent.js';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol.js';
+import SearchSource, { type SearchSourceProperties } from '@arcgis/core/widgets/Search/SearchSource.js';
+import type { SearchViewModelSelectResultEvent } from '@arcgis/core/widgets/Search/SearchViewModel.js';
 
-import esri = __esri;
+import type * as esri from '../esri';
 import { Subscription } from 'rxjs';
 import { SharedService } from '../shared.service';
+import { escapeSql, hasField, isNumericField, likeClause, resolutionWhere, sqlValue } from '../sql';
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
@@ -16,8 +28,7 @@ export class SearchComponent implements OnInit, OnChanges {
   constructor(public shared:SharedService, private route: ActivatedRoute, private router: Router) { 
     
   }
-  @ViewChild('searchDiv') private searchDiv: ElementRef;
-  @ViewChild('viewDiv') private viewDiv: ElementRef;
+  @ViewChild('searchEl') private searchEl: ElementRef<esri.widgetsSearch>;
   @Input('layers') layers: esri.FeatureLayer[] = null;
   @Input('basemap') basemap: string = null;
   @Output() selectionMade = new EventEmitter<esri.Graphic>();
@@ -26,8 +37,23 @@ export class SearchComponent implements OnInit, OnChanges {
 
   propertyLayer: esri.FeatureLayer = null;
   view: esri.MapView = null;
+  mapEl: esri.ArcgisMap = null;
+  // the <arcgis-popup> in the map's popup slot docks in the top right corner
+  popupDockOptions = {
+    position: 'top-right' as const,
+    buttonEnabled: false
+  };
   sub:Subscription = null;
-  highlight:any = null;
+  mapVisible = false;
+  initialExtent = new Extent({
+    xmin: -78.995,
+    ymin: 35.519,
+    xmax: -78.253,
+    ymax: 36.077,
+    spatialReference: {
+      wkid: 4326
+    }
+  });
   ngOnInit() {
     // this.initialize();
     // this.createMap();
@@ -48,7 +74,7 @@ export class SearchComponent implements OnInit, OnChanges {
 
   getSuggestions(params, field, contains) {
     return this.propertyLayer.queryFeatures({
-      where: this.likeClause(this.propertyLayer, field, params.suggestTerm.toUpperCase(), contains),
+      where: likeClause(this.propertyLayer, field, params.suggestTerm.toUpperCase(), contains),
       num: 6,
       outFields: [field],
       outSpatialReference: {wkid: 102100},
@@ -57,18 +83,19 @@ export class SearchComponent implements OnInit, OnChanges {
       orderByFields: [field]
     }).then((results) => {
       return results.features.map(feature => {
+        // the search lists suggestions by key and source, so each key has to be unique
         return {
-          key: field,
+          key: String(feature.attributes[field]),
           text: feature.attributes[field],
           sourceIndex: params.sourceIndex
         }
       })
-    }).catch(reason => console.log(reason));
+    }).catch(reason => { console.log(reason); return []; });
   }
 
   getResults(params, field) {
     return this.propertyLayer.queryFeatures({
-      where: `${field} = ${this.sqlValue(this.propertyLayer, field, String(params.suggestResult.text).toUpperCase())}`,
+      where: `${field} = ${sqlValue(this.propertyLayer, field, String(params.suggestResult.text).toUpperCase())}`,
       outFields: ['*'],
       outSpatialReference: {wkid: 102100},
       returnGeometry: true
@@ -81,55 +108,20 @@ export class SearchComponent implements OnInit, OnChanges {
         let searchResult = {
           extent: feature.geometry.extent,
           feature: feature,
+          target: feature,
           name: feature.attributes.REID
         }
         return searchResult;
       });
       return searchResults;
-    }).catch(reason => console.log(reason));;
+    }).catch(reason => { console.log(reason); return []; });
   }
 
-private isNumericField(layer: __esri.FeatureLayer, field: string): boolean {
-  const f = layer.fields?.find(x => x.name.toLowerCase() === field.toLowerCase());
-  return !!f && ['integer', 'small-integer', 'long', 'single', 'double', 'oid'].includes(f.type);
-}
-
-// if the layer's fields haven't loaded yet, assume the field is there
-private hasField(layer: __esri.FeatureLayer, field: string): boolean {
-  return !layer.fields || layer.fields.some(x => x.name.toLowerCase() === field.toLowerCase());
-}
-
-private escapeSql(value: string): string {
-  return String(value).replace(/'/g, "''");
-}
-
-// number fields get the bare value, text fields get it quoted and escaped
-private sqlValue(layer: __esri.FeatureLayer, field: string, value: any): string {
-  if (this.isNumericField(layer, field)) {
-    const n = Number(String(value).trim());
-    return Number.isFinite(n) ? String(n) : 'NULL'; // NULL never matches, so bad input finds nothing
-  }
-  return `'${this.escapeSql(value)}'`;
-}
-
-// "like" only works on text, so convert number fields to text for the match
-private likeClause(layer: __esri.FeatureLayer, field: string, term: string, contains = false): string {
-  const pattern = `${contains ? '%' : ''}${this.escapeSql(term)}%`;
-  return this.isNumericField(layer, field)
-    ? `CAST(${field} AS VARCHAR(20)) LIKE '${pattern}'`
-    : `${field} LIKE '${pattern}'`;
-}
-
-private resolutionWhere(layer: __esri.FeatureLayer, dateField: string, numField: string, year: any, num: any): string {
-  const y = Number(year);
-  return `EXTRACT(YEAR FROM ${dateField}) = ${Number.isInteger(y) ? y : 'NULL'} AND ${numField} = ${this.sqlValue(layer, numField, num)}`;
-}
-
-getAccountSuggestions(params, field, layer: __esri.FeatureLayer) {
-  const term = this.escapeSql(params.suggestTerm.trim().toUpperCase());
+getAccountSuggestions(params, field, layer: esri.FeatureLayer) {
+  const term = escapeSql(params.suggestTerm.trim().toUpperCase());
 
   // "like" only works on text, so convert number fields to text for the prefix match
-  const where = this.isNumericField(layer, field)
+  const where = isNumericField(layer, field)
     ? `CAST(${field} AS VARCHAR(20)) LIKE '${term}%'`
     : `UPPER(${field}) LIKE '${term}%'`;
 
@@ -142,25 +134,25 @@ getAccountSuggestions(params, field, layer: __esri.FeatureLayer) {
     orderByFields: [field]
   }).then(results =>
     results.features.map(feature => ({
-      key: field,
+      key: String(feature.attributes[field]),
       text: String(feature.attributes[field]),
       sourceIndex: params.sourceIndex
     }))
   ).catch(reason => { console.log(reason); return []; });
 }
 
-getAccountResults(params, field, layer: __esri.FeatureLayer) {
+getAccountResults(params, field, layer: esri.FeatureLayer) {
   const raw = String(params.suggestResult.text).trim();
   let where: string;
 
-  if (this.isNumericField(layer, field)) {
+  if (isNumericField(layer, field)) {
     const n = Number(raw);
     if (!Number.isFinite(n)) {
       return Promise.resolve([]); // not a number, so no match and nothing unsafe reaches the query
     }
     where = `${field} = ${n}`;                                  // AccountID = 14056
   } else {
-    where = `${field} = '${this.escapeSql(raw.toUpperCase())}'`; // text fields keep quotes
+    where = `${field} = '${escapeSql(raw.toUpperCase())}'`; // text fields keep quotes
   }
 
   return layer.queryFeatures({
@@ -170,6 +162,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
   }).then(results =>
     results.features.map(feature => ({
       feature,
+      target: feature,
       name: String(feature.attributes[field])
     }))
   ).catch(reason => { console.log(reason); return []; });
@@ -185,13 +178,14 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
       let searchResults = results.features.map(feature => {
         let searchResult = {
           feature: feature,
+          target: feature,
           name: new Date(feature.attributes[dateField]).getFullYear().toString()  + "-" + feature.attributes[numField]
         }
         return searchResult;
       });
       
       return searchResults;
-    }).catch(reason => console.log(reason));;
+    }).catch(reason => { console.log(reason); return []; });
   }  
   getResolutionSuggestions(params, dateField, numField, layer) {
     let year = null;
@@ -206,7 +200,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
       }
 
       return layer.queryFeatures({
-        where: "EXTRACT(YEAR from "+dateField+") = " + year + " AND " + this.likeClause(layer, numField, num),
+        where: "EXTRACT(YEAR from "+dateField+") = " + year + " AND " + likeClause(layer, numField, num),
         num: 6,
         outFields: [dateField, numField],
         returnDistinctValues: true,
@@ -217,26 +211,27 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
           let text = new Date(feature.attributes[dateField]).getFullYear().toString();
           text += '-' + feature.attributes[numField];
           return {
-            key: 'resolution',
+            key: text,
             text: text,
             sourceIndex: params.sourceIndex
           }
         })
-      }).catch(reason => console.log(reason));;      
+      }).catch(reason => { console.log(reason); return []; });
     } else {
       return null;
     }
 
   }
 
+  // 5.x SearchSource no longer declares a name, but the source menu and select-result handling use it
+  createSource(properties: SearchSourceProperties & { name: string }): esri.SearchSource {
+    const { name, ...props } = properties;
+    return Object.assign(new SearchSource(props), { name });
+  }
+
   async initialize() {
     try {
-      const [Search, LayerSearchSource, SearchSource] = await loadModules([
-        'esri/widgets/Search',
-        'esri/widgets/Search/LayerSearchSource',
-        'esri/widgets/Search/SearchSource'
-      ]);
-      const reidSource: esri.SearchSource = new SearchSource({
+      const reidSource: esri.SearchSource = this.createSource({
         placeholder:"Search By REID",
         getSuggestions: (params) => {
           return this.getSuggestions(params, 'REID', false)
@@ -247,7 +242,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
         minSuggestCharacters: 4,
         name: 'REID'
       });
-      const pinSource: esri.SearchSource = new SearchSource({
+      const pinSource: esri.SearchSource = this.createSource({
         placeholder:"Search By PIN",
         getSuggestions: (params) => {
           return this.getSuggestions(params, 'PIN_NUM', false)
@@ -258,7 +253,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
         minSuggestCharacters: 4,
         name: 'PIN'
       });     
-      const addrSource: esri.SearchSource = new SearchSource({
+      const addrSource: esri.SearchSource = this.createSource({
         placeholder:"Search By Site Address",
         getSuggestions: (params) => {
           return this.getSuggestions(params, 'SITE_ADDRESS', false)
@@ -269,7 +264,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
         minSuggestCharacters: 4,
         name: 'Site Address'
       });       
-      const ownerSource: esri.SearchSource = new SearchSource({
+      const ownerSource: esri.SearchSource = this.createSource({
         placeholder:"Search By Owner",
         getSuggestions: (params) => {
           return this.getSuggestions(params, 'OWNER', false);
@@ -281,7 +276,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
         name: 'Owner'
       });         
       
-      const assessAccountSource: esri.SearchSource = new SearchSource({
+      const assessAccountSource: esri.SearchSource = this.createSource({
         placeholder: "Assessment ID",
         minSuggestCharacters: 3,
         name: 'Assessment ID',     
@@ -293,7 +288,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
         }
       });
 
-      const abatementAccountSource: esri.SearchSource = new SearchSource({
+      const abatementAccountSource: esri.SearchSource = this.createSource({
         placeholder: "Abatement ID",
         minSuggestCharacters: 3,
         name: 'Abatement ID',           
@@ -305,7 +300,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
 
         }
       });
-      const tapFeeAccountSource: esri.SearchSource = new SearchSource({
+      const tapFeeAccountSource: esri.SearchSource = this.createSource({
         placeholder: "Tap Fee ID",
         minSuggestCharacters: 3,
         name: 'Tap Fee ID',             
@@ -316,7 +311,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
           return this.getAccountResults(params, 'AccountID', this.getLayerByTitle('Tap Fees'));
         }
       });     
-      const rollNumSource: esri.SearchSource = new SearchSource({
+      const rollNumSource: esri.SearchSource = this.createSource({
         placeholder: "Roll Number",
         minSuggestCharacters: 3,
         name: 'Roll Number',     
@@ -327,7 +322,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
           return this.getAccountResults(params, 'RollNum', this.getLayerByTitle('Assessment'));
         }
       });
-      const contractSource: esri.SearchSource = new SearchSource({
+      const contractSource: esri.SearchSource = this.createSource({
         placeholder: "Contract Number",
         minSuggestCharacters: 3,
         name: 'Contract Number',     
@@ -338,7 +333,7 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
           return this.getAccountResults(params, 'ContractNum', this.getLayerByTitle('Tap Fees'));
         }
       });           
-      const confirmResSource: esri.SearchSource = new SearchSource({
+      const confirmResSource: esri.SearchSource = this.createSource({
         placeholder: "example: 2019-244",
         minSuggestCharacters: 4,
         name: 'Confirming Resolution',             
@@ -359,13 +354,13 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
             year = array[0];
             num = array[1];
             const layer = this.getLayerByTitle('Confirming Resolutions');
-            return this.getResolutionResults(this.resolutionWhere(layer, 'ConfResDate', 'ConfResNum', year, num), 'ConfResDate', 'ConfResNum', layer);
+            return this.getResolutionResults(resolutionWhere(layer, 'ConfResDate', 'ConfResNum', year, num), 'ConfResDate', 'ConfResNum', layer);
 
           }
                     
         }
       });    
-      const dirResSource: esri.SearchSource = new SearchSource({
+      const dirResSource: esri.SearchSource = this.createSource({
         placeholder: "example: 2019-244",
         minSuggestCharacters: 4,
         name: 'Directing Resolution',             
@@ -386,13 +381,13 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
             year = array[0];
             num = array[1];
             const layer = this.getLayerByTitle('Directing Resolutions');
-            return this.getResolutionResults(this.resolutionWhere(layer, 'DirResDate', 'DirResNum', year, num), 'DirResDate', 'DirResNum', layer);
+            return this.getResolutionResults(resolutionWhere(layer, 'DirResDate', 'DirResNum', year, num), 'DirResDate', 'DirResNum', layer);
 
           }
                     
         }
       });     
-      const corrResSource: esri.SearchSource = new SearchSource({
+      const corrResSource: esri.SearchSource = this.createSource({
         placeholder: "example: 2019-244",
         minSuggestCharacters: 4,
         name: 'Correcting Resolutions',             
@@ -414,18 +409,17 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
             year = array[0];
             num = array[1];
             const layer = this.getLayerByTitle('Correcting Resolutions');
-            return this.getResolutionResults(this.resolutionWhere(layer, 'CorrResDate', 'CorrResNum', year, num), 'CorrResDate', 'CorrResNum', layer);
+            return this.getResolutionResults(resolutionWhere(layer, 'CorrResDate', 'CorrResNum', year, num), 'CorrResDate', 'CorrResNum', layer);
 
           }
                     
         }
       });                 
-      const search: esri.widgetsSearch = new Search({
-        container: this.searchDiv.nativeElement,
-        sources: [reidSource, pinSource, addrSource,ownerSource, assessAccountSource, abatementAccountSource, tapFeeAccountSource, confirmResSource, dirResSource, corrResSource, rollNumSource, contractSource],
-        includeDefaultSources: false
-      });
-      
+      const search = await this.searchEl.nativeElement.componentOnReady();
+      // custom sources are supported, but the sources type only lists the layer and locator sources
+      search.sources = new Collection([reidSource, pinSource, addrSource,ownerSource, assessAccountSource, abatementAccountSource, tapFeeAccountSource, confirmResSource, dirResSource, corrResSource, rollNumSource, contractSource]) as esri.widgetsSearch['sources'];
+      search.addEventListener('arcgisSelectResult', e => this.resultSelected(e.detail));
+
       if (this.route.routeConfig) {
         if(this.route.snapshot.children.length) {
           if (this.route.snapshot.children[0].params.id) {
@@ -445,194 +439,111 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
 
         // }  
       }
-      search.on('select-result', event => {
-        
-        
-        if (event.result.feature.geometry) {
-          this.selectionMade.emit(event.result.feature);
-          if (!this.view) {
-            this.createMap();
-          } else {
-            if (event.result.feature.geometry) {
-              this.addPropertyGraphic([event.result.feature]);
-            }
-          }
-        } else {
-          if (event.source.name.includes('Resolution')) {
-            let reids = [];
-            let dateField = 'ConfResDate';
-            let numField = 'ConfResNum';
-            if (event.source.name.includes('Directing')){
-              dateField = 'DirResDate';
-              numField = 'DirResNum';
-            } else if (event.source.name.includes('Correcting')) {
-              dateField = 'CorrResDate';
-              numField = 'CorrResNum';
-            }
-            const year = new Date(event.result.feature.attributes[dateField]).getFullYear();
-            const num = event.result.feature.attributes[numField];
-            // only some account layers carry each resolution's fields (e.g. abatements only have confirming)
-            const accountLayers = [this.getLayerByTitle('Assessment'), this.getLayerByTitle('Abatements')]
-              .filter(layer => layer && this.hasField(layer, numField));
-            Promise.all(accountLayers.map(layer =>
-              layer.queryFeatures({outFields: ['AccountID', 'REID'], where: this.resolutionWhere(layer, dateField, numField, year, num)})
-            )).then(featureSets => {
-                const features = [].concat(...featureSets.map(featureSet => featureSet.features));
-                this.selectionMadeMultiple.emit(features);
-            
-                features.forEach(feature => {
-                  reids.push(feature.attributes['REID']);
-                });
-                const reidList = reids.map(reid => this.sqlValue(this.propertyLayer, 'REID', reid)).join(',');
-                this.propertyLayer.queryFeatures({where: `REID in (${reidList || 'NULL'})`, returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
-                  if (!this.view) {
-                    this.createMap();
-                  } else {
-                    //if (featureSet.features[0].geometry) {
 
-                    //featureSet.features.forEach(feature => {
-                      this.addPropertyGraphic(featureSet.features);
-                      this.propertiesSelected.emit(featureSet.features);
-
-
-                   // })
-                    //}
-                  }
-                });
-            }).catch(reason => console.log(reason));
-          } else {
-            this.selectionMade.emit(event.result.feature);
-
-            this.propertyLayer.queryFeatures({where: `REID = ${this.sqlValue(this.propertyLayer, 'REID', event.result.feature.attributes['REID'])}`, returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
-              this.propertiesSelected.emit(featureSet.features);
-              if (!this.view) {
-                this.createMap();
-              } else {
-                //if (featureSet.features[0].geometry) {
-                  //featureSet.features.forEach(feature => {
-                    this.addPropertyGraphic(featureSet.features);
-                  //})                }
-              }
-            });
-          }
-        }
-
-      });
     } catch (error) {
       console.log('EsriLoader: ', error);
     }
   }
 
- 
-  createMap() {
-    loadModules(['esri/views/MapView', 'esri/Map', 'esri/widgets/Fullscreen','esri/widgets/BasemapGallery','esri/widgets/Expand']).then(
-      ([MapView, Map, Fullscreen, BasemapGallery,Expand]) => {
-      const map: esri.Map = new Map({
-        basemap: this.basemap
-      });
-      this.view = new MapView({
-        map: map,
-        container: this.viewDiv.nativeElement,
-        extent: {
-          xmin: -78.995,
-          ymin: 35.519,
-          xmax: -78.253,
-          ymax: 36.077,
-          spatialReference: {
-            wkid: 4326
-          }
+  resultSelected(event: SearchViewModelSelectResultEvent) {
+    
+    
+    if (event.result.feature.geometry) {
+      this.selectionMade.emit(event.result.feature);
+      this.addPropertyGraphic([event.result.feature]);
+    } else {
+      if (event.source.name.includes('Resolution')) {
+        let reids = [];
+        let dateField = 'ConfResDate';
+        let numField = 'ConfResNum';
+        if (event.source.name.includes('Directing')){
+          dateField = 'DirResDate';
+          numField = 'DirResNum';
+        } else if (event.source.name.includes('Correcting')) {
+          dateField = 'CorrResDate';
+          numField = 'CorrResNum';
         }
-      });
-    this.view.ui.add(new Expand({content: new BasemapGallery({
-      container: document.createElement("div"),
-      view: this.view
-    }
-      
-    )}),'top-left');
-      this.view.popup.dockEnabled = true;
-      this.view.popup.dockOptions = {
-        position: 'top-right',
-        buttonEnabled: false
-      };
-      this.view.map.add(this.getLayerByTitle('Property'));
-      //this.view.popup.actions.removeAll();
-      this.view.whenLayerView(this.getLayerByTitle('Property')).then((layerView:esri.LayerView) => {
-        this.view.popup.defaultPopupTemplateEnabled = true;
-        // this.view.popup.open({
-        //   features: features
-        // });
-        // this.view.popup.watch('selectedFeature', (feature:esri.Graphic) => {
-        //   this.view.goTo(feature);
-        // });
-        //@ts-ignore
-        this.propertyLayer = layerView.layer;//this.view.map.layers.items.filter((layer:esri.Layer) => {
-        //  return layer.title.includes('Property');
-        //})[0];
+        const year = new Date(event.result.feature.attributes[dateField]).getFullYear();
+        const num = event.result.feature.attributes[numField];
+        // only some account layers carry each resolution's fields (e.g. abatements only have confirming)
+        const accountLayers = [this.getLayerByTitle('Assessment'), this.getLayerByTitle('Abatements')]
+          .filter(layer => layer && hasField(layer, numField));
+        Promise.all(accountLayers.map(layer =>
+          layer.queryFeatures({outFields: ['AccountID', 'REID'], where: resolutionWhere(layer, dateField, numField, year, num)})
+        )).then(featureSets => {
+            const features = [].concat(...featureSets.map(featureSet => featureSet.features));
+            this.selectionMadeMultiple.emit(features);
         
-        const fullscreen = new Fullscreen({ view: this.view });
-        this.view.ui.add(fullscreen, 'top-left');
-        // features.forEach(feature => {
-        //   if (feature.geometry) {
-        //     this.addPropertyGraphic([feature]);
-        //   }
-        // });
-        this.initialize();
+            features.forEach(feature => {
+              reids.push(feature.attributes['REID']);
+            });
+            const reidList = reids.map(reid => sqlValue(this.propertyLayer, 'REID', reid)).join(',');
+            this.propertyLayer.queryFeatures({where: `REID in (${reidList || 'NULL'})`, returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
+              this.addPropertyGraphic(featureSet.features);
+              this.propertiesSelected.emit(featureSet.features);
+            });
+        }).catch(reason => console.log(reason));
+      } else {
+        this.selectionMade.emit(event.result.feature);
 
-      }).catch(reason => console.log(reason));;
-    });
+        this.propertyLayer.queryFeatures({where: `REID = ${sqlValue(this.propertyLayer, 'REID', event.result.feature.attributes['REID'])}`, returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
+          this.propertiesSelected.emit(featureSet.features);
+          this.addPropertyGraphic(featureSet.features);
+        });
+      }
+    }
+
+  }
+
+ 
+  // <arcgis-map> fires this once its view is ready; add the property layer, then set up the search sources
+  viewReady(event: CustomEvent) {
+    const mapEl = event.target as esri.ArcgisMap;
+    if (this.view || !mapEl.ready) {
+      return;
+    }
+    this.mapEl = mapEl;
+    this.view = mapEl.view;
+    // the map resets these on its <arcgis-popup> while it starts up, so set them once the view is ready
+    if (mapEl.popupElement) {
+      mapEl.popupElement.dockEnabled = true;
+      mapEl.popupElement.defaultPopupTemplateEnabled = true;
+    }
+    const property = this.getLayerByTitle('Property');
+    this.view.map.add(property);
+    this.view.whenLayerView(property).then((layerView: esri.LayerView) => {
+      this.propertyLayer = layerView.layer as esri.FeatureLayer;
+      this.initialize();
+    }).catch(reason => console.log(reason));
   }
   addPropertyGraphic(features: esri.Graphic[]) {
-    loadModules(['esri/Color']).then(([Color]) => {
-      this.view.popup.defaultPopupTemplateEnabled = true;
-      this.view.popup.open({
-        features: features
+    // opens the <arcgis-popup>, which also highlights the selected feature
+    this.mapEl.openPopup({
+      features: features
+    });
+    this.view.goTo(features);
+    this.view.graphics.removeAll();
+    features.forEach((feature:esri.Graphic) => {
+      feature.symbol = new SimpleFillSymbol({
+        color: new Color([76, 140, 43, 0.1]),
+        outline: {
+          color: new Color([76, 140, 43, 1]),
+          width: 3
+        }
       });
-        this.view.popup.watch('selectedFeature', (feature:esri.Graphic) => {
-          //this.view.goTo(feature);
-        //@ts-ignore
-        const layerView:esri.FeatureLayerView = (this.view.layerViews.items.filter((layerView:esri.LayerView) =>  {
-          return layerView.layer.title.includes('Property');
-        })[0] as esri.FeatureLayerView);
-
-          if (this.highlight) {
-            this.highlight.remove();
-          }
-          this.highlight = layerView.highlight(feature);          
-        });      
-
-      this.view.goTo(features);
-      this.view.graphics.removeAll();
-      features.forEach((feature:esri.Graphic) => {
-        feature.symbol = {
-          type: "simple-fill",
-          color: new Color([76, 140, 43, 0.1]),
-          //@ts-ignore
-          outline: {
-            color: new Color([76, 140, 43, 1]),
-            width: 3
-          }
-        };
-        this.view.graphics.add(feature);
-      });
-
+      this.view.graphics.add(feature);
     });
   }
   ngOnChanges(changes: SimpleChanges) {
-    const layers = changes['layers']?.currentValue as __esri.FeatureLayer[] | undefined;
+    const layers = changes['layers']?.currentValue as esri.FeatureLayer[] | undefined;
 
     if (layers?.length) {
       const property = layers.find(layer => layer?.url?.includes('Property'));
       if (property) {
         this.propertyLayer = property;
       }
-      this.createMap();
-    }
-    if (changes.basemap) {
-      loadModules(['esri/Basemap']).then(([Basemap]) => {
-        if (this.view) {
-          this.view.map.basemap = Basemap.fromId(changes.basemap.currentValue);
-        }
-      });
+      // renders <arcgis-map>, which calls viewReady(); the basemap input is bound in the template
+      this.mapVisible = true;
     }
   }
 }

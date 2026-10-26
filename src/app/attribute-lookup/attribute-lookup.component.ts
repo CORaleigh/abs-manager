@@ -1,7 +1,10 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
-import { loadModules } from "esri-loader";
-import esri = __esri;
+import '@arcgis/map-components/components/arcgis-feature-form';
+import Graphic from '@arcgis/core/Graphic.js';
+import type * as esri from '../esri';
 import { FormgroupsService } from '../formgroups.service';
+import { toFormTemplate } from '../form-config';
+import { resolutionWhere, sqlValue } from '../sql';
 @Component({
     selector: 'app-attribute-lookup',
     templateUrl: './attribute-lookup.component.html',
@@ -10,51 +13,46 @@ import { FormgroupsService } from '../formgroups.service';
     standalone: false
 })
 export class AttributeLookupComponent implements OnInit {
-  @ViewChild('createForm') private formDiv: ElementRef;
+  @ViewChild('createForm') private formEl: ElementRef<esri.FeatureForm>;
   form:esri.FeatureForm = null;
+  // the create form is re-rendered each time it's shown, so only listen once per element
+  private listening = new WeakSet<esri.FeatureForm>();
   constructor(public formGroups:FormgroupsService) { }
   @Input('accountType') accountType:string = "";
   @Input('layers') layers:esri.FeatureLayer[] = [];
   @Input('sourceForm') sourceForm:esri.FeatureForm = null;
   @Output() refreshForm = new EventEmitter<any>() ;
   create:boolean = false;
+  lookupOpen = false;
   selectedSection: any = null;
-   
+
   async initializeForm(section) {
     try {
-      const [FeatureForm, Graphic] = await loadModules([
-        'esri/widgets/FeatureForm', 'esri/Graphic'
-      ]);
-     // if (!this.form) {
-        this.form = new FeatureForm({
-          container: this.formDiv.nativeElement
-        });
-     // }
+      this.form = await this.formEl.nativeElement.componentOnReady();
       const graphic:esri.Graphic = new Graphic({ attributes: {} });
       if (section.layer) {
-        //if (!section.layer.loaded) {
           section.layer.load().then(loaded=> {
             graphic.layer = section.layer;
             this.setForm(section, graphic);
           })
-      //  } else {
-     //     graphic.layer = section.layer;
-     //     this.setForm(section, graphic);          
-     //   }
-        
       }
-      this.form.on('value-change', e => {
+      if (this.listening.has(this.form)) {
+        return;
+      }
+      this.listening.add(this.form);
+      this.form.addEventListener('arcgisValueChange', async event => {
+        const e = event.detail;
+        const formLayer = this.form.layer as esri.FeatureLayer;
         if (e.fieldName === 'ContractDate') {
-          const query = this.form.layer.createQuery();
-          query.outStatistics = {
-            //@ts-ignore
-            onStatisticField: "ContractNum", 
+          const query = formLayer.createQuery();
+          query.outStatistics = [{
+            onStatisticField: "ContractNum",
             outStatisticFieldName: "ContractNum_max",
             statisticType: "max"
-          };
+          }];
           query.outFields = ['ContractNum_max'];
           query.returnGeometry = false;
-          this.form.layer.queryFeatures(query).then(result => {
+          formLayer.queryFeatures(query).then(async result => {
             if (result.features.length) {
               let num = result.features[0].getAttribute('ContractNum_max');
               num = (parseInt(num.substr(4)) + 1).toString();
@@ -63,53 +61,53 @@ export class AttributeLookupComponent implements OnInit {
               }
               if (num.length === 3) {
                 num = '00' + num;
-              }      
+              }
               if (num.length === 2) {
                 num = '000' + num;
-              }          
+              }
               if (num.length === 1) {
                 num = '0000' + num;
-              }          
-              this.form.feature.attributes = this.form.getValues();
+              }
+              const values = await this.form.getValues();
+              this.form.feature.attributes = values;
 
-              num = new Date(this.form.getValues().ContractDate).getFullYear().toString() + num;     
+              num = new Date(values.ContractDate).getFullYear().toString() + num;
               this.form.feature.setAttribute('ContractNum', num);
               this.form.feature = this.form.feature.clone();
-          
+
             }
           });
         }
         if (e.fieldName === 'ConfResDate') {
-          //@ts-ignore
-          e.target.setValue('ConfResDate', new Date(e.value).setHours(0,0,0,0));
+          // the form component has no setValue(), so set the value on a new copy of the feature
+          this.form.feature.attributes = await this.form.getValues();
+          this.form.feature.setAttribute('ConfResDate', new Date(e.value as number).setHours(0,0,0,0));
+          this.form.feature = this.form.feature.clone();
         }
       });
 
     } catch (error) {
-      console.log('EsriLoader: ', error);
+      console.log('FeatureForm: ', error);
     }
   }
 
   setForm(section, graphic) {
     this.create = true;
-    this.form.fieldConfig = [section.fieldConfig];
+    this.form.layer = section.layer;
+    this.form.formTemplate = toFormTemplate([section.fieldConfig], { layer: section.layer });
     this.form.feature = graphic;
-    //@ts-ignore
-    this.form.renderFields();      
   }
 
-  submit() {
-    loadModules(['esri/Graphic', 'esri/layers/FeatureLayer']).then(([Graphic, FeatureLayer]) => {
-      let addFeatures: esri.Graphic[] = [];
-      addFeatures = [new Graphic({ attributes: this.form.getValues() })];
-      this.form.layer.applyEdits({ addFeatures: addFeatures }).then(result => {
-        //this.formSubmitted.emit(this.form.layer);
-        this.create = false;
-        this.selectedSection.features = addFeatures;
-        this.setFeatureText(this.selectedSection);
-        this.selectedSection = null;         
-      });
-    })
+  async submit() {
+    let addFeatures: esri.Graphic[] = [];
+    addFeatures = [new Graphic({ attributes: await this.form.getValues() })];
+    (this.form.layer as esri.FeatureLayer).applyEdits({ addFeatures: addFeatures }).then(result => {
+      //this.formSubmitted.emit(this.form.layer);
+      this.create = false;
+      this.selectedSection.features = addFeatures;
+      this.setFeatureText(this.selectedSection);
+      this.selectedSection = null;
+    });
   }
   showCreationForm(section) {
     this.selectedSection = section;
@@ -118,22 +116,25 @@ export class AttributeLookupComponent implements OnInit {
       this.initializeForm(section);
     });
   }
-  applyToFeature(section) {
-    this.sourceForm.feature.attributes = this.sourceForm.getValues()
+  async applyToFeature(section) {
+    this.sourceForm.feature.attributes = await this.sourceForm.getValues()
     section.fields.forEach(field => {
       this.sourceForm.feature.attributes[field] = section.features[0].attributes[field];
-    });  
+    });
     this.refreshForm.emit(this.sourceForm);
-  }  
+  }
   searchSection(section:any) {
-    let where = section.fields[0] + " = '" + section[section.fields[0]] + "'";
-    if (section.title.includes("Resolution")) {
-      where = "EXTRACT(Year from " + section.fields[0] +") = " + section[section.fields[0]] + "AND " + section.fields[1] + " = '" + section[section.fields[1]] + "'";
-    }
     if (section.layer) {
+      const [field, numField] = section.fields;
+      // resolutions are looked up by the year of their date plus their number
+      const where = section.title.includes("Resolution")
+        ? resolutionWhere(section.layer, field, numField, section[field], section[numField])
+        : `${field} = ${sqlValue(section.layer, field, section[field])}`;
       section.layer.queryFeatures({where: where, outFields:['*']}).then((featureSet:esri.FeatureSet) => {
         section.features = featureSet.features;
-        this.setFeatureText(section);
+        if (section.features.length) {
+          this.setFeatureText(section);
+        }
       });
     }
   }
@@ -151,7 +152,7 @@ export class AttributeLookupComponent implements OnInit {
         section.text += section.features[0].attributes[field] + ' ';
       }
     });
-    section.text += ' found';  
+    section.text += ' found';
   }
  sections:any[] = [];
 
@@ -161,17 +162,17 @@ export class AttributeLookupComponent implements OnInit {
         this.sections.push({layer: layer, fieldConfig: this.formGroups.confResFormGroup,fields: ['ConfResDate', 'ConfResNum'], values: ["",""], inputs: ['Year', 'Resolution Number'], title: layer.title, text: '', accountTypes: ['Assessment', 'Abatement'], features:[]});
       }
       if (layer.title.includes("Directing")) {
-        this.sections.push({layer: layer, fieldConfig: this.formGroups.dirResFormGroup, fields: ['DirResDate', 'DirResNum'], values: ["",""], inputs: ['Year', 'Resolution Number'], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});        
-      }      
+        this.sections.push({layer: layer, fieldConfig: this.formGroups.dirResFormGroup, fields: ['DirResDate', 'DirResNum'], values: ["",""], inputs: ['Year', 'Resolution Number'], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});
+      }
       if (layer.title.includes("Correcting")) {
-        this.sections.push({layer: layer, fieldConfig: this.formGroups.corrResFormGroup, fields: ['CorrResDate', 'CorrResNum'], values: ["",""], inputs: ['Year', 'Resolution Number'], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});        
-      }   
+        this.sections.push({layer: layer, fieldConfig: this.formGroups.corrResFormGroup, fields: ['CorrResDate', 'CorrResNum'], values: ["",""], inputs: ['Year', 'Resolution Number'], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});
+      }
       if (layer.title.includes("Roll")) {
-        this.sections.push({layer: layer, fieldConfig: this.formGroups.rollFormGroup, fields: ['RollNum'], inputs: ['Roll#'], values: [""], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});        
-      }  
+        this.sections.push({layer: layer, fieldConfig: this.formGroups.rollFormGroup, fields: ['RollNum'], inputs: ['Roll#'], values: [""], title: layer.title, text: '', accountTypes: ['Assessment'], features:[]});
+      }
       if (layer.title.includes("Contract")) {
-        this.sections.push({layer: layer, fieldConfig: this.formGroups.contractFormGroup, fields: ['ContractNum', 'ContractDate'], inputs: ['Contact #'], values: [""], title: layer.title, text: '', accountTypes: ['Tap Fee'], features:[]});        
-      }             
+        this.sections.push({layer: layer, fieldConfig: this.formGroups.contractFormGroup, fields: ['ContractNum', 'ContractDate'], inputs: ['Contact #'], values: [""], title: layer.title, text: '', accountTypes: ['Tap Fee'], features:[]});
+      }
     })
   }
 }

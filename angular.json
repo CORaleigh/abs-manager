@@ -30,6 +30,8 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@esri/calcite-components/dist/cdn/main.css",
+              "node_modules/@arcgis/map-components/dist/cdn/main.css",
               "src/styles.scss"
             ],
             "scripts": [],
@@ -42,7 +44,22 @@
               "includePaths": [
                 "."
               ]
-            }
+            },
+            "loader": {
+              ".woff2": "file"
+            },
+            "allowedCommonJsDependencies": [
+              "core-js",
+              "@babel/runtime/regenerator",
+              "raf",
+              "rgbcolor",
+              "ajv",
+              "fastq",
+              "fast-memoize",
+              "html2canvas",
+              "jszip",
+              "pdfmake/build/pdfmake.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -60,8 +77,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "9mb",
+                  "maximumError": "12mb"
                 },
                 {
                   "type": "anyComponentStyle",

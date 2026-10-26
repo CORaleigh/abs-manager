@@ -1,12 +1,18 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { loadModules, loadCss } from 'esri-loader';
-import esri = __esri;
+import OAuthInfo from '@arcgis/core/identity/OAuthInfo.js';
+import esriId from '@arcgis/core/identity/IdentityManager.js';
+import Portal from '@arcgis/core/portal/Portal.js';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer.js';
+import Layer from '@arcgis/core/layers/Layer.js';
+import type GroupLayer from '@arcgis/core/layers/GroupLayer.js';
+import WebMap from '@arcgis/core/WebMap.js';
+import esriConfig from '@arcgis/core/config.js';
+import type * as esri from '../esri';
 import { FormgroupsService } from '../formgroups.service';
 import { Crumb } from '../crumb';
 import { Panel } from '../panel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../shared.service';
-import * as calcite from 'calcite-web';
 
 @Component({
     selector: 'app-main',
@@ -47,15 +53,6 @@ export class MainComponent implements OnInit {
   }
   async authorize() {
     try {
-      const [OAuthInfo, esriId, Portal] = await loadModules([
-        "esri/identity/OAuthInfo",
-        "esri/identity/IdentityManager",
-        "esri/portal/Portal"
-      ], {
-        css: true,
-        // insert the stylesheet link above the first <style> tag on the page
-        insertCssBefore: 'style'
-      });
       const info: esri.OAuthInfo = new OAuthInfo({
         appId: 'EHQRkH0b5LJnizhP',
         portalUrl: 'https://mapstest.raleighnc.gov/portal',
@@ -64,7 +61,7 @@ export class MainComponent implements OnInit {
       this.identity = esriId;
       esriId.registerOAuthInfos([info]);
       esriId.checkSignInStatus(info.portalUrl + '/sharing').then((credential:esri.Credential) => {
-        const portal:esri.Portal = new Portal(info.portalUrl);
+        const portal:esri.Portal = new Portal({ url: info.portalUrl });
         portal.load().then(() => {
           this.shared.user = portal.user;
           if (this.shared.user.roleId === "o8P1VswLYBUnsLsQ") {
@@ -91,6 +88,22 @@ export class MainComponent implements OnInit {
     }
   }
   
+  // 5.x loads a feature service item with several layers as a GroupLayer, where 4.15 returned its first layer
+  async toFeatureLayer(layer: esri.Layer): Promise<esri.FeatureLayer> {
+    if (layer.type !== 'group') {
+      return layer as esri.FeatureLayer;
+    }
+    await layer.load();
+    const group = layer as GroupLayer;
+    const sublayers = group.layers.filter(sublayer => sublayer.type === 'feature').toArray() as esri.FeatureLayer[];
+    const first = sublayers.sort((a, b) => a.layerId - b.layerId)[0];
+    // the app finds this layer by "Property" in its title
+    if (first && !first.title?.includes('Property')) {
+      first.title = group.title;
+    }
+    return first;
+  }
+
   storeLayer(layer: esri.FeatureLayer, layers: esri.FeatureLayer[]) {
 
     if (layer.title.includes("Tap Fees")) {
@@ -125,12 +138,6 @@ export class MainComponent implements OnInit {
   async initialize() {
     try {
       let layers: esri.FeatureLayer[] = [];
-      const [FeatureLayer, Layer, WebMap, esriConfig] = await loadModules([
-        'esri/layers/FeatureLayer',
-        'esri/layers/Layer',
-        'esri/WebMap',
-        'esri/config'
-      ]);
       esriConfig.portalUrl = 'https://mapstest.raleighnc.gov/portal';
       
       const webmap:esri.WebMap = new WebMap({
@@ -141,13 +148,13 @@ export class MainComponent implements OnInit {
       
       webmap.load().then(() => {
         webmap.when(() => {
-          //@ts-ignore
-          webmap.layers.items.forEach((layer:esri.FeatureLayer) => {
+          webmap.layers.forEach((layer:esri.FeatureLayer) => {
 
             this.storeLayer(layer, layers);
           });
           webmap.tables.forEach((table:esri.FeatureLayer) => {
-            let layer:esri.FeatureLayer = new FeatureLayer({url: (table as esri.FeatureLayer).url, title: table.title});
+            // url is the service url; without the layerId this would load the service's first layer
+            let layer:esri.FeatureLayer = new FeatureLayer({url: (table as esri.FeatureLayer).url, layerId: (table as esri.FeatureLayer).layerId, title: table.title});
             this.storeLayer(layer, layers);     
           });
         });
@@ -216,7 +223,7 @@ export class MainComponent implements OnInit {
       Layer.fromPortalItem({
         //@ts-ignore
         portalItem: { id: 'e5cd98a8d7b741d4bb70ae6694486355' }
-      }).then((propertyLayer: esri.FeatureLayer) => {
+      }).then(layer => this.toFeatureLayer(layer)).then((propertyLayer: esri.FeatureLayer) => {
         propertyLayer.popupTemplate = {
           title: '{SITE_ADDRESS}',
           content: [{
@@ -275,16 +282,14 @@ export class MainComponent implements OnInit {
             this.tapfeesLayer.load().then(() => {
               this.accountLayers.push(this.tapfeesLayer);
               this.billingLayer.load().then(() => {
-                //@ts-ignore
-                this.billingLayer.popupTemplate = this.billingLayer.defaultPopupTemplate;
+                this.billingLayer.popupTemplate = this.billingLayer.createPopupTemplate();
                 this.billingLayer.popupTemplate.content = [{
                   type: 'text',
                   //@ts-ignore
                   text: "<div><p><span style='font-weight:bold;'>Property Information</span></p><p><span /></p><p><span>Real Estate ID: {REID}</span></p><p><span /></p><p><span>PIN: {NCPIN}</span></p><p><span /></p><p><span /></p><p><span style='font-weight:bold;'>Billing Information</span></p><p><span /></p><p><span>Account ID: {AccountID}</span></p><p><span /></p><p><p><span>Billing Type: {BillingTypeCode}</span></p><p><p><span>Notice Date: {NoticeDate}</span></p><p><p><span>Notice #: {NoticeNum}</span></p><p><p><span>Notice Year: {NoticeYear}</span></p> <p><p><span>Number of Days: {NumberOfDays}</span></p>  <p><p><span>Payoff Amount: ${PayoffAmount}</span></p><p><span>Total Due: ${TotalDue}</span></p><p><p><span>Principal Balance: ${PrincipalBal}</span></p><p><p><span>Principal Past Due: {PrincipalPastDue}</span></p><p><p><span>Principal Pre-paid: {PrincipalPrePaid}</span></p><p><p><span>Interest Paid Through: {InterestPaidThruDate}</span></p><p><p><span>Interest Start Date: {InterestFromDate}</span></p>   <p><p><span>Projected Principal Due: ${ProjDuePrincipal}</span></p><p><p><span>Projected Interest Amount: ${ProjInterestAmount}</span></p><p><p><span>Installment Amount: ${InstallmentAmount}</span></p>   <p><span /></p><p><span style='font-weight:bold;'>Bill Sent To</span></p><p><span /></p><p><span>{BillSentToName1} {BillSentToName2}</span></p><p><p><span>{BillSentToAddr1}</span></p><p><p><span>{BillSentToAddr2}</span></p><p><p><span>{BillSentToAddr3}</span></p><p><span /></p><p><span style='font-weight:bold;'>Site Address</span></p><p><span /></p><p><span>{SiteStreetNum} {SiteStreetDirPre} {SiteStreetName} {SiteStreetType}</span></p><p><span>{SiteStreetSuite}</span></p><p><p><span>{SiteStreetCity}, {SiteStreetCounty} {SiteStreetZip}</span></p></div>"
                 }];                  
                 this.paymentsLayer.load().then(() => {
-                  //@ts-ignore
-                  this.paymentsLayer.popupTemplate = this.paymentsLayer.defaultPopupTemplate;   
+                  this.paymentsLayer.popupTemplate = this.paymentsLayer.createPopupTemplate();   
                   
                   this.paymentsLayer.popupTemplate.content = [{
                     type: 'text',
@@ -293,16 +298,14 @@ export class MainComponent implements OnInit {
                   }];
                   
                   this.communicationLayer.load().then(() => {
-                    //@ts-ignore
-                    this.communicationLayer.popupTemplate = this.communicationLayer.defaultPopupTemplate; 
+                    this.communicationLayer.popupTemplate = this.communicationLayer.createPopupTemplate(); 
                     this.communicationLayer.popupTemplate.content = [{
                       type: 'text',
                       //@ts-ignore
                       text: "<div><p><span style='font-weight:bold;'>Communications</span></p><p><span /></p><p><span>Account ID: {AccountID}</span></p><p><span /></p><p><span>Communication Date: {CommDate}</span></p><p><span /></p><p><span>Communication Type: {CommTypeCode}</span></p><p><span /></p><p><span>Communication Completed: {CommCompletedDate}</span></p><p><span /></p><p><span>Return Receipt Received: {CommRtrnRcptRcvdDate}</span></p><p><span>Sent To Name 1: {SentToName1}</span></p><p><span>Sent To Name 2: {SentToName2}</span></p<p><span>Sent To Address 1: {SentToAddr1}</span></p><p><span>Sent To Address 2: {SentToAddr2}</span></p><p><span>Sent To Address 3: {SentToAddr3}</span></p><p><span>Sent To Zip Code: {SentToZipCode}</span></p><p><span>Sent To Zip Plus: {SentToZipPlus}</span></p></div>"
                     }];                    
                     this.commentsLayer.load().then(() => {
-                      //@ts-ignore
-                      this.commentsLayer.popupTemplate = this.commentsLayer.defaultPopupTemplate;
+                      this.commentsLayer.popupTemplate = this.commentsLayer.createPopupTemplate();
                       this.commentsLayer.popupTemplate.content = [{
                         type: 'text',
                         //@ts-ignore
@@ -313,8 +316,6 @@ export class MainComponent implements OnInit {
                       this.configureDetailPanels();
                       this.configureCrumbs();
                       this.loaded = !this.loaded;
-                      loadCss('https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css')
-                      loadCss('https://js.arcgis.com/4.15/esri/css/main.css')
                     });
                   
                     
@@ -330,31 +331,17 @@ export class MainComponent implements OnInit {
     console.log('EsriLoader: ', error);
   }
 }
-changeTheme(checked: boolean, light: string, dark: string, url: string) {
-  for (let i = 0; i < document.styleSheets.length; i++) {
-    if (document.styleSheets.item(i).href) {
-      if (document.styleSheets.item(i).href.indexOf(light) > -1) {
-        document.styleSheets.item(i).disabled = checked;
-      }
-      if (document.styleSheets.item(i).href.indexOf(dark) > -1) {
-        document.styleSheets.item(i).disabled = !checked;
-      } else {
-        loadCss(url)
-      }
-    }
-  }
+// Calcite and the map components switch to their dark styles with this class
+changeTheme(dark: boolean) {
+  document.body.classList.toggle('calcite-mode-dark', dark);
 }
-darkModeToggle(event) {
-  calcite.stopPropagation(event)
-
-  if (event.target.checked) {
-    this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web-dark.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/dark/main.css');
+darkModeToggle() {
+  this.dark = !this.dark;
+  this.changeTheme(this.dark);
+  if (this.dark) {
     this.basemap = 'dark-gray-vector';
     window.localStorage.setItem('dark', 'true');
   } else {
-    this.changeTheme(event.target.checked, 'calcite-web.min.css', 'calcite-web-dark.min.css', 'https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css');
-    this.changeTheme(event.target.checked, 'css/main.css', 'dark/main.css', 'https://js.arcgis.com/4.15/esri/themes/css/main.css');
     this.basemap = 'gray-vector';
     window.localStorage.setItem('dark', 'false');
   }
@@ -668,6 +655,10 @@ configureDetailPanels() {
           let layer: esri.FeatureLayer = this.layers.filter((layer: esri.FeatureLayer) => {
             return layer.layerId === item.tableId;
           })[0];
+          if (!layer) {
+            console.warn('No layer found for related table ' + item.tableId);
+            return;
+          }
           item.features.forEach((feature:esri.Graphic) => {
             feature.popupTemplate = layer.popupTemplate;
           });
@@ -796,8 +787,7 @@ configureDetailPanels() {
                 return b.attributes[panels[0].orderBy] - a.attributes[panels[0].orderBy];
               });
               payments.forEach((payment:esri.Graphic) => {
-                //@ts-ignore
-                payment.popupTemplate = this.paymentsLayer.defaultPopupTemplate;
+                payment.popupTemplate = this.paymentsLayer.popupTemplate;
               });
               panels[0].visible = true;
               panels[0].features = payments;
@@ -833,6 +823,16 @@ configureDetailPanels() {
           this.totalFeatures = features.length;
         }
         ngOnInit() {
+          // restore the dark mode choice saved by darkModeToggle()
+          try {
+            this.dark = window.localStorage.getItem('dark') === 'true';
+          } catch {
+            this.dark = false;
+          }
+          if (this.dark) {
+            this.basemap = 'dark-gray-vector';
+            this.changeTheme(true);
+          }
           this.authorize();
         }
 

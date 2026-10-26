@@ -1,3 +1,12 @@
-.search-button {
-    top: 26px;
+.lookup-section {
+  margin-bottom: 1.5em;
+}
+.lookup-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0 1em;
+}
+calcite-notice {
+  margin-bottom: 1em;
 }

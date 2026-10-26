@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
-import esri = __esri;
+import type * as esri from '../esri';
 @Component({
     selector: 'app-payment-button',
     templateUrl: './payment-button.component.html',

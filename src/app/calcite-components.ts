@@ -1,0 +1,24 @@
+// Registers the Calcite components used in the app's templates
+import '@esri/calcite-components/components/calcite-action';
+import '@esri/calcite-components/components/calcite-button';
+import '@esri/calcite-components/components/calcite-dialog';
+import '@esri/calcite-components/components/calcite-dropdown';
+import '@esri/calcite-components/components/calcite-dropdown-group';
+import '@esri/calcite-components/components/calcite-dropdown-item';
+import '@esri/calcite-components/components/calcite-input-date-picker';
+import '@esri/calcite-components/components/calcite-input-number';
+import '@esri/calcite-components/components/calcite-input-text';
+import '@esri/calcite-components/components/calcite-label';
+import '@esri/calcite-components/components/calcite-loader';
+import '@esri/calcite-components/components/calcite-navigation';
+import '@esri/calcite-components/components/calcite-navigation-logo';
+import '@esri/calcite-components/components/calcite-navigation-user';
+import '@esri/calcite-components/components/calcite-notice';
+import '@esri/calcite-components/components/calcite-tab';
+import '@esri/calcite-components/components/calcite-tab-nav';
+import '@esri/calcite-components/components/calcite-tab-title';
+import '@esri/calcite-components/components/calcite-table';
+import '@esri/calcite-components/components/calcite-table-cell';
+import '@esri/calcite-components/components/calcite-table-header';
+import '@esri/calcite-components/components/calcite-table-row';
+import '@esri/calcite-components/components/calcite-tabs';

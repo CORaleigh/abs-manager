@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
-import esri = __esri;
+import type * as esri from '../esri';
 import { SharedService } from '../shared.service';
 
 @Component({
@@ -25,6 +25,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
   paymentAmount: number = 0;
   dailyRate:number = 0;
   minDate:Date = null;
+  dialogOpen = false;
   
   @Output() payoffCalculated = new EventEmitter<any>();
 
@@ -32,6 +33,7 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
 
   }
   open() {
+    this.dialogOpen = true;
     this.payoffDate = new Date().toISOString().slice(0,10);
   }
   calculatePayoff() {
@@ -51,7 +53,6 @@ export class PayoffCalculatorComponent implements OnInit, OnChanges{
     this.dailyRate = this.principalDue * (this.shared.account.getValue().attributes['InterestRate']/100)/365;
     this.dailyRate = parseFloat(this.dailyRate.toFixed(4));
     this.interestDue = this.dailyRate * days;
-    debugger;
     if (this.shared.account.getValue().attributes['BillingTypeCode'] != 'TF' ) {    
       if (!this.shared.account.getValue().attributes['AdvertiseDate']) {
         this.interestDue = 0;

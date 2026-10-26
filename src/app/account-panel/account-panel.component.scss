@@ -1,13 +1,11 @@
-thead th {
-  background: #046a38;
-  color: #fff;
-  font-weight: 500;
-  vertical-align: bottom;
+calcite-table {
+  --calcite-table-header-background-color: #046a38;
+  --calcite-table-header-heading-text-color: #fff;
+  margin-bottom: 1em;
 }
-.btn-green {
-  background-color: #4c8c2b;
+calcite-table-row {
+  cursor: pointer;
 }
-.table th,
-td {
-  width: 20%;
+calcite-notice {
+  margin-bottom: 1em;
 }

@@ -1,9 +1,13 @@
-import { Component, OnInit, Input, OnChanges, ElementRef, ViewChild, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { loadModules } from 'esri-loader';
-import esri = __esri;
+import { Component, OnInit, Input, OnChanges, ElementRef, ViewChild, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy, AfterViewInit } from '@angular/core';
+import '@arcgis/map-components/components/arcgis-feature-form';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer.js';
+import Graphic from '@arcgis/core/Graphic.js';
+import type { SubmitEvent, ValueChangeEvent } from '@arcgis/core/widgets/FeatureForm/FeatureFormViewModel.js';
+import type * as esri from '../esri';
 import { SharedService } from '../shared.service';
 import { FormgroupsService } from '../formgroups.service';
 import { ConfirmedFormgroupsService } from '../confirmed-form-groups.service'
+import { toFormTemplate } from '../form-config';
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
@@ -11,9 +15,9 @@ import { ConfirmedFormgroupsService } from '../confirmed-form-groups.service'
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class FormComponent implements OnChanges, OnInit {
-  @ViewChild('formDiv') private formDiv: ElementRef;
-  
+export class FormComponent implements OnChanges, OnInit, AfterViewInit {
+  @ViewChild('formEl') private formEl: ElementRef<esri.FeatureForm>;
+
   constructor(public shared:SharedService, private formGroups:FormgroupsService, private confirmedFormGroups:ConfirmedFormgroupsService) { }
   @Input('feature') feature: esri.Graphic = null;
   @Input('layers') layers: esri.FeatureLayer[] = [];
@@ -24,20 +28,27 @@ export class FormComponent implements OnChanges, OnInit {
 
   @Output() formSubmitted = new EventEmitter<esri.FeatureLayer>();
   @Output() formCanceled = new EventEmitter<null>();
+  // required fields with these labels are read-only in the form, they get set with the attribute lookup tool
   lookups:string[] = [
     'Directing Resolution Number',
     'Directing Resolution Date',
     'Confirming Resolution Number',
-    'Confirming Resolution Date',    
+    'Confirming Resolution Date',
     'Roll #',
-    'Contract #',  
-    'Contract Date',  
+    'Contract #',
+    'Contract Date',
     'Correcting Resolution Number',
-    'Correcting Resolution Date',      
+    'Correcting Resolution Date',
   ]
   form: esri.FeatureForm = null;
   invalid: string[] = [];
-  activeField = '';
+  // ngOnChanges runs before the <arcgis-feature-form> element exists, so the form is set up once the view is ready
+  private viewInitialized: () => void;
+  private viewReady = new Promise<void>(resolve => this.viewInitialized = resolve);
+  private formReady: Promise<esri.FeatureForm> = null;
+  ngAfterViewInit() {
+    this.viewInitialized();
+  }
   ngOnInit() {
     this.shared.account.subscribe(account => {
       this.account = account;
@@ -55,93 +66,88 @@ export class FormComponent implements OnChanges, OnInit {
       }
   }
 
-  payoffCalculated(values:any) {
-    this.form.feature.attributes = this.form.getValues();
+  // the form only shows changed values when it gets a new graphic, so callers set values on a clone
+  setFeature(feature: esri.Graphic) {
+    this.form.layer = feature.layer as esri.FeatureLayer;
+    this.form.feature = feature;
+  }
+
+  async payoffCalculated(values:any) {
+    this.form.feature.attributes = await this.form.getValues();
     this.form.feature.setAttribute('PaymentAmount', parseFloat(values.paymentAmount.toFixed(2)));
     this.form.feature.setAttribute('PrincipalAmount', parseFloat(values.principal.toFixed(2)));
     this.form.feature.setAttribute('InterestAmount', parseFloat(values.interest.toFixed(2)));
-    this.form.feature = this.form.feature.clone();
+    this.setFeature(this.form.feature.clone());
   }
 
   setFormConfigByStatus(status:string, layer:esri.FeatureLayer) {
+    let groups: esri.FieldGroupConfig[] = null;
     if (layer.title.includes("Payment")) {
-      this.form.fieldConfig = [this.formGroups.paymentFormGroup];
+      groups = [this.formGroups.paymentFormGroup];
     }
     if (layer.title.includes("Communication")) {
-      this.form.fieldConfig = [this.formGroups.communicationFormGroup, this.formGroups.commSentToFormGroup];
-    }    
+      groups = [this.formGroups.communicationFormGroup, this.formGroups.commSentToFormGroup];
+    }
     if (layer.title.includes("Bill")) {
-      this.form.fieldConfig = [this.formGroups.billingDataFormGroup, this.formGroups.billSentToFormGroup, this.formGroups.billSiteAddressFormGroup];
-    }        
+      groups = [this.formGroups.billingDataFormGroup, this.formGroups.billSentToFormGroup, this.formGroups.billSiteAddressFormGroup];
+    }
     if (layer.title.includes("Comment")) {
-      this.form.fieldConfig = [this.formGroups.commentsFormGroup];
-    }       
+      groups = [this.formGroups.commentsFormGroup];
+    }
     if (status) {
       if (status === '2') {
         if (layer.title.includes("Abatement")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.abatementFormGroup,
+          groups = [this.confirmedFormGroups.abatementFormGroup,
           this.confirmedFormGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
         }
         if (layer.title.includes("Assessment")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.assessmentFormGroup,
-            this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+          groups = [this.confirmedFormGroups.assessmentFormGroup,
+            this.confirmedFormGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]
         }
         if (layer.title.includes("Tap Fee")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
-            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
-        }    
+          groups = [this.confirmedFormGroups.tapFeeFormGroup,
+            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]
+        }
       } else {
         if (layer.title.includes("Abatement")) {
-          this.form.fieldConfig = [this.formGroups.abatementFormGroup,
+          groups = [this.formGroups.abatementFormGroup,
           this.formGroups.abatementBillingFormGroup, this.formGroups.altBillingFormGroup]
         }
         if (layer.title.includes("Assessment")) {
-          this.form.fieldConfig = [this.formGroups.assessmentFormGroup,
-            this.formGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]              
+          groups = [this.formGroups.assessmentFormGroup,
+            this.formGroups.assessmentBillingFormGroup, this.formGroups.altBillingFormGroup]
         }
         if (layer.title.includes("Tap Fee")) {
-          this.form.fieldConfig = [this.confirmedFormGroups.tapFeeFormGroup,
-            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]              
-        }       
+          groups = [this.confirmedFormGroups.tapFeeFormGroup,
+            this.confirmedFormGroups.tapFeeBillingFormGroup, this.formGroups.altBillingFormGroup]
+        }
       }
     }
-    this.form.feature = this.form.feature.clone();
+    if (groups) {
+      this.form.formTemplate = toFormTemplate(groups, {
+        layer,
+        lockedLabels: this.lookups,
+        lockedHint: 'Set using attribute lookup tool'
+      });
+    }
+    this.setFeature(this.form.feature.clone());
   }
 
-  refreshFields() {
-    //@ts-ignore
-    this.form.viewModel.inputFields.forEach(field => {
-      if (field.inputFields) {
-        field.inputFields.forEach(f => {
-          if (f.required && f.value === null) {
-            f.valid = false;
-          } else {
-            f.valid = true;
-          }
-          f.initialize();
-          f._validate();              
-        //@ts-ignore
-          this.form.renderFields();
-        });
-      }
-    });
-    this.disableAttributeLookupFields();
-  }
-  setDefaults(e) {
+  setDefaults(e: ValueChangeEvent, values: any) {
     if (e.fieldName === 'BillingTypeCode' || e.fieldName === 'CategoryTypeCode') {
-      const billCode = e.target.getValues()['BillingTypeCode'];
-      const catCode = e.target.getValues()['CategoryTypeCode'];
+      const billCode = values['BillingTypeCode'];
+      const catCode = values['CategoryTypeCode'];
       if (billCode && catCode) {
         this.shared.billingParameters.queryFeatures({
           where: "BillingTypeCode = '" + billCode + "' and CategoryTypeCode = '"+
           catCode + "'",
           outFields:['NumYears','InterestRate']
-        }).then((featureSet:esri.FeatureSet) => {
+        }).then(async (featureSet:esri.FeatureSet) => {
             if (featureSet.features.length) {
-              this.form.feature.attributes = this.form.getValues();
+              this.form.feature.attributes = await this.form.getValues();
               this.form.feature.setAttribute('NumYears', featureSet.features[0].getAttribute('NumYears'));
               this.form.feature.setAttribute('InterestRate', featureSet.features[0].getAttribute('InterestRate'));
-              this.form.feature = this.form.feature.clone();
+              this.setFeature(this.form.feature.clone());
             }
         });
       }
@@ -149,111 +155,86 @@ export class FormComponent implements OnChanges, OnInit {
   }
   async initializeForm() {
     try {
-      // Load the modules for the ArcGIS API for JavaScript
-      const [FeatureForm, FeatureLayer, Graphic] = await loadModules([
-        'esri/widgets/FeatureForm', 'esri/layers/FeatureLayer','esri/Graphic'
-      ]);
-      this.form = new FeatureForm({
-        container: this.formDiv.nativeElement,
-        groupDisplay: 'sequential'
-      });
-      //@ts-ignore
-      this.form.postInitialize = () => {
-        this.form.watch('feature', (a,b) => {
-          if (this.activeField != '') {
-            //@ts-ignore
-            this.form._activeInputName = this.activeField;
-          } else {
-            //@ts-ignore
-            this.form._activeInputName = this.form._activeInputName;
-          }
-          //@ts-ignore
-          this.form._fieldFocusNeeded = false;
-        });
-      };
-      this.form.postInitialize();
-             
-      this.form.on('value-change', e => {
-        this.activeField = e.fieldName;
-        this.form.feature.attributes = this.form.getValues();
-        this.setDefaults(e);
-        if (e.fieldName === 'StatusCode') {     
-          this.setFormConfigByStatus(e.value, e.layer);
-          setTimeout(()=>{
-            this.disableAttributeLookupFields();
-          });
+      await this.viewReady;
+      this.form = await this.formEl.nativeElement.componentOnReady();
+
+      this.form.addEventListener('arcgisValueChange', async event => {
+        const e = event.detail;
+        const values = await this.form.getValues();
+        this.form.feature.attributes = values;
+        this.setDefaults(e, values);
+        if (e.fieldName === 'StatusCode') {
+          this.setFormConfigByStatus(e.value as string, e.layer);
         }
         //Set status to deliquent if attorney flag changed
-        if (e.fieldName === 'AttorneyFlag' && e.value == 'Y') {     
+        if (e.fieldName === 'AttorneyFlag' && e.value == 'Y') {
           this.form.feature.setAttribute('StatusCode', '4');
         }
         if (e.fieldName === 'TotalLienAmount') {
-          this.form.feature.setAttribute('PrincipalBalance', e.value);
-          this.form.feature.setAttribute('TotalLienAmount', e.value);
-          this.form.feature.setAttribute('InstallmentAmount', e.value/this.form.feature.getAttribute("NumYears"));
-          this.form.feature.setAttribute('CurrentInstallmentDue', e.value/this.form.feature.getAttribute("NumYears"));
+          const amount = e.value as number;
+          this.form.feature.setAttribute('PrincipalBalance', amount);
+          this.form.feature.setAttribute('TotalLienAmount', amount);
+          this.form.feature.setAttribute('InstallmentAmount', amount/this.form.feature.getAttribute("NumYears"));
+          this.form.feature.setAttribute('CurrentInstallmentDue', amount/this.form.feature.getAttribute("NumYears"));
         }
-        this.form.feature = this.form.feature.clone();
+        this.setFeature(this.form.feature.clone());
       });
 
-      this.form.on('submit', e=> {
+      this.form.addEventListener('arcgisSubmit', event => {
+        const e: SubmitEvent = event.detail;
         let addFeatures: esri.Graphic[] = [];
         let updateFeatures: esri.Graphic[] = [];
 
         if (this.update) {
-          updateFeatures = [new Graphic({ attributes: this.form.getValues() })];
+          updateFeatures = [new Graphic({ attributes: e.values })];
         } else {
-          addFeatures = [new Graphic({ attributes: this.form.getValues(), geometry: this.form.feature.geometry })];
-        }        
+          addFeatures = [new Graphic({ attributes: e.values, geometry: this.form.feature.geometry })];
+        }
         this.invalid=[];
          e.invalid.forEach(field => {
            this.invalid.push(this.form.layer.fields.filter((value:esri.Field) => {
              return value.name === field;
            })[0].alias);
          });
-         if (e.invalid.length === 0) {          
+         if (e.invalid.length === 0) {
+           const formLayer = this.form.layer as esri.FeatureLayer;
            if (this.shared.role === 'viewer') {
              const layer = new FeatureLayer({url:'https://mapstest.raleighnc.gov/arcgis/rest/services/ABS/ABS_Comments/FeatureServer/1'});
              layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
-               this.formSubmitted.emit(this.form.layer);
+               this.formSubmitted.emit(formLayer);
              });
            } else {
-             this.form.layer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
-               this.formSubmitted.emit(this.form.layer);
+             formLayer.applyEdits({ addFeatures: addFeatures, updateFeatures: updateFeatures }).then(result => {
+               this.formSubmitted.emit(formLayer);
              });
            }
          }
-       });       
-
-      this.form.viewModel.watch('inputFields',()=> {
-        //@ts-ignore
-        this.refreshFields();   
-      });
+       });
       return this.form;
     } catch (error) {
-      console.log('EsriLoader: ', error);
+      console.log('FeatureForm: ', error);
     }
   }
   cancel() {
-    this.formSubmitted.emit(this.form.layer);
+    this.formSubmitted.emit(this.form.layer as esri.FeatureLayer);
   }
-  submit() {
-    if (this.form.layer.title.includes("Payment")) {
-       this.form.feature.attributes = this.form.getValues();
-        const query = this.form.layer.createQuery();
-        query.outStatistics = {
-          //@ts-ignore
-          onStatisticField: "PaymentTransactionNum", 
+  async submit() {
+    const formLayer = this.form.layer as esri.FeatureLayer;
+    if (formLayer.title.includes("Payment")) {
+       this.form.feature.attributes = await this.form.getValues();
+        const query = formLayer.createQuery();
+        query.outStatistics = [{
+          onStatisticField: "PaymentTransactionNum",
           outStatisticFieldName: "PaymentTransactionNum_max",
           statisticType: "max"
-        };
+        }];
         query.outFields = ['PaymentTransactionNum_max'];
         query.returnGeometry = false;
-        this.form.layer.queryFeatures(query).then(result => {
+        formLayer.queryFeatures(query).then(result => {
           if (result.features.length) {
             const num = result.features[0].getAttribute('PaymentTransactionNum_max');
             this.form.feature.setAttribute('PaymentTransactionNum', num + 1);
-            this.form.feature = this.form.feature.clone();
+            this.setFeature(this.form.feature.clone());
             this.form.submit();
           }
         });
@@ -261,52 +242,21 @@ export class FormComponent implements OnChanges, OnInit {
       this.form.submit();
     }
   }
-  disableAttributeLookupFields() {
-    let labels = document.getElementsByClassName('esri-feature-form__label');
-    for (let i = 0;i < labels.length;i++) {
-     const labelText = (labels.item(i) as HTMLElement).firstChild.textContent;
-      if (this.lookups.includes(labelText)){
-        //@ts-ignore
-        let fields = this.form.viewModel._allInputFields.filter(field => {
-          return field.required && field.label === labelText;
-        });
-        if (fields.length) {
-          for(let j = 0;j < labels.item(i).getElementsByTagName('input').length;j++) {
-            labels.item(i).getElementsByTagName('input')[j].setAttribute('disabled', 'true');
-            let errors = labels.item(i).getElementsByClassName("esri-feature-form__field-error-message");
-            if (errors.length) {
-              errors[0].innerHTML = 'Set using attribute lookup tool';
-            }
-          }
-        }  
-      }
-    }  
-  }
   ngOnChanges(changes: SimpleChanges) {
     if (!changes.feature.currentValue.layer.title.includes('Billing') ) {
       if (changes.feature.currentValue) {
         this.feature = changes.feature.currentValue;
-        if (!this.form) {
-          this.initializeForm().then((form: esri.FeatureForm) => {
-            this.form.feature = changes.feature.currentValue;  
-            this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
-            setTimeout(()=>{
-              this.disableAttributeLookupFields();
-            });
-          });
-        } else {
-          this.form.feature = changes.feature.currentValue;
-          this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer);
-        }
+        this.formReady ??= this.initializeForm();
+        this.formReady.then(() => {
+          this.setFeature(this.feature);
+          this.setFormConfigByStatus(this.feature.getAttribute("StatusCode"),this.form.layer as esri.FeatureLayer);
+        });
       }
     }
   }
   refreshForm(form:esri.FeatureForm) {
     this.feature.attributes = form.feature.attributes;
-    this.form.feature = this.feature;
-    //this.refreshFields();
-          //@ts-ignore
-    //this.form.renderFields();
-    //this.form.renderNow();
+    // a copy, since the form doesn't re-render when it's given the graphic it already has
+    this.setFeature(this.feature.clone());
   }
 }

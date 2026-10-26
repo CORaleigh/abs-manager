@@ -1,5 +1,14 @@
-<div class="panel modifier-class">
+
+<div class="panel">
     <h4>Search</h4>
-    <div #searchDiv></div>
-    <div #viewDiv></div>
+    <arcgis-search #searchEl include-default-sources-disabled></arcgis-search>
+    @if (mapVisible) {
+    <arcgis-map popup-component-enabled [basemap]="basemap" [extent]="initialExtent" (arcgisViewReadyChange)="viewReady($event)">
+        <arcgis-expand slot="top-left">
+            <arcgis-basemap-gallery></arcgis-basemap-gallery>
+        </arcgis-expand>
+        <arcgis-fullscreen slot="top-left"></arcgis-fullscreen>
+        <arcgis-popup slot="popup" [dockOptions]="popupDockOptions"></arcgis-popup>
+    </arcgis-map>
+    }
 </div>

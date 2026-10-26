@@ -1,46 +1,30 @@
-<div class="panel modifier-class" id="detailsPanel">
-  <h4 class="trailer-half" id="detailsTitle">{{title}}</h4>
+<div class="panel" id="detailsPanel">
+  <h4 id="detailsTitle">{{title}}</h4>
   @if (update && detailButtons) {
-    <button class="btn  btn-green modifier-class account-details-button" id="billsButton"
-    (click)="getRelatedFeatures($event.currentTarget.innerText)">Bills</button>
+    <div class="detail-buttons">
+      <calcite-button id="billsButton" (click)="getRelatedFeatures('BILLS')">Bills</calcite-button>
+      <calcite-button id="commButton" (click)="getRelatedFeatures('COMMUNICATION')">Communication</calcite-button>
+      <calcite-button id="commentsButton" (click)="getRelatedFeatures('COMMENTS')">Comments</calcite-button>
+      <calcite-button id="paymentButton" (click)="getRelatedFeatures('PAYMENTS')">Payments</calcite-button>
+      <app-payoff-calculator  [feature]="feature" [source]="'details-panel'"></app-payoff-calculator>
+    </div>
   }
-  @if (update && detailButtons) {
-    <button class="btn  btn-green modifier-class account-details-button" id="commButton"
-    (click)="getRelatedFeatures($event.currentTarget.innerText)">Communication</button>
-  }
-  @if (update && detailButtons) {
-    <button class="btn  btn-green modifier-class account-details-button" id="commentsButton"
-    (click)="getRelatedFeatures($event.currentTarget.innerText)">Comments</button>
-  }
-  @if (update && detailButtons) {
-    <button class="btn  btn-green modifier-class account-details-button"
-    id="paymentButton" (click)="getRelatedFeatures($event.currentTarget.innerText)">Payments</button>
-  }
-  @if (update && detailButtons) {
-    <app-payoff-calculator  [feature]="feature" [source]="'details-panel'"></app-payoff-calculator>
-  }
-
-  <br />
 
   @if (update) {
-    <div class="modifier-class trailer-2 js-tab-group" id="detailsTabs">
-      <nav class="tab-nav">
-        <a class="tab-title is-active js-tab link-green">Information</a>
+    <calcite-tabs id="detailsTabs">
+      <calcite-tab-nav slot="title-group">
+        <calcite-tab-title tab="information" selected>Information</calcite-tab-title>
         @if (shared.role === 'admin' && title != 'Bill Details') {
-          <a  class="tab-title js-tab link-green">Update</a>
+          <calcite-tab-title tab="update">Update</calcite-tab-title>
         }
-      </nav>
-      <section class="tab-contents">
-        <article class="tab-section js-tab-section is-active">
-          <div #featureDiv></div>
-        </article>
-        <article class="tab-section js-tab-section">
-          <div class="trailer-0">
-            <app-form [feature]="feature" [layers]="layers"  (formSubmitted)="submitted($event)"></app-form>
-          </div>
-        </article>
-      </section>
-    </div>
+      </calcite-tab-nav>
+      <calcite-tab tab="information" selected>
+        <arcgis-feature [graphic]="featureGraphic"></arcgis-feature>
+      </calcite-tab>
+      <calcite-tab tab="update">
+        <app-form [feature]="feature" [layers]="layers"  (formSubmitted)="submitted($event)"></app-form>
+      </calcite-tab>
+    </calcite-tabs>
   }
   @if (!update) {
     <div id="createDiv">

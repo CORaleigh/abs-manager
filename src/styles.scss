@@ -1,88 +1,36 @@
-// @import "node_modules/calcite-web/dist/sass/calcite-web";
-// @import url("https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css");
-@import url("../node_modules/calcite-web/dist/css/calcite-web.css");
-@import url('https://js.arcgis.com/4.15/esri/css/main.css');
+// City greens as the Calcite brand color; light-dark() picks the value for calcite-mode-dark
+:root {
+  --calcite-color-brand: light-dark(#4C8C2B, #72A300);
+  --calcite-color-brand-hover: light-dark(#3f7524, #86bd00);
+  --calcite-color-brand-press: light-dark(#325d1c, #96d200);
+  --calcite-color-brand-underline: light-dark(rgba(76, 140, 43, .4), rgba(114, 163, 0, .4));
+}
+
+body {
+  margin: 0;
+  background-color: var(--calcite-color-background);
+  color: var(--calcite-color-text-1);
+  font-family: var(--calcite-font-family);
+}
+
 .panel {
   margin-bottom: 1em;
-  margin-top: 1em;    
+  margin-top: 1em;
 }
 h4 {
-    color: #72A300;
-  }
-  .esri-popup--is-docked-top-right .esri-popup__main-container {
-    max-height: 100% !important;
-  }  
-  .esri-feature-form__group--active {
-    border-color: #4C8C2B !important;
-  }
-  
-
-  .loader-bars, .loader-bars:after, .loader-bars:before  {
-    background: #4C8C2B;
-    -webkit-animation: load 0.8s infinite ease-in-out;
-    animation: load 0.8s infinite ease-in-out;
-    width: 0.85rem;
-    height: 2rem;
-}
-.toggle-switch-input[type]:checked + .toggle-switch-track {
-  border-color: #72A300 !important;
-  background-color: #4C8C2B !important;
-}
-.toggle-switch-input[type]:checked + .toggle-switch-track:after {
-  border-color: #4C8C2B !important;
-}
-.toggle-switch-input[type]:checked:focus + .toggle-switch-track::after {
-  border-color: #4C8C2B !important;
-  
+  color: light-dark(#4C8C2B, #72A300);
+  margin: 0 0 0.5em;
 }
 
-.toggle-switch-track:after {
-  border-color: #4C8C2B !important;
-
+// the docked property popup can use the full height of the map
+.esri-popup--is-docked-top-right .esri-popup__main-container {
+  max-height: 100% !important;
 }
 
-
-// @keyframes load {
-//   0%,
-//   80%,
-//   100% {
-//     opacity: .75;
-//     box-shadow: 0 0 #4C8C2B;
-//     height: $loader-height;
-//   }
-//   40% {
-//     opacity: 1;
-//     box-shadow: 0 -1*$loader-zoom #4C8C2B;
-//     height: $loader-height+$loader-zoom;
-//   }
-// }
-
-.btn-green {
-  background-color: #4C8C2B;
-    border: 1px solid #4C8C2B;
-    color: #fff;
-    font-size: 0.83333rem;
-    font-family: "Typold W05", sans-serif;
-    font-weight: 500;
-    letter-spacing: .1em;
-    line-height: 1rem;
-    padding: 0.5rem 0.66667rem;
-    text-transform: uppercase;
+.fade-in {
+  animation: fade-in 0.3s ease-in;
 }
-
-.alert {
-  margin-bottom: 1em !important;
-  background: #E0EFF4 !important;
-    border-color: #E0EFF4 !important;
-    color: #01426A
-     !important;
-    text-align: center;
-}
-
-.esri-search {
-  width: 100% !important;
-}
-
-.esri-feature-form__group--active {
-  border-color: #72A300 !important;
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

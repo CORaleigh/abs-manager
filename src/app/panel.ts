@@ -1,4 +1,4 @@
-import esri = __esri;
+import type * as esri from './esri';
 export class Panel {
     title: string;
     detailsTitle: string;

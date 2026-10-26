@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import esri = __esri;
+import type * as esri from './esri';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
 @Injectable({

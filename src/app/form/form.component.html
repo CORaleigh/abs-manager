@@ -1,22 +1,19 @@
-<button  class="btn btn-green modifier-class" (click)="submit()">Submit</button>
+<div class="form-actions">
+  <calcite-button (click)="submit()">Submit</calcite-button>
 
-@if (showAttributeLookup()) {
-  <app-attribute-lookup (refreshForm)="refreshForm($event)" [sourceForm]="form" [layers]="layers" [accountType]="feature.layer.title"></app-attribute-lookup>
-}
+  @if (showAttributeLookup()) {
+    <app-attribute-lookup (refreshForm)="refreshForm($event)" [sourceForm]="form" [layers]="layers" [accountType]="feature.layer.title"></app-attribute-lookup>
+  }
 
-
-<button  class="btn  btn-green modifier-class" (click)="cancel()">Cancel</button>
-@if (showPayoffCalculator()) {
-  <app-payoff-calculator [source]="'form'" [feature]="feature" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
-}
+  <calcite-button appearance="outline" (click)="cancel()">Cancel</calcite-button>
+  @if (showPayoffCalculator()) {
+    <app-payoff-calculator [source]="'form'" [feature]="feature" (payoffCalculated)="payoffCalculated($event)"></app-payoff-calculator>
+  }
+</div>
 
 @if (invalid.length) {
-  <div class="invalid">
-    Errors with following fields: {{invalid.toString()}}
-  </div>
+  <calcite-notice open kind="danger" width="full" class="invalid">
+    <div slot="message">Errors with following fields: {{invalid.toString()}}</div>
+  </calcite-notice>
 }
-<div #formDiv></div>
-
-
-
-
+<arcgis-feature-form #formEl group-display="sequential"></arcgis-feature-form>

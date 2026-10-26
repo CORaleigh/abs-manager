@@ -1,49 +1,41 @@
 @if (!showDetails && visible) {
-  <div class="panel modifier-class account-panel">
-    <h4 class="trailer-half">{{title}}</h4>
-    <div class="trailer-0">
-      <div class="overflow-auto">
-        <table class="table table-striped modifier-class " id="assessmentsTable">
-          <thead>
-            <tr>
-              @for (header of headers; track header) {
-                <th>{{header}}</th>
+  <div class="panel account-panel">
+    <h4>{{title}}</h4>
+    <calcite-table striped [caption]="title" id="assessmentsTable">
+      <calcite-table-row slot="table-header">
+        @for (header of headers; track header) {
+          <calcite-table-header [heading]="header"></calcite-table-header>
+        }
+      </calcite-table-row>
+      @for (feature of features; track feature) {
+        <calcite-table-row (click)="featureSelected(feature)">
+          @for (field of fields; track field) {
+            <calcite-table-cell>
+              @if (field.type != 'date' && !field.domain && !currencyFields.includes(field.name)) {
+                <span>{{feature.attributes[field.name]}}</span>
               }
-            </tr>
-          </thead>
-          <tbody id="assessmentsTableBody" class="panel-table-body account-table-body">
-            @for (feature of features; track feature) {
-              <tr (click)="featureSelected(feature)">
-                @for (field of fields; track field) {
-                  <td>
-                    @if (field.type != 'date' && !field.domain && !currencyFields.includes(field.name)) {
-                      <span>{{feature.attributes[field.name]}}</span>
-                    }
-                    @if (field.type === 'date') {
-                      <span>{{feature.attributes[field.name] | date}}</span>
-                    }
-                    @if (currencyFields.includes(field.name)) {
-                      <span>{{feature.attributes[field.name] | currency}}</span>
-                    }
-                    @if (field.domain) {
-                      <span>{{getCodedValue(feature.attributes[field.name], field)}}</span>
-                    }
-                  </td>
-                }
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-      @if (!features.length) {
-        <div class="alert alert-full modifier-class is-active">
-          No records found
-        </div>
+              @if (field.type === 'date') {
+                <span>{{feature.attributes[field.name] | date}}</span>
+              }
+              @if (currencyFields.includes(field.name)) {
+                <span>{{feature.attributes[field.name] | currency}}</span>
+              }
+              @if (field.domain) {
+                <span>{{getCodedValue(feature.attributes[field.name], field)}}</span>
+              }
+            </calcite-table-cell>
+          }
+        </calcite-table-row>
       }
-      @if (title != 'Bills' && source && (shared.role === 'admin' || (shared.role === 'cashier' && (title === 'Payments' || title === 'Comments')) || (shared.role === 'viewer' && (title === 'Comments')))) {
-        <button class="btn  btn-green create-account" (click)="createFeature()" [disabled]="!source">Create</button>
-      }
-    </div>
+    </calcite-table>
+    @if (!features.length) {
+      <calcite-notice open kind="info" width="full">
+        <div slot="message">No records found</div>
+      </calcite-notice>
+    }
+    @if (title != 'Bills' && source && (shared.role === 'admin' || (shared.role === 'cashier' && (title === 'Payments' || title === 'Comments')) || (shared.role === 'viewer' && (title === 'Comments')))) {
+      <calcite-button class="create-account" (click)="createFeature()" [disabled]="!source">Create</calcite-button>
+    }
   </div>
 }
 @if (showDetails && visible) {

@@ -1,7 +1,9 @@
-.btn, app-attribute-lookup {
-  margin: 0 1em 1em 0;
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-bottom: 1em;
 }
-
 .invalid {
-  color: #de2900;
+  margin-bottom: 1em;
 }

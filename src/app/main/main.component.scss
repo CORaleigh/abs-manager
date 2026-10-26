@@ -1,50 +1,69 @@
-.c-header__logo {
-    float: left;
-    -ms-flex-align: center;
-    align-items: center;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-    padding: 0;
-    width: 6.44444rem;
-    margin-top: 0.5rem;
-    margin-right: 1rem;
+// green accent line across the top of the header
+.top-nav {
+  position: relative;
+  &:before {
+    content: "";
+    background-color: #72A300;
+    height: 2px;
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
   }
-  .toggle-switch {
-    margin-top: 1em;
-  }
-  
-  .top-nav:before {
-  
-      content: "";
-      background-color: #72A300;
-      height: 2px;
-      left: 0;
-      top: 0;
-      position: absolute;
-      width: 100%;
-  
-  }
-  
-  .footer {
-    background-color: #4C8C2B;
-    padding-bottom: 3.33333rem;
-      padding-top: 3.33333rem;
-  }
-  @media (min-width: 87.5em) {
-  .footer {
-      padding-left: 6.66667rem;
-      padding-right: 6.66667rem;
-  }
-  }
-  
-  @media (min-width: 48em){
-  .o-layout-h-inset--asym {
-      padding-left: 5.33333rem;
-      padding-right: 2.66667rem;
-  }}
+}
 
-  label {
-    margin-bottom: 0px;
+.skip-to-content {
+  position: absolute;
+  left: -999px;
+  &:focus {
+    left: 1rem;
+    top: 1rem;
+    z-index: 2;
   }
+}
+
+.page {
+  max-width: 96rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
+  margin: 1em 0;
+}
+.crumb {
+  color: var(--calcite-color-brand);
+  cursor: pointer;
+  text-decoration: none;
+  &.is-active {
+    color: var(--calcite-color-text-1);
+    font-weight: 500;
+  }
+  &:not(:first-child):before {
+    content: "/";
+    color: var(--calcite-color-text-3);
+    padding: 0 0.5rem;
+  }
+}
+
+.footer {
+  background-color: #4C8C2B;
+  margin-top: 3rem;
+  padding-bottom: 3.33333rem;
+  padding-top: 3.33333rem;
+  padding-left: 1rem;
+}
+@media (min-width: 87.5em) {
+  .footer {
+    padding-left: 6.66667rem;
+    padding-right: 6.66667rem;
+  }
+}
+
+calcite-loader {
+  margin-top: 4rem;
+}

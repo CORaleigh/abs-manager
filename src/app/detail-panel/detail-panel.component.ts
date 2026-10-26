@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, Output, EventEmitter, AfterContentInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
-import { loadModules } from 'esri-loader';
-import esri = __esri;
-import * as calcite from 'calcite-web';
+import '@arcgis/map-components/components/arcgis-feature';
+import type * as esri from '../esri';
 import { SharedService } from '../shared.service';
 @Component({
     selector: 'app-detail-panel',
@@ -13,7 +12,6 @@ import { SharedService } from '../shared.service';
 })
 export class DetailPanelComponent implements OnInit, OnChanges {
   constructor(public shared:SharedService) { }
-  @ViewChild('featureDiv') private featureDiv: ElementRef;
   @Input('title') title: string = "Details";
   @Input('feature') feature: esri.Graphic = null;
   @Input('layers') layers: esri.FeatureLayer[] = [];
@@ -24,27 +22,12 @@ export class DetailPanelComponent implements OnInit, OnChanges {
   @Output() relatedFeatureReturned = new EventEmitter<any>();
   @Output() formSubmitted = new EventEmitter<null>();
   ngOnInit() {
-    setTimeout(() => {
-      calcite.init();
-    });
   }
 
 
 
-  featureWidget: esri.Feature = null;
-  async initializeFeature() {
-    try {
-      const [Feature] = await loadModules([
-        'esri/widgets/Feature',
-      ]);
-      this.featureWidget = new Feature({
-        container: this.featureDiv.nativeElement
-      });
-      return this.featureWidget;
-    } catch (error) {
-      console.log('EsriLoader: ', error);
-    }
-  }
+  // bound to <arcgis-feature>, so it's applied whenever the Information tab renders
+  featureGraphic: esri.Graphic = null;
   submitted(layer: esri.FeatureLayer) {
     if (layer.isTable) {
       
@@ -70,44 +53,13 @@ export class DetailPanelComponent implements OnInit, OnChanges {
       }
     }
 
-    if (this.update) {
-      if (!this.featureWidget) {
-        if (changes.feature.currentValue) {
-          this.initializeFeature().then((featureWidget: esri.Feature) => {
-  
-            //@ts-ignore 
-            changes.feature.currentValue.popupTemplate = changes.feature.currentValue.layer.popupTemplate;
-
-            //@ts-ignore
-            changes.feature.currentValue.sourceLayer = changes.feature.currentValue.layer;
-
-            this.featureWidget.graphic = changes.feature.currentValue;
-
-            // if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
-            //   this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
-            //   this.fromDateLabel = "Interest Paid Thru Date: ";
-            // } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
-            //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
-            //   this.fromDateLabel = "Confirming Resolution Date: ";
-            // } else if (this.featureWidget.graphic.attributes['ContractDate']) {
-            //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
-            //   this.fromDateLabel = "Contract Date: ";
-            // }  
-          });
-        }
-      } else {
-        this.featureWidget.graphic = changes.feature.currentValue;
-        // if (this.featureWidget.graphic.attributes['InterestPaidThruDate']) {
-        //   this.fromDate = new Date(this.featureWidget.graphic.attributes['InterestPaidThruDate']);
-        //   this.fromDateLabel = "Interest Paid Thru Date: ";
-        // } else if (this.featureWidget.graphic.attributes['ConfResDate']) {
-        //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ConfResDate']);
-        //   this.fromDateLabel = "Confirming Resolution Date: ";
-        // } else if (this.featureWidget.graphic.attributes['ContractDate']) {
-        //   this.fromDate = new Date(this.featureWidget.graphic.attributes['ContractDate']);
-        //   this.fromDateLabel = "Contract Date: ";
-        // }  
-      }
+    if (this.update && changes.feature?.currentValue) {
+      const feature = changes.feature.currentValue;
+      // show the feature with its layer's popup template
+      feature.popupTemplate = feature.layer.popupTemplate;
+      //@ts-ignore
+      feature.sourceLayer = feature.layer;
+      this.featureGraphic = feature;
     }
   }
   getRelatedFeatures(label:string) {
