@@ -1,0 +1,1 @@
+import{t as d}from"./chunk-C1Zj8c0T.js";var t=class extends d{notify(){let o=this._observers;if(o&&o.length>0){let n=o.slice();for(let e of n)e.onInvalidated(),e.onCommitted()}}};export{t};

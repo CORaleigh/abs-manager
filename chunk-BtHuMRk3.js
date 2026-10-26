@@ -1,0 +1,1 @@
+import{r as De}from"./chunk-BPOyy6hB.js";var c=class{constructor(t){this._rctx=t,this._store=new Map}dispose(){this._store.forEach(t=>t.dispose()),this._store.clear()}get(t,r,s,h){let e=t+r+JSON.stringify(Array.from(s.entries())),o=this._store.get(e);if(o)return o;let i=new De(this._rctx,t,r,s,h);return this._store.set(e,i),i}get test(){}};export{c as t};

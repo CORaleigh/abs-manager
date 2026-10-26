@@ -1,0 +1,1 @@
+import{v as Re}from"./chunk-DPGF6fIg.js";import{a as y}from"./chunk-DIApwev1.js";var a=0;var c=r=>{let i=r,e=class extends i{constructor(...o){super(...o),Object.defineProperty(this,"uid",{writable:!1,configurable:!1,value:Date.now().toString(16)+`-object-`+a++})}};return e=y([Re(`esri.core.Identifiable`)],e),e};c(class{});export{c as t};

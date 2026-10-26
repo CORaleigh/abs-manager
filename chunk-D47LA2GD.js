@@ -1,0 +1,1 @@
+import{p as a}from"./chunk-DipCRkz0.js";function i(){return a(`curve-densification-coarse-segments`)}function t(){return a(`curve-densification-max-segments`)}function r(){return a(`curve-densification-min-segments`)}function s(){return a(`curve-densification-pixel-deviation`)}export{t as i,r as n,s as r,i as t};

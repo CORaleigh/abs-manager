@@ -1,0 +1,1 @@
+import{i as I}from"./chunk-BPOyy6hB.js";var e=class extends I{constructor(r,s,o,f=35044){super(r,34962,f,o),this.layout=s}};export{e as t};

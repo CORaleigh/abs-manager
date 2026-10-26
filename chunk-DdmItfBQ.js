@@ -1,0 +1,1 @@
+import{i as J,n as C}from"./chunk-CnGmtB1q.js";function s(e){return J(e)||C(e)?0:1}export{s as t};

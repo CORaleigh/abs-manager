@@ -1,0 +1,1 @@
+import{r as n}from"./chunk-BAW7ZrUA.js";var t=15.5;var l=1024;var s={outlineWidth:.75,referenceWidth:.75,cap:n.CIMSolidStroke.capstyle,join:n.CIMSolidStroke.joinstyle,miterLimit:n.CIMSolidStroke.miterlimit};export{s as n,t as r,l as t};

@@ -1,0 +1,1 @@
+import{t as n}from"./chunk-thV7KNve.js";function p(t){t?.writtenProperties&&t.writtenProperties.forEach(({target:i,propName:n$1,newOrigin:r})=>{n(i)&&r&&i.originOf(n$1)!==r&&i.updateOrigin(n$1,r)})}export{p as t};

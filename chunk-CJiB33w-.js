@@ -1,0 +1,1 @@
+import{n as _,t as T}from"./chunk-C1x63Zqh.js";var t=`Global`;function i(n){return T(n).countries.length===0}function c(n){if(i(n))return t;let e=n.indexOf(`/`);return e===-1?n:n.slice(0,e)}function l(n){return _(n)?.id??n}export{l as n,t as r,c as t};

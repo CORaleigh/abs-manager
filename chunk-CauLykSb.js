@@ -1,0 +1,1 @@
+import{r as f}from"./chunk-Bvkc2ZBA.js";function i(e){return e?.name??`default`}export{i as t};

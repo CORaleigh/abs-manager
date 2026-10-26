@@ -1,0 +1,1 @@
+import{t}from"./chunk-CGI7hVhT.js";export{t as NonSimpleResult};

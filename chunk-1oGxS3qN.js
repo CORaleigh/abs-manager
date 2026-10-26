@@ -1,0 +1,1 @@
+import{t as m}from"./chunk-B1Oj89XZ.js";import{t as y}from"./chunk-CK8SOe7h.js";var t=new y;function a(e,n,r){return t.execute(e,n,r,null)}function p(e,n,r){let u=t.executeMany(new m(e),n,r,null);return Array.from(u)}function l(e,n,r,u){return t.isSimple(e,n,r,u,null)}function f(){return t.supportsCurves()}export{p as i,f as n,l as r,a as t};

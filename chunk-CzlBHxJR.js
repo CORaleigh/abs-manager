@@ -1,0 +1,1 @@
+import{E as p}from"./chunk-ZOmIU9cV.js";function i(e,r){return new Promise((o,n)=>{e.readyState>=HTMLMediaElement.HAVE_CURRENT_DATA?o():(r(p(e,`canplay`,o)),r(p(e,`error`,n)))})}export{i as t};

@@ -1,0 +1,1 @@
+import{l as u}from"./chunk-BQo4Mi4J.js";import{t as M}from"./chunk-BQN2zI4D.js";function c(e){return{geometryType:u(e[0]),geometries:e.map(o=>o.toJSON())}}function f(e,o,m){let s=M(o);return e.map(p=>{let t=s.fromJSON(p);return t.spatialReference=m,t})}export{f as n,c as t};

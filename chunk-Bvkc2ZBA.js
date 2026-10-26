@@ -1,0 +1,1 @@
+import{t as o$1}from"./chunk-C2v7TQo7.js";var l=new o$1(`cyan`);var o=.25;var i=new o$1(`black`);var r=.4;var d=.2;var s=.25;var f=`default`;var c=`temporary`;var h=new o$1(`yellow`);export{i as a,r as c,h as i,s as l,d as n,l as o,f as r,o as s,c as t};

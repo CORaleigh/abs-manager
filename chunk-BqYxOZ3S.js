@@ -1,0 +1,1 @@
+import"./chunk-B-O3XKPW.js";import"./chunk-Deybw1f9.js";import{D as ee}from"./chunk-oS8D84Dk.js";import"./chunk-lVCABNyi.js";import"./chunk-CDDInJzs.js";import"./chunk-Bz9rBs0t.js";import"./chunk-BvK-QzAO.js";var c=[`#2888B8`,`#EB7028`,`#48A375`,`#9370B1`,`#e55035`,`#3d9ccc`,`#DC7B04`,`#b87bb0`,`#3fa681`,`#EE6386`].map(r=>ee(r));export{c as esriChartColorSet};

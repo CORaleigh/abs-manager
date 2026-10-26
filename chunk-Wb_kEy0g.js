@@ -1,0 +1,1 @@
+var p=Symbol(`PopupTemplateInstance`);function o(e){return e!=null&&typeof e==`object`&&p in e}export{p as n,o as t};

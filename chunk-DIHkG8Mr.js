@@ -1,0 +1,1 @@
+import{Ft as rr,Q as Zt}from"./chunk-CLCnTQIx.js";var t=class extends rr{getOperatorType(){return 5}execute(s,a,o,p){return Zt(s,a,o,8,p)}};export{t};

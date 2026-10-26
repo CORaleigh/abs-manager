@@ -1,0 +1,1 @@
+import{n as e}from"./chunk-BpdzSpGh.js";var r={title:`title`,firstTitle:`first-title`,separator:`separator`};var i=e(`calcite-dropdown-group`);export{r as n,i as t};

@@ -1,0 +1,1 @@
+import{c as r}from"./chunk-NPIR5EMB.js";import"./chunk-F5PYN265.js";var s=class extends r{constructor(){super(...arguments),this.errors=null}syntaxError(u,a,e,t,o,n){this.errors||(this.errors=[]),this.errors.push({line:e,column:t,msg:o,e:n})}};export{s as default};

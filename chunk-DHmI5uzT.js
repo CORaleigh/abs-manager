@@ -1,0 +1,1 @@
+import{r as De}from"./chunk-BPOyy6hB.js";function n(o,r,t,e=``){return new De(o,e+r.vertexShader,e+r.fragmentShader,t)}export{n as t};

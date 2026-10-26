@@ -1,0 +1,1 @@
+var r=class{constructor(e){this.getUnmaskedRenderer=e}};function t(n){let e=n.getExtension(`WEBGL_debug_renderer_info`);return e?new r(()=>n.getParameter(e.UNMASKED_RENDERER_WEBGL)):null}export{t};
