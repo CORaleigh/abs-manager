@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { loadModules, loadCss } from 'esri-loader';
 import esri = __esri;
 import { FormgroupsService } from '../formgroups.service';
@@ -12,6 +12,7 @@ import * as calcite from 'calcite-web';
     selector: 'app-main',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MainComponent implements OnInit {

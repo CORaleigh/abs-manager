@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, ElementRef, ViewChild, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ElementRef, ViewChild, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import esri = __esri;
 import { SharedService } from '../shared.service';
@@ -8,6 +8,7 @@ import { ConfirmedFormgroupsService } from '../confirmed-form-groups.service'
     selector: 'app-form',
     templateUrl: './form.component.html',
     styleUrls: ['./form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FormComponent implements OnChanges, OnInit {

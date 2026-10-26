@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import esri = __esri;
 import { SharedService } from '../shared.service';
 
@@ -6,6 +6,7 @@ import { SharedService } from '../shared.service';
     selector: 'app-payoff-calculator',
     templateUrl: './payoff-calculator.component.html',
     styleUrls: ['./payoff-calculator.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PayoffCalculatorComponent implements OnInit, OnChanges{

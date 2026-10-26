@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { loadModules } from "esri-loader";
 import esri = __esri;
 import { FormgroupsService } from '../formgroups.service';
@@ -6,6 +6,7 @@ import { FormgroupsService } from '../formgroups.service';
     selector: 'app-attribute-lookup',
     templateUrl: './attribute-lookup.component.html',
     styleUrls: ['./attribute-lookup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AttributeLookupComponent implements OnInit {

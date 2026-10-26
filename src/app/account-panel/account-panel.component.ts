@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import esri = __esri;
 import * as calcite from 'calcite-web';
@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     selector: 'app-account-panel',
     templateUrl: './account-panel.component.html',
     styleUrls: ['./account-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AccountPanelComponent implements OnInit, OnChanges {

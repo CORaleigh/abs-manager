@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -9,6 +9,7 @@ import { SharedService } from '../shared.service';
     selector: 'app-search',
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchComponent implements OnInit, OnChanges {
@@ -47,7 +48,7 @@ export class SearchComponent implements OnInit, OnChanges {
 
   getSuggestions(params, field, contains) {
     return this.propertyLayer.queryFeatures({
-      where: contains ? field+" like '%" + params.suggestTerm.toUpperCase() + "%'":field+" like '" + params.suggestTerm.toUpperCase() + "%'",
+      where: this.likeClause(this.propertyLayer, field, params.suggestTerm.toUpperCase(), contains),
       num: 6,
       outFields: [field],
       outSpatialReference: {wkid: 102100},
@@ -67,7 +68,7 @@ export class SearchComponent implements OnInit, OnChanges {
 
   getResults(params, field) {
     return this.propertyLayer.queryFeatures({
-      where: field + " = '"+params.suggestResult.text.toUpperCase() + "'",
+      where: `${field} = ${this.sqlValue(this.propertyLayer, field, String(params.suggestResult.text).toUpperCase())}`,
       outFields: ['*'],
       outSpatialReference: {wkid: 102100},
       returnGeometry: true
@@ -93,8 +94,35 @@ private isNumericField(layer: __esri.FeatureLayer, field: string): boolean {
   return !!f && ['integer', 'small-integer', 'long', 'single', 'double', 'oid'].includes(f.type);
 }
 
+// if the layer's fields haven't loaded yet, assume the field is there
+private hasField(layer: __esri.FeatureLayer, field: string): boolean {
+  return !layer.fields || layer.fields.some(x => x.name.toLowerCase() === field.toLowerCase());
+}
+
 private escapeSql(value: string): string {
   return String(value).replace(/'/g, "''");
+}
+
+// number fields get the bare value, text fields get it quoted and escaped
+private sqlValue(layer: __esri.FeatureLayer, field: string, value: any): string {
+  if (this.isNumericField(layer, field)) {
+    const n = Number(String(value).trim());
+    return Number.isFinite(n) ? String(n) : 'NULL'; // NULL never matches, so bad input finds nothing
+  }
+  return `'${this.escapeSql(value)}'`;
+}
+
+// "like" only works on text, so convert number fields to text for the match
+private likeClause(layer: __esri.FeatureLayer, field: string, term: string, contains = false): string {
+  const pattern = `${contains ? '%' : ''}${this.escapeSql(term)}%`;
+  return this.isNumericField(layer, field)
+    ? `CAST(${field} AS VARCHAR(20)) LIKE '${pattern}'`
+    : `${field} LIKE '${pattern}'`;
+}
+
+private resolutionWhere(layer: __esri.FeatureLayer, dateField: string, numField: string, year: any, num: any): string {
+  const y = Number(year);
+  return `EXTRACT(YEAR FROM ${dateField}) = ${Number.isInteger(y) ? y : 'NULL'} AND ${numField} = ${this.sqlValue(layer, numField, num)}`;
 }
 
 getAccountSuggestions(params, field, layer: __esri.FeatureLayer) {
@@ -171,11 +199,14 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
     
     if (params.suggestTerm.indexOf('-') > -1) {
       let array = params.suggestTerm.split('-');
-      year = array[0];
+      year = Number(array[0]);
       num = array[1];
-    
+      if (!Number.isInteger(year)) {
+        return null;
+      }
+
       return layer.queryFeatures({
-        where: "EXTRACT(YEAR from "+dateField+") = " + year + " AND "+numField+" like '" + num + "%'",
+        where: "EXTRACT(YEAR from "+dateField+") = " + year + " AND " + this.likeClause(layer, numField, num),
         num: 6,
         outFields: [dateField, numField],
         returnDistinctValues: true,
@@ -327,7 +358,8 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
             let array = params.suggestResult.text.split('-');
             year = array[0];
             num = array[1];
-            return this.getResolutionResults("EXTRACT(YEAR from ConfResDate) = " + year + " AND ConfResNum = '" + num + "'", 'ConfResDate', 'ConfResNum', this.getLayerByTitle('Confirming Resolutions'));
+            const layer = this.getLayerByTitle('Confirming Resolutions');
+            return this.getResolutionResults(this.resolutionWhere(layer, 'ConfResDate', 'ConfResNum', year, num), 'ConfResDate', 'ConfResNum', layer);
 
           }
                     
@@ -353,7 +385,8 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
             let array = params.suggestResult.text.split('-');
             year = array[0];
             num = array[1];
-            return this.getResolutionResults("EXTRACT(YEAR from DirResDate) = " + year + " AND DirResNum = '" + num + "'", 'DirResDate', 'DirResNum', this.getLayerByTitle('Directing Resolutions'));
+            const layer = this.getLayerByTitle('Directing Resolutions');
+            return this.getResolutionResults(this.resolutionWhere(layer, 'DirResDate', 'DirResNum', year, num), 'DirResDate', 'DirResNum', layer);
 
           }
                     
@@ -380,7 +413,8 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
             let array = params.suggestResult.text.split('-');
             year = array[0];
             num = array[1];
-            return this.getResolutionResults("EXTRACT(YEAR from CorrResDate) = " + year + " AND CorrResNum = '" + num + "'", 'CorrResDate', 'CorrResNum', this.getLayerByTitle('Correcting Resolutions'));
+            const layer = this.getLayerByTitle('Correcting Resolutions');
+            return this.getResolutionResults(this.resolutionWhere(layer, 'CorrResDate', 'CorrResNum', year, num), 'CorrResDate', 'CorrResNum', layer);
 
           }
                     
@@ -425,25 +459,32 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
           }
         } else {
           if (event.source.name.includes('Resolution')) {
-            let features = [];
             let reids = [];
             let dateField = 'ConfResDate';
             let numField = 'ConfResNum';
             if (event.source.name.includes('Directing')){
               dateField = 'DirResDate';
               numField = 'DirResNum';
+            } else if (event.source.name.includes('Correcting')) {
+              dateField = 'CorrResDate';
+              numField = 'CorrResNum';
             }
-            const where: string = `EXTRACT(YEAR FROM ${dateField}) = ${new Date(event.result.feature.attributes[dateField]).getFullYear()} and ${numField} = '${event.result.feature.attributes[numField]}'`;            
-            this.getLayerByTitle('Assessment').queryFeatures({outFields: ['AccountID', 'REID'], where: where}).then(featureSet => {
-              features = features.concat(featureSet.features);
-              this.getLayerByTitle('Abatements').queryFeatures({outFields: ['AccountID', 'REID'], where: where}).then(featureSet => {
-                features = features.concat(featureSet.features);
+            const year = new Date(event.result.feature.attributes[dateField]).getFullYear();
+            const num = event.result.feature.attributes[numField];
+            // only some account layers carry each resolution's fields (e.g. abatements only have confirming)
+            const accountLayers = [this.getLayerByTitle('Assessment'), this.getLayerByTitle('Abatements')]
+              .filter(layer => layer && this.hasField(layer, numField));
+            Promise.all(accountLayers.map(layer =>
+              layer.queryFeatures({outFields: ['AccountID', 'REID'], where: this.resolutionWhere(layer, dateField, numField, year, num)})
+            )).then(featureSets => {
+                const features = [].concat(...featureSets.map(featureSet => featureSet.features));
                 this.selectionMadeMultiple.emit(features);
             
                 features.forEach(feature => {
                   reids.push(feature.attributes['REID']);
                 });
-                this.propertyLayer.queryFeatures({where: "REID in ('" + reids.toString().replace(/,/g, "','").replace('[', '').replace(']', '') + "')", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
+                const reidList = reids.map(reid => this.sqlValue(this.propertyLayer, 'REID', reid)).join(',');
+                this.propertyLayer.queryFeatures({where: `REID in (${reidList || 'NULL'})`, returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
                   if (!this.view) {
                     this.createMap();
                   } else {
@@ -456,14 +497,13 @@ getAccountResults(params, field, layer: __esri.FeatureLayer) {
 
                    // })
                     //}
-                  }                
+                  }
                 });
-              }).catch(reason => console.log(reason));
             }).catch(reason => console.log(reason));
           } else {
             this.selectionMade.emit(event.result.feature);
 
-            this.propertyLayer.queryFeatures({where: "REID = '" + event.result.feature.attributes['REID'] + "'", returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
+            this.propertyLayer.queryFeatures({where: `REID = ${this.sqlValue(this.propertyLayer, 'REID', event.result.feature.attributes['REID'])}`, returnGeometry: true, outFields: ['*'], outSpatialReference:{wkid:102100}}).then(featureSet => {
               this.propertiesSelected.emit(featureSet.features);
               if (!this.view) {
                 this.createMap();

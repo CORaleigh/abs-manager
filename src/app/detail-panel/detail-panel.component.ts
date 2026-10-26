@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, Output, EventEmitter, AfterContentInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, Output, EventEmitter, AfterContentInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
 import { loadModules } from 'esri-loader';
 import esri = __esri;
@@ -8,6 +8,7 @@ import { SharedService } from '../shared.service';
     selector: 'app-detail-panel',
     templateUrl: './detail-panel.component.html',
     styleUrls: ['./detail-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DetailPanelComponent implements OnInit, OnChanges {
