@@ -1,0 +1,1 @@
+import{o as G,t as B}from"./chunk-DJnXYBB3.js";import{Q as eo}from"./chunk-CmDAbkVZ.js";function s(t,n){return G(this,null,function*(){return(yield eo(t,B({responseType:`image`},n))).data})}export{s as t};

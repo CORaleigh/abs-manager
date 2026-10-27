@@ -1,1 +1,0 @@
-import{o as G}from"./chunk-DJnXYBB3.js";import{i as br}from"./chunk-DGeYOFzG.js";var n;var a;var p=!1;function i(){return n??=br(`arcadeGeometryOperatorsWorker`).then(e=>{a=e,p=!0,n=void 0})}function m(e,o){return G(this,null,function*(){return p?a.apply(`invokeGeometryOp`,[e,o]):(yield i(),m(e,o))})}export{m as t};
