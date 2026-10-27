@@ -68,7 +68,8 @@ export class FormComponent implements OnChanges, OnInit, AfterViewInit {
 
   // the form only shows changed values when it gets a new graphic, so callers set values on a clone
   setFeature(feature: esri.Graphic) {
-    this.form.layer = feature.layer as esri.FeatureLayer;
+    // clone() drops a layer that was assigned by hand (new records), so fall back to the input feature's layer
+    this.form.layer = (feature.layer ?? this.feature?.layer) as esri.FeatureLayer;
     this.form.feature = feature;
   }
 
