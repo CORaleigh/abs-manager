@@ -7,7 +7,7 @@ import type * as esri from '../esri';
 import { SharedService } from '../shared.service';
 import { FormgroupsService } from '../formgroups.service';
 import { ConfirmedFormgroupsService } from '../confirmed-form-groups.service'
-import { toFormTemplate } from '../form-config';
+import { billingParameterCalculations, toFormTemplate, totalLienCalculations, type Calculation } from '../form-config';
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
@@ -81,6 +81,7 @@ export class FormComponent implements OnChanges, OnInit, AfterViewInit {
     this.setFeature(this.form.feature.clone());
   }
 
+  // a status change only swaps the template; a new graphic would re-render the form and move focus to the first input
   setFormConfigByStatus(status:string, layer:esri.FeatureLayer) {
     let groups: esri.FieldGroupConfig[] = null;
     if (layer.title.includes("Payment")) {
@@ -128,14 +129,28 @@ export class FormComponent implements OnChanges, OnInit, AfterViewInit {
       this.form.formTemplate = toFormTemplate(groups, {
         layer,
         lockedLabels: this.lookups,
-        lockedHint: 'Set using attribute lookup tool'
+        lockedHint: 'Set using attribute lookup tool',
+        calculations: this.calculations(layer)
       });
     }
-    this.setFeature(this.form.feature.clone());
   }
 
+  // set when the form's Arcade fills in the billing parameter defaults, so setDefaults() doesn't
+  private defaultsInForm = false;
+  private calculations(layer:esri.FeatureLayer): Record<string, Calculation> {
+    // only these layers have TotalLienAmount and the billing and category codes
+    if (!["Abatement", "Assessment", "Tap Fee"].some(title => layer.title.includes(title))) {
+      this.defaultsInForm = false;
+      return undefined;
+    }
+    const defaults = billingParameterCalculations(layer, this.shared.billingParameters);
+    this.defaultsInForm = !!defaults;
+    return { ...totalLienCalculations, ...defaults };
+  }
+
+  // only used when the billing parameters aren't in the layer's service, since this re-renders the form and moves focus
   setDefaults(e: ValueChangeEvent, values: any) {
-    if (e.fieldName === 'BillingTypeCode' || e.fieldName === 'CategoryTypeCode') {
+    if (!this.defaultsInForm && (e.fieldName === 'BillingTypeCode' || e.fieldName === 'CategoryTypeCode')) {
       const billCode = values['BillingTypeCode'];
       const catCode = values['CategoryTypeCode'];
       if (billCode && catCode) {
@@ -167,18 +182,13 @@ export class FormComponent implements OnChanges, OnInit, AfterViewInit {
         if (e.fieldName === 'StatusCode') {
           this.setFormConfigByStatus(e.value as string, e.layer);
         }
+        // a new graphic re-renders the form and moves focus to the first input, so it's only done when values
+        // are set here; TotalLienAmount changes and the billing defaults are calculated by the template's Arcade
         //Set status to deliquent if attorney flag changed
         if (e.fieldName === 'AttorneyFlag' && e.value == 'Y') {
           this.form.feature.setAttribute('StatusCode', '4');
+          this.setFeature(this.form.feature.clone());
         }
-        if (e.fieldName === 'TotalLienAmount') {
-          const amount = e.value as number;
-          this.form.feature.setAttribute('PrincipalBalance', amount);
-          this.form.feature.setAttribute('TotalLienAmount', amount);
-          this.form.feature.setAttribute('InstallmentAmount', amount/this.form.feature.getAttribute("NumYears"));
-          this.form.feature.setAttribute('CurrentInstallmentDue', amount/this.form.feature.getAttribute("NumYears"));
-        }
-        this.setFeature(this.form.feature.clone());
       });
 
       this.form.addEventListener('arcgisSubmit', event => {
