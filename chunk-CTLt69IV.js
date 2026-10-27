@@ -1,0 +1,1 @@
+import{t as Bc}from"./chunk-C1mF3imF.js";var s=class extends Bc{constructor(){super(...arguments),this.layer=null}};export{s as t};

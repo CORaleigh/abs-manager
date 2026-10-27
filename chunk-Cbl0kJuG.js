@@ -1,1 +1,0 @@
-import{t as Bc}from"./chunk-VERDw46_.js";var s=class extends Bc{constructor(){super(...arguments),this.layer=null}};export{s as t};
