@@ -16,7 +16,7 @@
   @if (source === 'form') {
     <calcite-label>
       Payment Amount
-      <calcite-input-number name="paymentAmount" [value]="paymentAmount" (calciteInputNumberInput)="paymentAmount = +$event.target.value" required></calcite-input-number>
+      <calcite-input-number name="paymentAmount" [value]="paymentAmount?.toString() ?? ''" (calciteInputNumberInput)="paymentAmount = +$event.target.value" required></calcite-input-number>
     </calcite-label>
     <calcite-button slot="footer-end" (click)="save(); dialogOpen = false">Save</calcite-button>
   }
