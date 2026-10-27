@@ -1,1 +1,0 @@
-function e(t){return t.label||t.labelEl?.textContent?.trim()||``}export{e as t};

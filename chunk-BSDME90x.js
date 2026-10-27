@@ -1,0 +1,1 @@
+import{a as H,g as d,j as y}from"./chunk-DipCRkz0.js";import{xt as ye}from"./chunk-oQnHpnX1.js";function c(r){if(!d.assetsPath)throw y.getLogger(`esri.assets`).errorOnce(`The API assets location needs to be set using config.assetsPath. More information: https://arcg.is/1OzLe50`),new H(`assets:path-not-set`,`config.assetsPath is not set`);return ye(d.assetsPath,r)}export{c as t};

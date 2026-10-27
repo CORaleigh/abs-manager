@@ -1,0 +1,1 @@
+import{u as xt}from"./chunk-BSGsXWWc.js";var s=()=>xt((a,o)=>{let e=new Set;return o.onDisconnected(()=>{e.forEach(r=>r.cancel())}),{add:r=>{[r].flat().forEach(c=>e.add(c))},resources:e}});export{s as t};

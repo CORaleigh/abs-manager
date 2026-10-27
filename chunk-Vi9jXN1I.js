@@ -1,1 +1,0 @@
-import{c as ze}from"./chunk-DTHwuWkl.js";var s=()=>ze((a,o)=>{let e=new Set;return o.onDisconnected(()=>{e.forEach(r=>r.cancel())}),{add:r=>{[r].flat().forEach(c=>e.add(c))},resources:e}});export{s as t};

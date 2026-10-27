@@ -1,0 +1,1 @@
+import{n as Z,r as p}from"./chunk-ROn77vhc.js";var t=`Global`;function i(n){return p(n).countries.length===0}function a(n){if(i(n))return t;let e=n.indexOf(`/`);return e===-1?n:n.slice(0,e)}function c(n){return Z(n)?.id??n}export{c as n,t as r,a as t};

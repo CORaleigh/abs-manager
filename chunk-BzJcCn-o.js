@@ -1,1 +1,0 @@
-import{P as ki,T as d$1,g as Qn,m as Pt}from"./chunk-B6eufNqm.js";var m={validationContainer:`validation-container`};var d=()=>{};var $=({scale:e,status:s,id:r,icon:l,message:c,ref:i})=>ki`<div class=${Qn(m.validationContainer)} ${Pt(i||d)}><calcite-input-message aria-live=polite .icon=${l} id=${r??d$1} .scale=${e} .status=${s}>${c}</calcite-input-message></div>`;export{$ as t};

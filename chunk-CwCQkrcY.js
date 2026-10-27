@@ -1,0 +1,1 @@
+import{n as C,o as G,t as B}from"./chunk-DJnXYBB3.js";import{Q as eo}from"./chunk-oQnHpnX1.js";function i(t,e){return G(this,null,function*(){return(yield eo(t,{responseType:`json`,query:C(B({f:`json`},e?.customParameters),{token:e?.apiKey})})).data})}export{i as t};

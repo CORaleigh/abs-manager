@@ -1,0 +1,1 @@
+import{K as x,T as dt,U as v,w as d}from"./chunk-BRwIpN_D.js";var u=x(class extends v{constructor(){super(...arguments),this.key=d}render(t,e){return this.key=t,e}update(t,[e,m]){return e!==this.key&&(dt(t),this.key=e),m}});export{u as t};

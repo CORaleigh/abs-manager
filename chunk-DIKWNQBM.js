@@ -1,0 +1,1 @@
+import{h as Te,m as Rr,q as xi,w as d$1}from"./chunk-BRwIpN_D.js";var m={validationContainer:`validation-container`};var d=()=>{};var $=({scale:e,status:s,id:r,icon:l,message:c,ref:i})=>xi`<div class=${Rr(m.validationContainer)} ${Te(i||d)}><calcite-input-message aria-live=polite .icon=${l} id=${r??d$1} .scale=${e} .status=${s}>${c}</calcite-input-message></div>`;export{$ as t};

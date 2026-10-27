@@ -1,1 +1,0 @@
-function a(t,e,n){let o=t===`block`?e:n;return o!=null?`${o}`:void 0}function l(t,...e){let n=e.length===0?`false`:e[0];return t?`true`:n}export{l as n,a as t};
